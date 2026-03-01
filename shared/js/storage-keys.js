@@ -1,0 +1,7 @@
+export const STORAGE_KEYS = {
+    USERS: "users",
+    CURRENT_USER: "currentUser",
+    PRODUCTS: "products",
+    ORDERS: "orders",
+    CART: "cart"
+};
