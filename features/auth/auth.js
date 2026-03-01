@@ -24,6 +24,22 @@ function hideAllErrors(...ids) {
     ids.forEach((id) => hideError(id));
 }
 
+function validateUsername(username) {
+    if (!username || username.trim() === "") {
+        return "Username is required.";
+    }
+    if (username.trim().length < 3) {
+        return "Username must be at least 3 characters long.";
+    }
+    if (username.trim().length > 20) {
+        return "Username must not exceed 20 characters.";
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(username.trim())) {
+        return "Username can only contain letters, numbers, and underscores.";
+    }
+    return null;
+}
+
 function validateEmail(email) {
     if (!email || email.trim() === "") {
         return "Email is required.";
@@ -75,6 +91,7 @@ function initRegister() {
         e.preventDefault();
 
         const errorIds = [
+            "regUsernameError",
             "regEmailError",
             "regPasswordError",
             "regConfirmPasswordError",
@@ -83,11 +100,18 @@ function initRegister() {
         ];
         hideAllErrors(...errorIds);
 
+        const username = document.getElementById("regUsername").value;
         const email = document.getElementById("regEmail").value;
         const password = document.getElementById("regPassword").value;
         const confirmPassword = document.getElementById("regConfirmPassword").value;
 
         let isValid = true;
+
+        const usernameError = validateUsername(username);
+        if (usernameError) {
+            showError("regUsernameError", usernameError);
+            isValid = false;
+        }
 
         const emailError = validateEmail(email);
         if (emailError) {
@@ -110,17 +134,26 @@ function initRegister() {
         if (!isValid) return;
 
         const users = storage.get(STORAGE_KEYS.USERS);
-        const existingUser = users.find(
+
+        const existingUsername = users.find(
+            (user) => user.username.toLowerCase() === username.trim().toLowerCase()
+        );
+        if (existingUsername) {
+            showError("regGeneralError", "This username is already taken.");
+            return;
+        }
+
+        const existingEmail = users.find(
             (user) => user.email.toLowerCase() === email.trim().toLowerCase()
         );
-
-        if (existingUser) {
+        if (existingEmail) {
             showError("regGeneralError", "An account with this email already exists.");
             return;
         }
 
         const newUser = {
             id: Date.now(),
+            username: username.trim().toLowerCase(),
             email: email.trim().toLowerCase(),
             password: password,
             role: "customer",
@@ -130,15 +163,17 @@ function initRegister() {
         users.push(newUser);
         storage.set(STORAGE_KEYS.USERS, users);
 
-        const successMsg = document.getElementById("regSuccessMsg");
-        successMsg.textContent = "Account created successfully! Redirecting to login...";
-        successMsg.classList.remove("d-none");
-
         form.reset();
 
-        setTimeout(() => {
+        Swal.fire({
+            icon: "success",
+            title: "Account Created!",
+            text: "Your account has been created successfully.",
+            confirmButtonText: "Go to Login",
+            allowOutsideClick: false,
+        }).then(() => {
             window.location.href = "login.html";
-        }, 1500);
+        });
     });
 }
 
@@ -146,30 +181,44 @@ function initLogin() {
     const form = document.getElementById("loginForm");
     if (!form) return;
 
-    const rememberedEmail = storage.get(STORAGE_KEYS.REMEMBERED_EMAIL);
-    const emailInput = document.getElementById("loginEmail");
+    const rememberedIdentifier = storage.get(STORAGE_KEYS.REMEMBERED_IDENTIFIER);
+    const identifierInput = document.getElementById("loginIdentifier");
     const rememberMeCheckbox = document.getElementById("rememberMe");
 
-    if (rememberedEmail && rememberedEmail.length > 0) {
-        emailInput.value = rememberedEmail;
+    if (rememberedIdentifier && rememberedIdentifier.length > 0) {
+        identifierInput.value = rememberedIdentifier;
         rememberMeCheckbox.checked = true;
     }
 
     form.addEventListener("submit", function (e) {
         e.preventDefault();
 
-        const errorIds = ["loginEmailError", "loginPasswordError", "loginGeneralError"];
+        const errorIds = ["loginIdentifierError", "loginPasswordError", "loginGeneralError"];
         hideAllErrors(...errorIds);
 
-        const email = document.getElementById("loginEmail").value;
+        const identifier = document.getElementById("loginIdentifier").value;
         const password = document.getElementById("loginPassword").value;
 
         let isValid = true;
 
-        const emailError = validateEmail(email);
-        if (emailError) {
-            showError("loginEmailError", emailError);
+        if (!identifier || identifier.trim() === "") {
+            showError("loginIdentifierError", "Email or username is required.");
             isValid = false;
+        } else {
+            const isEmail = identifier.includes("@");
+            if (isEmail) {
+                const emailError = validateEmail(identifier);
+                if (emailError) {
+                    showError("loginIdentifierError", emailError);
+                    isValid = false;
+                }
+            } else {
+                const usernameError = validateUsername(identifier);
+                if (usernameError) {
+                    showError("loginIdentifierError", usernameError);
+                    isValid = false;
+                }
+            }
         }
 
         if (!password || password === "") {
@@ -180,26 +229,29 @@ function initLogin() {
         if (!isValid) return;
 
         const users = storage.get(STORAGE_KEYS.USERS);
+        const trimmedIdentifier = identifier.trim().toLowerCase();
         const user = users.find(
             (u) =>
-                u.email.toLowerCase() === email.trim().toLowerCase() &&
+                (u.email.toLowerCase() === trimmedIdentifier ||
+                u.username.toLowerCase() === trimmedIdentifier) &&
                 u.password === password
         );
 
         if (!user) {
-            showError("loginGeneralError", "Invalid email or password.");
+            showError("loginGeneralError", "Invalid email/username or password.");
             return;
         }
 
         const rememberMe = document.getElementById("rememberMe").checked;
         if (rememberMe) {
-            storage.set(STORAGE_KEYS.REMEMBERED_EMAIL, email.trim().toLowerCase());
+            storage.set(STORAGE_KEYS.REMEMBERED_IDENTIFIER, trimmedIdentifier);
         } else {
-            storage.remove(STORAGE_KEYS.REMEMBERED_EMAIL);
+            storage.remove(STORAGE_KEYS.REMEMBERED_IDENTIFIER);
         }
 
         const sessionUser = {
             id: user.id,
+            username: user.username,
             email: user.email,
             role: user.role,
         };

@@ -4,5 +4,6 @@ export const STORAGE_KEYS = {
     PRODUCTS: "products",
     ORDERS: "orders",
     CART: "cart",
-    REMEMBERED_EMAIL: "rememberedEmail"
+    REMEMBERED_EMAIL: "rememberedEmail",
+    REMEMBERED_IDENTIFIER: "rememberedIdentifier"
 };

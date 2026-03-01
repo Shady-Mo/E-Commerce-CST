@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../../shared/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="auth.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <nav></nav>
@@ -22,6 +23,10 @@
                 <h2>Create New Account</h2>
                 <p>Buy & sale your exclusive product only on Furnixar</p>
                 <div class="w-100 mt-5">
+                    <input type="text" placeholder="Enter your username" name="username" id="regUsername" class="form-control">
+                    <small class="text-danger d-none" id="regUsernameError"></small>
+                </div>
+                <div class="w-100">
                     <input type="email" placeholder="Enter your email address" name="email" id="regEmail" class="form-control">
                     <small class="text-danger d-none" id="regEmailError"></small>
                 </div>
