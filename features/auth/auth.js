@@ -264,6 +264,9 @@ function initLogin() {
             case "seller":
                 window.location.href = "../seller/dashboard.html";
                 break;
+            case "customer":
+                 window.location.href = "../products/products-list.html";
+                break;
             default:
                 window.location.href = "../../index.html";
                 break;
