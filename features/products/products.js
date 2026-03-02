@@ -1,32 +1,26 @@
 import { storage } from "../../shared/js/storage.js";
 import { STORAGE_KEYS } from "../../shared/js/storage-keys.js";
-import { renderNavbar } from "../../shared/js/navbar.js";
+import { renderNavbar, updateCartBadge } from "../../shared/js/navbar.js";
 import { renderFooter } from "../../shared/js/footer.js";
-import { updateCartBadge } from "../../shared/js/navbar.js";
+import { seedProducts } from "../../shared/js/products-seed.js";
+
 /* ------------------ Render Layout ------------------ */
 
 renderNavbar();
 renderFooter();
-
-/* ------------------ Auth Protection ------------------ */
-
-const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
-
-if (!currentUser || currentUser.role !== "customer") {
-  window.location.href = "../../features/auth/login.html";
-}
+seedProducts();
 
 /* ------------------ Setup ------------------ */
 
 const container = document.getElementById("productsContainer");
-const products = storage.get(STORAGE_KEYS.PRODUCTS);
-
-// Cart key per user
-const cartKey = `cart_${currentUser.id}`;
+const products = storage.get(STORAGE_KEYS.PRODUCTS) || [];
 
 /* ------------------ Render Products ------------------ */
 
 function renderProducts() {
+
+  if (!container) return;
+
   container.innerHTML = "";
 
   products.forEach(product => {
@@ -62,15 +56,33 @@ function renderProducts() {
 
 function initAddToCart() {
 
+  if (!container) return;
+
   container.addEventListener("click", function (e) {
 
     if (!e.target.classList.contains("add-to-cart")) return;
 
+    const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
+
+    /* ❌ Not Logged In */
+    if (!currentUser || !currentUser.id) {
+
+      showToast("You must login first to add items to cart.", "warning");
+
+      // بعد 1.5 ثانية يروح للوجين
+      setTimeout(() => {
+        window.location.href = "../../features/auth/login.html";
+      }, 1500);
+
+      return;
+    }
+
+    /* ✅ Logged In */
+
+    const cartKey = `cart_${currentUser.id}`;
+    let cart = storage.get(cartKey) || [];
+
     const productId = parseInt(e.target.dataset.id);
-
-    let cart = storage.get(cartKey);
-
-
     const product = products.find(p => p.id === productId);
 
     if (!product) return;
@@ -91,19 +103,19 @@ function initAddToCart() {
 
     storage.set(cartKey, cart);
     updateCartBadge();
-    showToast();
+    showToast("Product added to cart successfully ✔", "success");
   });
 }
 
-/* ------------------ Toast Notification ------------------ */
+/* ------------------ Toast Function ------------------ */
 
-function showToast() {
+function showToast(message, type = "success") {
 
   const toastHTML = `
-    <div class="toast align-items-center text-bg-success border-0 position-fixed bottom-0 end-0 m-3">
+    <div class="toast align-items-center text-bg-${type} border-0 position-fixed bottom-0 end-0 m-3">
       <div class="d-flex">
         <div class="toast-body">
-          Product added to cart successfully ✔
+          ${message}
         </div>
         <button type="button" 
                 class="btn-close btn-close-white me-2 m-auto"
@@ -117,16 +129,18 @@ function showToast() {
   wrapper.innerHTML = toastHTML;
   document.body.appendChild(wrapper);
 
-  const toast = new bootstrap.Toast(
-    wrapper.querySelector(".toast")
-  );
+  const toastEl = wrapper.querySelector(".toast");
+  const toast = new bootstrap.Toast(toastEl);
 
   toast.show();
 
-  setTimeout(() => wrapper.remove(), 3000);
+  setTimeout(() => {
+    wrapper.remove();
+  }, 3000);
 }
 
 /* ------------------ Initialize ------------------ */
 
 renderProducts();
 initAddToCart();
+updateCartBadge();

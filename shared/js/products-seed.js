@@ -1,5 +1,5 @@
-import { storage } from "../../storage.js";
-import { STORAGE_KEYS } from "../../storage-keys.js";
+import { storage } from "./storage.js";
+import { STORAGE_KEYS } from "./storage-keys.js";
 
 export function seedProducts() {
   const existingProducts = storage.get(STORAGE_KEYS.PRODUCTS);

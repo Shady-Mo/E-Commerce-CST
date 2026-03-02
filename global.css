@@ -14,3 +14,60 @@ body {
 footer {
     flex-shrink: 0;
 }
+
+/* Active Link Color */
+.navbar .nav-link.active {
+    color: #BB976D !important;
+    font-weight: 600;
+}
+
+/* Hover Effect */
+.navbar .nav-link:hover {
+    color: #BB976D !important;
+    transition: 0.3s;
+}
+
+
+.footer-section {
+    background: url('./assets/images/footer-DgFop_2u.jpg') center/cover no-repeat;
+    position: relative;
+}
+
+.footer-overlay {
+    background: rgba(18, 32, 47, 0.95);
+}
+
+.footer-links li {
+    margin-bottom: 8px;
+}
+
+.footer-links a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.footer-links a:hover {
+    color: #BB976D;
+}
+
+.subscribe-btn {
+    background: #BB976D;
+    color: #fff;
+    padding: 0 25px;
+}
+
+.subscribe-btn:hover {
+    background: #a88255;
+}
+
+.social-icons a {
+    color: rgba(255,255,255,0.7);
+    margin: 0 8px;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+.social-icons a:hover {
+    color: #BB976D;
+}

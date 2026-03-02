@@ -6,81 +6,98 @@ export function renderNavbar() {
     if (!nav) return;
 
     const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
-
-    nav.className = "navbar navbar-expand-lg navbar-dark bg-dark";
+   
+    nav.className = "navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3";
 
     nav.innerHTML = `
-        <div class="container-fluid">
-            <a class="navbar-brand" href="../../index.html">
-                <i class="fa-solid fa-store"></i> E-Commerce
-            </a>
+    <div class="container">
 
-            <button class="navbar-toggler" type="button" 
-                data-bs-toggle="collapse" 
-                data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <!-- Logo (Replace src with your logo image) -->
+        <a class="navbar-brand" href="../../features/home/home.html">
+            <img src="../../assets/images/logo-DXjmQiDB.svg" alt="Logo" height="40">
+        </a>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
+        <button class="navbar-toggler" type="button" 
+            data-bs-toggle="collapse" 
+            data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-                    ${
-                        currentUser && currentUser.role === "customer"
-                        ? `
-                        <!-- Wishlist -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="../../features/wishlist/wishlist.html">
-                                <i class="fa-regular fa-heart"></i>
-                            </a>
-                        </li>
+        <div class="collapse navbar-collapse" id="navbarNav">
 
-                        <!-- Cart -->
-                        <li class="nav-item">
-                            <a class="nav-link position-relative cart-link" href="../../features/cart/cart.html">
-                                <i class="fa-solid fa-cart-arrow-down"></i>
-                                <span class="cart-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                </span>
-                            </a>
-                        </li>
+            <!-- Middle Links -->
+            <ul class="navbar-nav mx-auto gap-4 fw-semibold">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="../../features/home/home.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="../../features/products/products-list.html">Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="#">About Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="#">Contact Us</a>
+                </li>
+            </ul>
 
-                        <!-- Username -->
-                        <li class="nav-item">
-                            <span class="nav-link text-white">
-                                Hi, ${currentUser.username}
-                            </span>
-                        </li>
+            <!-- Right Side -->
+            <ul class="navbar-nav align-items-center gap-3">
 
-                        <!-- Logout -->
-                        <li class="nav-item">
-                            <button class="btn btn-sm btn-outline-light ms-2" id="logoutBtn">
-                                Logout
-                            </button>
-                        </li>
-                        `
-                        :
-                        `
-                        <!-- Guest -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="../../features/auth/login.html">
-                                <i class="fa-solid fa-sign-in-alt"></i> Login
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="../../features/auth/register.html">
-                                <i class="fa-solid fa-user-plus"></i> Register
-                            </a>
-                        </li>
-                        `
-                    }
+                ${
+                    currentUser && currentUser.role === "customer"
+                    ? `
+                    <!-- Wishlist -->
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="../../features/wishlist/wishlist.html">
+                            <i class="fa-regular fa-heart fs-5"></i>
+                        </a>
+                    </li>
 
-                </ul>
-            </div>
+                    <!-- Cart -->
+                    <li class="nav-item">
+                        <a class="nav-link position-relative text-dark" href="../../features/cart/cart.html">
+                            <i class="fa-solid fa-bag-shopping fs-5"></i>
+                            <span class="cart-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"></span>
+                        </a>
+                    </li>
+
+                   
+
+                    <!-- Logout Icon -->
+                    <li class="nav-item">
+                        <button class="btn border-0 nav-link text-dark" id="logoutBtn">
+                            <i class="fa-solid fa-right-from-bracket fs-5"></i>
+                        </button>
+                    </li>
+                    `
+                    :
+                    `
+                    <!-- Guest -->
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="../../features/auth/login.html">
+                            Login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="../../features/auth/register.html">
+                            register
+                        </a>
+                    </li>
+                    `
+                }
+
+            </ul>
+
         </div>
+    </div>
     `;
 
     attachLogout();
     updateCartBadge();
+    setActiveLink();
 }
+
 
 /* ---------------- Logout ---------------- */
 
@@ -93,6 +110,7 @@ function attachLogout() {
         });
     }
 }
+
 
 /* ---------------- Cart Badge ---------------- */
 
@@ -115,4 +133,23 @@ export function updateCartBadge() {
     } else {
         badge.style.display = "none";
     }
+}
+
+/* ---------------- Active Link ---------------- */
+
+function setActiveLink() {
+
+    const currentPath = window.location.pathname;
+
+    document.querySelectorAll(".navbar .nav-link").forEach(link => {
+
+        link.classList.remove("active");
+
+        const href = link.getAttribute("href");
+        if (!href || href === "#") return;
+        if (currentPath.includes(href.replace("../../", ""))) {
+            link.classList.add("active");
+        }
+
+    });
 }
