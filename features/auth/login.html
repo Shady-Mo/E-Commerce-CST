@@ -1,46 +1,75 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
-    <link rel="stylesheet" href="../../shared/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
-    <link rel="stylesheet" href="auth.css">
-</head>
-<body>
+    <link rel="stylesheet" href="../../shared/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="global.css" />
+    <link rel="stylesheet" href="auth.css" />
+  </head>
+  <body>
     <nav></nav>
-    <main class="row mt-5 container-fluid">
+    <main class="main-section container-fluid mt-3">
+      <div class="row align-items-center h-100">
         <section class="col-md-6 col-12 d-none d-md-block">
-            <div class="img-wrapper">
-                <img src="../../assets/images/login-image.jpg" alt="">
-            </div>
+          <div class="img-wrapper">
+            <img src="../../assets/images/login-image.jpg" alt="" />
+          </div>
         </section>
 
-        <section class="col-md-6 col-12 d-flex flex-column align-items-center justify-content-center">
-            <form id="loginForm" class="d-flex flex-column gap-3">
-                <h2>Welcome back!</h2>
-                <p>Buy & sale your exclusive product only on Furnixar</p>
-                <div class="w-100 mt-5">
-                    <input type="text" placeholder="Enter your email or username" name="identifier" id="loginIdentifier" class="form-control">
-                    <small class="text-danger d-none" id="loginIdentifierError"></small>
-                </div>
-                <div class="w-100">
-                    <input type="password" placeholder="* * * * * * * *" name="password" id="loginPassword" class="form-control">
-                    <small class="text-danger d-none" id="loginPasswordError"></small>
-                </div>
-                <div class="selection-box">
-                    <input type="checkbox" name="rememberMe" id="rememberMe">
-                    <label for="rememberMe">Remember me</label>
-                </div>
-                <div class="alert alert-danger d-none" id="loginGeneralError"></div>
-                <input type="submit" name="login" id="login" value="Login" class="form-control btn btn-primary">
-            </form>
-            <p class="register-text">Don't have an account yet? <a href="register.html" class="text-decoration-none">Register</a></p>
+        <section
+          class="col-md-6 col-12 d-flex flex-column align-items-center justify-content-center"
+        >
+          <form id="loginForm" class="d-flex flex-column gap-3">
+            <h2>Welcome back!</h2>
+            <p>Buy & sale your exclusive product only on Furnixar</p>
+            <div class="w-100 mt-5">
+              <input
+                type="text"
+                placeholder="Enter your email or username"
+                name="identifier"
+                id="loginIdentifier"
+                class="form-control"
+              />
+              <small
+                class="text-danger d-none"
+                id="loginIdentifierError"
+              ></small>
+            </div>
+            <div class="w-100">
+              <input
+                type="password"
+                placeholder="* * * * * * * *"
+                name="password"
+                id="loginPassword"
+                class="form-control"
+              />
+              <small class="text-danger d-none" id="loginPasswordError"></small>
+            </div>
+            <div class="selection-box">
+              <input type="checkbox" name="rememberMe" id="rememberMe" />
+              <label for="rememberMe">Remember me</label>
+            </div>
+            <div class="alert alert-danger d-none" id="loginGeneralError"></div>
+            <input
+              type="submit"
+              name="login"
+              id="login"
+              value="Login"
+              class="form-control btn btn-primary"
+            />
+          </form>
+          <p class="register-text">
+            Don't have an account yet?
+            <a href="/register.html" class="text-decoration-none">Register</a>
+          </p>
         </section>
+      </div>
     </main>
     <footer></footer>
     <script src="../../shared/js/bootstrap/bootstrap.bundle.min.js"></script>
     <script type="module" src="./auth.js"></script>
-</body>
+  </body>
 </html>

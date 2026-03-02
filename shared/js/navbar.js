@@ -11,7 +11,7 @@ export function renderNavbar() {
 
     nav.innerHTML = `
         <div class="container-fluid">
-            <a class="navbar-brand" href="../../index.html">
+            <a class="navbar-brand" href="/index.html">
                 <i class="fa-solid fa-store"></i> E-Commerce
             </a>
 
@@ -29,17 +29,16 @@ export function renderNavbar() {
                         ? `
                         <!-- Wishlist -->
                         <li class="nav-item">
-                            <a class="nav-link" href="../../features/wishlist/wishlist.html">
+                            <a class="nav-link" href="/features/wishlist/wishlist.html">
                                 <i class="fa-regular fa-heart"></i>
                             </a>
                         </li>
 
                         <!-- Cart -->
                         <li class="nav-item">
-                            <a class="nav-link position-relative cart-link" href="../../features/cart/cart.html">
+                            <a class="nav-link position-relative cart-link" href="/features/cart/cart.html">
                                 <i class="fa-solid fa-cart-arrow-down"></i>
-                                <span class="cart-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                </span>
+                                <span class="cart-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"></span>
                             </a>
                         </li>
 
@@ -59,14 +58,13 @@ export function renderNavbar() {
                         `
                         :
                         `
-                        <!-- Guest -->
                         <li class="nav-item">
-                            <a class="nav-link" href="../../features/auth/login.html">
+                            <a class="nav-link" href="/features/auth/login.html">
                                 <i class="fa-solid fa-sign-in-alt"></i> Login
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../../features/auth/register.html">
+                            <a class="nav-link" href="/features/auth/register.html">
                                 <i class="fa-solid fa-user-plus"></i> Register
                             </a>
                         </li>
@@ -89,7 +87,7 @@ function attachLogout() {
     if (logoutBtn) {
         logoutBtn.addEventListener("click", function () {
             storage.remove(STORAGE_KEYS.CURRENT_USER);
-            window.location.href = "../../index.html";
+            window.location.href = "/index.html";
         });
     }
 }
