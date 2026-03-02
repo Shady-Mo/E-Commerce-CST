@@ -15,18 +15,14 @@ export function renderNavbar() {
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+
                     <li class="nav-item">
-                        <a class="nav-link add-cart-icon" href="features/cart/cart.html">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="features/auth/login.html">
+                        <a class="nav-link" href="/features/auth/login.html">
                             <i class="fas fa-sign-in-alt"></i> Login
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="features/auth/register.html">
+                        <a class="nav-link" href="/features/auth/register.html">
                             <i class="fas fa-user-plus"></i> Register
                         </a>
                     </li>

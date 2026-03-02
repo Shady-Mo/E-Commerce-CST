@@ -15,9 +15,9 @@ export function renderFooter() {
                 <div class="col-md-4 mb-3">
                     <h5>Quick Links</h5>
                     <ul class="list-unstyled">
-                        <li><a href="index.html" class="text-white-50 text-decoration-none">Home</a></li>
-                        <li><a href="features/products/products-list.html" class="text-white-50 text-decoration-none">Products</a></li>
-                        <li><a href="features/cart/cart.html" class="text-white-50 text-decoration-none">Cart</a></li>
+                        <li><a href="/index.html" class="text-white-50 text-decoration-none">Home</a></li>
+                        <li><a href="/features/products/products-list.html" class="text-white-50 text-decoration-none">Products</a></li>
+                        <li><a href="/features/cart/cart.html" class="text-white-50 text-decoration-none">Cart</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4 mb-3">

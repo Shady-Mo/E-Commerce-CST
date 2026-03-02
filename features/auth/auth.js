@@ -1,7 +1,7 @@
-import { renderNavbar } from "../../shared/js/navbar.js";
 import { renderFooter } from "../../shared/js/footer.js";
-import { storage } from "../../shared/js/storage.js";
+import { renderNavbar } from "../../shared/js/navbar.js";
 import { STORAGE_KEYS } from "../../shared/js/storage-keys.js";
+import { storage } from "../../shared/js/storage.js";
 
 renderNavbar();
 renderFooter();
@@ -233,7 +233,7 @@ function initLogin() {
         const user = users.find(
             (u) =>
                 (u.email.toLowerCase() === trimmedIdentifier ||
-                u.username.toLowerCase() === trimmedIdentifier) &&
+                    u.username.toLowerCase() === trimmedIdentifier) &&
                 u.password === password
         );
 
