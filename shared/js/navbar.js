@@ -2,17 +2,18 @@ import { storage } from "./storage.js";
 import { STORAGE_KEYS } from "./storage-keys.js";
 
 export function renderNavbar() {
+
     const nav = document.querySelector("nav");
     if (!nav) return;
 
     const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
-   
+
     nav.className = "navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3";
 
     nav.innerHTML = `
     <div class="container">
 
-        <!-- Logo (Replace src with your logo image) -->
+        <!-- Logo -->
         <a class="navbar-brand" href="../../features/home/home.html">
             <img src="../../assets/images/logo-DXjmQiDB.svg" alt="Logo" height="40">
         </a>
@@ -47,43 +48,40 @@ export function renderNavbar() {
                 ${
                     currentUser && currentUser.role === "customer"
                     ? `
-                    <!-- Wishlist -->
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="../../features/wishlist/wishlist.html">
-                            <i class="fa-regular fa-heart fs-5"></i>
-                        </a>
-                    </li>
+                        <!-- Wishlist -->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="../../features/wishlist/wishlist.html">
+                                <i class="fa-regular fa-heart fs-5"></i>
+                            </a>
+                        </li>
 
-                    <!-- Cart -->
-                    <li class="nav-item">
-                        <a class="nav-link position-relative text-dark" href="../../features/cart/cart.html">
-                            <i class="fa-solid fa-bag-shopping fs-5"></i>
-                            <span class="cart-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"></span>
-                        </a>
-                    </li>
+                        <!-- Cart -->
+                        <li class="nav-item">
+                            <a class="nav-link position-relative text-dark" href="../../features/cart/cart.html">
+                                <i class="fa-solid fa-bag-shopping fs-5"></i>
+                                <span class="cart-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"></span>
+                            </a>
+                        </li>
 
-                   
-
-                    <!-- Logout Icon -->
-                    <li class="nav-item">
-                        <button class="btn border-0 nav-link text-dark" id="logoutBtn">
-                            <i class="fa-solid fa-right-from-bracket fs-5"></i>
-                        </button>
-                    </li>
+                        <!-- Logout -->
+                        <li class="nav-item">
+                            <button class="btn border-0 nav-link text-dark" id="logoutBtn">
+                                <i class="fa-solid fa-right-from-bracket fs-5"></i>
+                            </button>
+                        </li>
                     `
                     :
                     `
-                    <!-- Guest -->
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="../../features/auth/login.html">
-                            Login
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="../../features/auth/register.html">
-                            register
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="../../features/auth/login.html">
+                                Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="../../features/auth/register.html">
+                                Register
+                            </a>
+                        </li>
                     `
                 }
 
@@ -98,11 +96,12 @@ export function renderNavbar() {
     setActiveLink();
 }
 
-
 /* ---------------- Logout ---------------- */
 
 function attachLogout() {
+
     const logoutBtn = document.getElementById("logoutBtn");
+
     if (logoutBtn) {
         logoutBtn.addEventListener("click", function () {
             storage.remove(STORAGE_KEYS.CURRENT_USER);
@@ -110,7 +109,6 @@ function attachLogout() {
         });
     }
 }
-
 
 /* ---------------- Cart Badge ---------------- */
 
@@ -120,7 +118,7 @@ export function updateCartBadge() {
     if (!currentUser) return;
 
     const cartKey = `cart_${currentUser.id}`;
-    const cart = storage.get(cartKey);
+    const cart = storage.get(cartKey) || [];
 
     const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -139,17 +137,17 @@ export function updateCartBadge() {
 
 function setActiveLink() {
 
-    const currentPath = window.location.pathname;
+    const currentPage = window.location.pathname.split("/").pop();
 
     document.querySelectorAll(".navbar .nav-link").forEach(link => {
 
-        link.classList.remove("active");
-
         const href = link.getAttribute("href");
-        if (!href || href === "#") return;
-        if (currentPath.includes(href.replace("../../", ""))) {
+        if (!href) return;
+
+        const linkPage = href.split("/").pop();
+
+        if (linkPage === currentPage) {
             link.classList.add("active");
         }
-
     });
 }

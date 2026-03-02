@@ -11,18 +11,28 @@ export function renderFooter() {
         <!-- Newsletter -->
         <div class="container mb-5">
             <div class="row align-items-center">
+
                 <div class="col-md-6">
                     <h2 class="fw-bold mb-3">Newsletter</h2>
                     <p class="text-white-50">
-                        Stay in the loop with exclusive offers and updates. Subscribe to our newsletter for the latest trends and promotions delivered straight to your inbox.
+                        Stay in the loop with exclusive offers and updates.
+                        Subscribe to our newsletter for the latest trends and promotions.
                     </p>
                 </div>
+
                 <div class="col-md-6">
                     <div class="d-flex newsletter-box">
-                        <input type="email" class="form-control bg-transparent text-white border-secondary rounded-0" placeholder="Enter your email address">
-                        <button class="btn subscribe-btn rounded-0">Subscribe</button>
+                        <input 
+                            type="email" 
+                            class="form-control bg-transparent text-white border-secondary rounded-0" 
+                            placeholder="Enter your email address"
+                        >
+                        <button class="btn subscribe-btn rounded-0">
+                            Subscribe
+                        </button>
                     </div>
                 </div>
+
             </div>
         </div>
 
@@ -54,7 +64,7 @@ export function renderFooter() {
                 <div class="col-md-4 text-center">
                     <img src="../../assets/images/logo-light-CajGk_JI.svg" height="45" class="mb-3">
                     <p class="text-white-50">
-                        Furnixar is a modern furniture template for an eCommerce website designed to help you create an impressive online store for your furniture or home decor business.
+                        Furnixar is a modern furniture template for an eCommerce website designed to help you create an impressive online store.
                     </p>
 
                     <div class="social-icons mt-3">
@@ -91,7 +101,7 @@ export function renderFooter() {
             <hr class="border-secondary my-4">
 
             <div class="text-center text-white-50">
-                © 2026 Furnixar Develop with احنا ناقشين بلدنا Team
+                © 2026 Furnixar - Developed by احنا نقاشين بلدنا Team
             </div>
         </div>
 
