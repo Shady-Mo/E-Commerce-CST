@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="../../shared/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <!-- FontAwesome CSS -->
+    <link href="../../shared/fontawesome/css/all.min.css" rel="stylesheet" />
+    <!-- Global Styles -->
+    <link href="../../global.css" rel="stylesheet" />
+    <!-- Admin Styles -->
+    <link href="admin.css" rel="stylesheet" />
+
+    <!-- Bootstrap JS -->
+    <script src="../../shared/js/bootstrap/bootstrap.bundle.min.js" defer></script>
+    <!-- Admin JS -->
+    <script type="module" src="admin.js" defer></script>
+  </head>
+
+  <body>
+    <!-- navigation placeholder -->
+    <nav></nav>
+
+    <div id="adminPanelContainer" class="main-section container-fluid mt-4">
+      <h1 class="mb-3">Admin Dashboard</h1>
+      <p class="mb-4">Administrative control panel: manage users, moderate products, and handle customer service.</p>
+
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">Users</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="products-tab" data-bs-toggle="tab" data-bs-target="#products" type="button" role="tab">Products</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="cs-tab" data-bs-toggle="tab" data-bs-target="#customer-service" type="button" role="tab">Customer Service</button>
+        </li>
+      </ul>
+
+      <div class="tab-content mt-3">
+        <!-- Users tab -->
+        <div class="tab-pane fade show active" id="users" role="tabpanel">
+          <div class="row no-wrap">
+            <div class="col-lg-7">
+              <h3>All Users</h3>
+              <div class="mb-3 row g-2">
+                <div class="col-md-6">
+                  <input id="userSearch" type="text" class="form-control" placeholder="Search users..." />
+                </div>
+                <div class="col-md-3">
+                  <select id="userPageSize" class="form-select">
+                    <option value="5">5 per page</option>
+                    <option value="10" selected>10 per page</option>
+                    <option value="25">25 per page</option>
+                  </select>
+                </div>
+              </div>
+              <div id="usersListContainer">
+                <!-- users table injected here -->
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <h3>Create New User</h3>
+              <form id="createUserForm" class="row g-3">
+                <div class="col-12">
+                  <label for="adminUsername" class="form-label">Username</label>
+                  <input type="text" class="form-control" id="adminUsername" />
+                  <div id="adminUsernameError" class="text-danger d-none"></div>
+                </div>
+                <div class="col-12">
+                  <label for="adminEmail" class="form-label">Email</label>
+                  <input type="email" class="form-control" id="adminEmail" />
+                  <div id="adminEmailError" class="text-danger d-none"></div>
+                </div>
+                <div class="col-12">
+                  <label for="adminPassword" class="form-label">Password</label>
+                  <input type="password" class="form-control" id="adminPassword" />
+                  <div id="adminPasswordError" class="text-danger d-none"></div>
+                </div>
+                <div class="col-12">
+                  <label for="adminConfirmPassword" class="form-label">Confirm Password</label>
+                  <input type="password" class="form-control" id="adminConfirmPassword" />
+                  <div id="adminConfirmPasswordError" class="text-danger d-none"></div>
+                </div>
+                <div class="col-12">
+                  <label for="adminRole" class="form-label">Role</label>
+                  <select id="adminRole" class="form-select">
+                    <option value="customer">Customer</option>
+                    <option value="seller">Seller</option>
+                    <option value="admin">Administrator</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary">Create User</button>
+                </div>
+                <div id="adminGeneralError" class="text-danger d-none col-12"></div>
+                <div id="adminSuccessMsg" class="text-success d-none col-12"></div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Products tab -->
+        <div class="tab-pane fade" id="products" role="tabpanel">
+          <h3>Product Listings</h3>
+          <div id="productsListContainer"></div>
+        </div>
+
+        <!-- Customer Service tab -->
+        <div class="tab-pane fade" id="customer-service" role="tabpanel">
+          <h3>Customer Service / Orders</h3>
+          <div id="csListContainer"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit User</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="editUserForm">
+              <input type="hidden" id="editUserId" />
+              <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input id="editUsername" class="form-control" />
+                <div id="editUsernameError" class="text-danger d-none"></div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input id="editEmail" class="form-control" />
+                <div id="editEmailError" class="text-danger d-none"></div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Role</label>
+                <select id="editRole" class="form-select">
+                  <option value="customer">Customer</option>
+                  <option value="seller">Seller</option>
+                  <option value="admin">Administrator</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">New Password (leave blank to keep)</label>
+                <input id="editPassword" type="password" class="form-control" />
+                <div id="editPasswordError" class="text-danger d-none"></div>
+              </div>
+            </form>
+            <div id="editGeneralError" class="text-danger d-none"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button id="saveEditUserBtn" type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmModalTitle">Confirm</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="confirmModalBody"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="confirmModalBtn">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- footer placeholder -->
+    <footer></footer>
+  </body>
+</html>
