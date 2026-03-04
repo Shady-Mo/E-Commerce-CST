@@ -10,7 +10,7 @@ export function seedUsers() {
             id: Date.now(),
             username: "admin",
             email: "admin@example.com",
-            password: "Admin@123", // change after first login in production
+            password: "Admin@123",
             role: "admin",
             createdAt: new Date().toISOString(),
         },
