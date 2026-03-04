@@ -94,7 +94,11 @@ export function renderNavbar() {
                   </button>
                 </li>
                 ${
-                    currentUser && currentUser.role === "customer"
+                    currentUser && 
+                    (currentUser.role === "customer" || 
+                        currentUser.role === "admin" || 
+                        currentUser.role === "seller"
+                    )
                     ? `
                         <!-- Wishlist -->
                         <li class="nav-item">

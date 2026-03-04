@@ -230,9 +230,9 @@ function renderUsers() {
             <table class="table table-sm table-striped text-center">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th class="col-id">ID</th>
                         <th>Username</th>
-                        <th>Email</th>
+                        <th class="col-email">Email</th>
                         <th>Role</th>
                         <th>Actions</th>
                     </tr>
@@ -244,18 +244,19 @@ function renderUsers() {
                 const roleBadgeClass = u.role === 'admin' ? 'role-admin' : u.role === 'seller' ? 'role-seller' : 'role-customer';
                 html += `
                     <tr data-user-id="${u.id}">
-                        <td>${u.id}</td>
+                        <td class="col-id">${u.id}</td>
                         <td><strong>${u.username}</strong></td>
-                        <td>${u.email}</td>
+                        <td class="col-email">${u.email}</td>
                         <td><span class="role-badge ${roleBadgeClass}">${u.role}</span></td>
                         <td>
                             <div class="dropdown action-dropdown">
                                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-ellipsis-v me-1"></i> Actions
+                                    <i class="fas fa-ellipsis-v me-1"></i><span class="action-text"> Actions</span>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li><a class="dropdown-item text-primary change-role" href="#" data-role="admin"><i class="fas fa-user-shield"></i> Make Admin</a></li>
                                     <li><a class="dropdown-item text-success change-role" href="#" data-role="seller"><i class="fas fa-store"></i> Make Seller</a></li>
+                                    <li><a class="dropdown-item text-secondary change-role" href="#" data-role="customer"><i class="fas fa-user"></i> Make Customer</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item text-info edit-user" href="#"><i class="fas fa-pen-to-square"></i> Edit User</a></li>
                                     <li><hr class="dropdown-divider"></li>
@@ -271,7 +272,7 @@ function renderUsers() {
 
         html += '<nav><ul class="pagination justify-content-center">';
         for (let p = 1; p <= totalPages; p++) {
-                html += `<li class="page-item ${p === userPage ? 'active' : ''}"><a class="page-link" href="#" data-page="${p}">${p}</a></li>`;
+                html += `<li class="page-item ${p === userPage ? 'active' : ''}" style="position: relative; top: 10px;"><a class="page-link" href="#" data-page="${p}">${p}</a></li>`;
         }
         html += '</ul></nav>';
 

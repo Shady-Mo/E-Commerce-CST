@@ -13,7 +13,8 @@ seedProducts();
 /* ------------------ Setup ------------------ */
 
 const container = document.getElementById("productsContainer");
-const products = storage.get(STORAGE_KEYS.PRODUCTS) || [];
+const allProducts = storage.get(STORAGE_KEYS.PRODUCTS) || [];
+const products = allProducts.filter(p => p.approved !== false);
 
 /* ------------------ Render Products ------------------ */
 
