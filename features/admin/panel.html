@@ -44,27 +44,40 @@
       <div class="tab-content mt-3">
         <!-- Users tab -->
         <div class="tab-pane fade show active" id="users" role="tabpanel">
-          <div class="row no-wrap">
-            <div class="col-lg-7">
-              <h3>All Users</h3>
-              <div class="mb-3 row g-2">
-                <div class="col-md-6">
-                  <input id="userSearch" type="text" class="form-control" placeholder="Search users..." />
+          <div class="row g-4">
+            <div class="col-12 col-xl-7">
+              <div class="card shadow-sm">
+                <div class="card-header bg-primary bg-gradient text-white">
+                  <h5 class="mb-0"><i class="fas fa-users me-2"></i>All Users</h5>
                 </div>
-                <div class="col-md-3">
-                  <select id="userPageSize" class="form-select">
-                    <option value="5">5 per page</option>
-                    <option value="10" selected>10 per page</option>
-                    <option value="25">25 per page</option>
-                  </select>
+                <div class="card-body">
+                  <div class="row g-2 mb-3">
+                    <div class="col-sm-7 col-md-8">
+                      <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input id="userSearch" type="text" class="form-control" placeholder="Search users..." />
+                      </div>
+                    </div>
+                    <div class="col-sm-5 col-md-4">
+                      <select id="userPageSize" class="form-select">
+                        <option value="5">5 per page</option>
+                        <option value="10" selected>10 per page</option>
+                        <option value="25">25 per page</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div id="usersListContainer">
+                    <!-- users table injected here -->
+                  </div>
                 </div>
-              </div>
-              <div id="usersListContainer">
-                <!-- users table injected here -->
               </div>
             </div>
-            <div class="col-lg-6">
-              <h3>Create New User</h3>
+            <div class="col-12 col-xl-5">
+              <div class="card shadow-sm">
+                <div class="card-header bg-success bg-gradient text-white">
+                  <h5 class="mb-0"><i class="fas fa-user-plus me-2"></i>Create New User</h5>
+                </div>
+                <div class="card-body">
               <form id="createUserForm" class="row g-3">
                 <div class="col-12">
                   <label for="adminUsername" class="form-label">Username</label>
@@ -95,25 +108,39 @@
                   </select>
                 </div>
                 <div class="col-12">
-                  <button type="submit" class="btn btn-primary">Create User</button>
+                  <button type="submit" class="btn btn-success w-100"><i class="fas fa-plus-circle me-1"></i>Create User</button>
                 </div>
                 <div id="adminGeneralError" class="text-danger d-none col-12"></div>
                 <div id="adminSuccessMsg" class="text-success d-none col-12"></div>
               </form>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Products tab -->
         <div class="tab-pane fade" id="products" role="tabpanel">
-          <h3>Product Listings</h3>
-          <div id="productsListContainer"></div>
+          <div class="card shadow-sm">
+            <div class="card-header bg-info bg-gradient text-white">
+              <h5 class="mb-0"><i class="fas fa-boxes me-2"></i>Product Listings</h5>
+            </div>
+            <div class="card-body">
+              <div id="productsListContainer"></div>
+            </div>
+          </div>
         </div>
 
         <!-- Customer Service tab -->
         <div class="tab-pane fade" id="customer-service" role="tabpanel">
-          <h3>Customer Service / Orders</h3>
-          <div id="csListContainer"></div>
+          <div class="card shadow-sm">
+            <div class="card-header bg-warning bg-gradient">
+              <h5 class="mb-0"><i class="fas fa-headset me-2"></i>Customer Service / Orders</h5>
+            </div>
+            <div class="card-body">
+              <div id="csListContainer"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
