@@ -3,22 +3,17 @@ import { renderFooter } from "../../shared/js/footer.js";
 import { storage } from "../../shared/js/storage.js";
 import { STORAGE_KEYS } from "../../shared/js/storage-keys.js";
 
-// render common components
 renderNavbar();
 renderFooter();
 
-// ensure only admin can stay on this page
 (function enforceAdminAccess() {
     const current = storage.get(STORAGE_KEYS.CURRENT_USER);
     if (!current || current.role !== "admin") {
-        // not logged in or not an admin; redirect to login
         window.location.href = "../auth/login.html";
     }
 })();
 
-// future admin-related functions will go here (user management, analytics, etc.)
 
-// --- utilities borrowed from auth.js ---
 function showError(elementId, message) {
     const el = document.getElementById(elementId);
     if (!el) return;
@@ -96,7 +91,6 @@ function validateConfirmPassword(password, confirmPassword) {
     return null;
 }
 
-// --- admin account creation handler ---
 function initUserCreation() {
     const form = document.getElementById("createUserForm");
     if (!form) return;
@@ -192,15 +186,11 @@ function initUserCreation() {
     form.addEventListener("submit", handleSubmit);
 }
 
-// removed duplicate initialization; will be done on DOMContentLoaded
 
-
-// --- global state for user list filtering/pagination ---
 let userFilter = '';
 let userPage = 1;
 let userPageSize = 10;
 
-// generic confirmation modal helper
 function showConfirm(message, onConfirm) {
     const modalEl = document.getElementById('confirmModal');
     const body = document.getElementById('confirmModalBody');
@@ -215,7 +205,6 @@ function showConfirm(message, onConfirm) {
     new bootstrap.Modal(modalEl).show();
 }
 
-// --- render users list with management actions ---
 function renderUsers() {
         const container = document.getElementById("usersListContainer");
         if (!container) return;
@@ -226,13 +215,11 @@ function renderUsers() {
                 return;
         }
 
-        // filter list
         const filtered = users.filter(u =>
                 u.username.toLowerCase().includes(userFilter) ||
                 u.email.toLowerCase().includes(userFilter)
         );
 
-        // pagination calculations
         const totalPages = Math.max(1, Math.ceil(filtered.length / userPageSize));
         if (userPage > totalPages) userPage = totalPages;
         const startIndex = (userPage - 1) * userPageSize;
@@ -254,18 +241,26 @@ function renderUsers() {
         `;
 
         pageUsers.forEach((u) => {
+                const roleBadgeClass = u.role === 'admin' ? 'role-admin' : u.role === 'seller' ? 'role-seller' : 'role-customer';
                 html += `
                     <tr data-user-id="${u.id}">
                         <td>${u.id}</td>
-                        <td>${u.username}</td>
+                        <td><strong>${u.username}</strong></td>
                         <td>${u.email}</td>
-                        <td>${u.role}</td>
+                        <td><span class="role-badge ${roleBadgeClass}">${u.role}</span></td>
                         <td>
-                            <div class="btn-group btn-group-sm" role="group">
-                                <button class="btn btn-primary change-role" data-role="admin">Make Admin</button>
-                                <button class="btn btn-secondary change-role" data-role="seller">Make Seller</button>
-                                <button class="btn btn-info edit-user">Edit</button>
-                                <button class="btn btn-danger delete-user">Delete</button>
+                            <div class="dropdown action-dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v me-1"></i> Actions
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item text-primary change-role" href="#" data-role="admin"><i class="fas fa-user-shield"></i> Make Admin</a></li>
+                                    <li><a class="dropdown-item text-success change-role" href="#" data-role="seller"><i class="fas fa-store"></i> Make Seller</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-info edit-user" href="#"><i class="fas fa-pen-to-square"></i> Edit User</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-danger delete-user" href="#"><i class="fas fa-trash-can"></i> Delete User</a></li>
+                                </ul>
                             </div>
                         </td>
                     </tr>
@@ -274,7 +269,6 @@ function renderUsers() {
 
         html += `</tbody></table>`;
 
-        // pagination controls
         html += '<nav><ul class="pagination justify-content-center">';
         for (let p = 1; p <= totalPages; p++) {
                 html += `<li class="page-item ${p === userPage ? 'active' : ''}"><a class="page-link" href="#" data-page="${p}">${p}</a></li>`;
@@ -283,7 +277,6 @@ function renderUsers() {
 
         container.innerHTML = html;
 
-        // pagination clicks
         container.querySelectorAll('.page-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                         e.preventDefault();
@@ -295,16 +288,15 @@ function renderUsers() {
                 });
         });
 
-        // attach action handlers
         container.querySelectorAll('.change-role').forEach(btn => {
                 btn.addEventListener('click', (e) => {
+                        e.preventDefault();
                         const tr = e.target.closest('tr');
                         const id = Number(tr.getAttribute('data-user-id'));
-                        const newRole = e.target.getAttribute('data-role');
+                        const newRole = e.target.closest('.change-role').getAttribute('data-role');
                         const all = storage.get(STORAGE_KEYS.USERS);
                         const idx = all.findIndex(x => x.id === id);
                         if (idx === -1) return;
-                        // prevent demoting the last admin
                         const adminsCount = all.filter(u => u.role === 'admin').length;
                         if (all[idx].role === 'admin' && newRole !== 'admin' && adminsCount <= 1) {
                                 alert('Cannot remove the last administrator.');
@@ -320,6 +312,7 @@ function renderUsers() {
 
         container.querySelectorAll('.edit-user').forEach(btn => {
                 btn.addEventListener('click', (e) => {
+                        e.preventDefault();
                         const tr = e.target.closest('tr');
                         const id = Number(tr.getAttribute('data-user-id'));
                         openEditUserModal(id);
@@ -328,6 +321,7 @@ function renderUsers() {
 
         container.querySelectorAll('.delete-user').forEach(btn => {
                 btn.addEventListener('click', (e) => {
+                        e.preventDefault();
                         const tr = e.target.closest('tr');
                         const id = Number(tr.getAttribute('data-user-id'));
                         const all = storage.get(STORAGE_KEYS.USERS);
@@ -357,7 +351,6 @@ function renderUsers() {
         });
 }
 
-// --- render products with moderation actions ---
 function renderProducts() {
         const container = document.getElementById('productsListContainer');
         if (!container) return;
@@ -368,7 +361,6 @@ function renderProducts() {
             return;
         }
 
-        // normalize products: ensure `approved` exists and persist
         let normalized = products.map(p => {
             if (typeof p.approved === 'undefined') p.approved = true;
             return p;
@@ -437,7 +429,6 @@ function renderProducts() {
         });
 }
 
-// --- edit user modal handlers ---
 function openEditUserModal(id) {
     const all = storage.get(STORAGE_KEYS.USERS) || [];
     const user = all.find(u => u.id === id);
@@ -449,7 +440,6 @@ function openEditUserModal(id) {
     document.getElementById('editRole').value = user.role || 'customer';
     document.getElementById('editPassword').value = '';
 
-    // clear errors
     hideAllErrors('editUsernameError', 'editEmailError', 'editPasswordError', 'editGeneralError');
 
     const modalEl = document.getElementById('editUserModal');
@@ -484,13 +474,11 @@ function initEditUserForm() {
         const idx = all.findIndex(u => u.id === id);
         if (idx === -1) return;
 
-        // uniqueness checks (exclude current user)
         const otherWithUsername = all.find(u => u.username.toLowerCase() === username.trim().toLowerCase() && u.id !== id);
         if (otherWithUsername) { showError('editGeneralError', 'Username already taken'); return; }
         const otherWithEmail = all.find(u => u.email.toLowerCase() === email.trim().toLowerCase() && u.id !== id);
         if (otherWithEmail) { showError('editGeneralError', 'Email already used'); return; }
 
-        // prevent demoting last admin
         const adminsCount = all.filter(u => u.role === 'admin').length;
         if (all[idx].role === 'admin' && role !== 'admin' && adminsCount <= 1) {
             alert('Cannot remove the last administrator.');
@@ -511,7 +499,6 @@ function initEditUserForm() {
     });
 }
 
-// --- render simple customer service / orders view ---
 function renderCustomerService() {
         const container = document.getElementById('csListContainer');
         if (!container) return;
@@ -552,7 +539,6 @@ function renderCustomerService() {
         });
 }
 
-// initialize admin tables and forms when panel loads
 document.addEventListener('DOMContentLoaded', () => {
         renderUsers();
         renderProducts();

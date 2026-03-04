@@ -8,31 +8,34 @@ export function renderNavbar() {
 
     const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
 
-    // figure out how far we are from project root so links always resolve
     function computePrefix() {
-        // decode in case spaces or encoded characters appear
-        const raw = decodeURIComponent(window.location.pathname);
-        const parts = raw.split("/");
-        // look for the project folder name, case-insensitive
-        const root = "e-commerce-cst";
-        const idx = parts.findIndex(p => p.toLowerCase() === root);
-        if (idx === -1) {
-            console.warn("computePrefix: root folder not found in path", parts);
+        const moduleUrl = new URL(import.meta.url);
+        const modulePath = decodeURIComponent(moduleUrl.pathname);
+        const marker = "/shared/js/navbar.js";
+        const markerIdx = modulePath.lastIndexOf(marker);
+        if (markerIdx === -1) {
+            console.warn("computePrefix: could not locate navbar.js path", modulePath);
             return "";
         }
-        // calculate depth after root, excluding the file name itself
-        let depth = parts.length - idx - 2;
-        if (depth < 0) depth = 0;
-        if (depth === 0) return "";
-        return "../".repeat(depth);
+        const rootPath = modulePath.substring(0, markerIdx) + "/";
+
+        const pagePath = decodeURIComponent(window.location.pathname);
+        const pageDir = pagePath.substring(0, pagePath.lastIndexOf("/") + 1);
+
+        if (pageDir.startsWith(rootPath)) {
+            const relative = pageDir.substring(rootPath.length);
+            const depth = relative.split("/").filter(Boolean).length;
+            if (depth === 0) return "";
+            return "../".repeat(depth);
+        }
+
+        return "";
     }
     const prefix = computePrefix();
     console.debug("navbar prefix", prefix);
 
-    // determine theme
     const theme = localStorage.getItem('theme') || 'light';
 
-    // apply to document so all pages switch
     applyTheme(theme);
 
     const themeIcon = theme === 'dark' ? 'fa-sun' : 'fa-moon';
@@ -42,7 +45,6 @@ export function renderNavbar() {
         nav.className = "navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3";
     }
 
-    // choose link color
     const textClass = theme === 'dark' ? 'text-light' : 'text-dark';
     nav.innerHTML = `
     <div class="container">
@@ -143,14 +145,9 @@ export function renderNavbar() {
     attachThemeToggle();
 }
 
-// -- theme helpers ------------------------------------------------------
-
 function applyTheme(theme) {
-    // add a class to body so global styles can target dark mode
     document.body.classList.toggle("theme-dark", theme === "dark");
 
-    // also set Bootstrap's theme attribute on the root element so its
-    // built-in CSS variables flip automatically
     if (theme === "dark") {
         document.documentElement.setAttribute("data-bs-theme", "dark");
     } else {
@@ -158,7 +155,6 @@ function applyTheme(theme) {
     }
 }
 
-// -- theme toggle handlers ------------------------------------------------
 function attachThemeToggle() {
     const btn = document.getElementById('themeToggleBtn');
     if (!btn) return;
@@ -167,13 +163,9 @@ function attachThemeToggle() {
         const next = current === 'light' ? 'dark' : 'light';
         localStorage.setItem('theme', next);
         applyTheme(next);
-        // re-render navbar to update classes and icon
         renderNavbar();
     });
 }
-
-
-/* ---------------- Logout ---------------- */
 
 function attachLogout() {
 
@@ -186,8 +178,6 @@ function attachLogout() {
         });
     }
 }
-
-/* ---------------- Cart Badge ---------------- */
 
 export function updateCartBadge() {
 
@@ -209,8 +199,6 @@ export function updateCartBadge() {
         badge.style.display = "none";
     }
 }
-
-/* ---------------- Active Link ---------------- */
 
 function setActiveLink() {
 
