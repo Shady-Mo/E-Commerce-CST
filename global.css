@@ -85,3 +85,36 @@ footer {
 .social-icons a:hover {
     color: #BB976D;
 }
+
+/* dark mode adjustments */
+body.theme-dark {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.theme-dark .container,
+body.theme-dark .card,
+body.theme-dark .modal-content,
+body.theme-dark .form-control,
+body.theme-dark .dropdown-menu {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+}
+
+body.theme-dark a,
+body.theme-dark .nav-link,
+body.theme-dark .footer-links a {
+    color: #ccc !important;
+}
+
+body.theme-dark .navbar-toggler-icon {
+    filter: brightness(0) invert(1);
+}
+
+body.theme-dark ::placeholder {
+    color: #999;
+}
+
+body.theme-dark .table {
+    color: #e0e0e0;
+}

@@ -22,6 +22,7 @@ This e-commerce system is designed to provide a complete online shopping experie
 - Implement secure user authentication and role-based access control
 - Create responsive interfaces that work seamlessly across all devices
 - Provide comprehensive dashboards for sellers and administrators
+- Automatically seed a default administrator account when the application first runs
 - Enable real-time data visualization for sales analytics
 
 ---
@@ -252,10 +253,15 @@ Complete administrative control panel.
 - `admin.js`: User management, system oversight
 - `admin.css`: Admin panel styling
 
+*Note*: an initial admin user (username `admin`, password `Admin@123`) is seeded into localStorage so that the panel can be accessed after first launch.
+Administrators can create additional admin accounts directly from the dashboard using the "Create New Administrator" form.
 **Responsibilities:**
 
-- User account management
-- Product moderation
+- User account management (create/edit/delete with role assignment)
+- Product moderation (approve/unapprove, delete)
+- Search, filtering, and pagination in user list
+- Confirmation modals for destructive actions and role changes
+- Dark mode toggle on navigation bar (preference saved in localStorage); theme now applies across *all pages* with coordinated background/text colors via global styles
 - System-wide analytics
 - Customer service tools
 
