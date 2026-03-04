@@ -2,67 +2,158 @@ import { storage } from "./storage.js";
 import { STORAGE_KEYS } from "./storage-keys.js";
 
 export function seedProducts() {
-  const existingProducts = storage.get(STORAGE_KEYS.PRODUCTS);
 
-  if (existingProducts.length > 0) return;
+const existingProducts = storage.get(STORAGE_KEYS.PRODUCTS);
+if (existingProducts.length > 0) return;
 
-  const products = [
-  {
-    id: 1,
-    name: "Luxury Lamp for Wall",
-    price: 122.75,
-    image: "../../../../assets/images/shop-01-BAqz1L0h.jpg",
-    description: "Modern wall luxury lamp with golden finish"
-  },
-  {
-    id: 2,
-    name: "White Minimal Chair",
-    price: 140.99,
-    image: "../../../../assets/images/shop-02-l48GIY89.jpg",
-    description: "Elegant white minimal chair for modern homes"
-  },
-  {
-    id: 3,
-    name: "Premium Luxury Sofa",
-    price: 122.75,
-    image: "../../../../assets/images/shop-03-VygFK45X.jpg",
-    description: "Comfortable modern luxury sofa"
-  },
-  {
-    id: 4,
-    name: "Modern Wooden Table",
-    price: 25.75,
-    image: "../../../../assets/images/shop-04-2ZYcisKE.jpg",
-    description: "Minimal wooden desk table"
-  },
-  {
-    id: 5,
-    name: "Luxury Vase for Table",
-    price: 122.75,
-    image: "../../../../assets/images/shop-05-CDjYQUxn.jpg",
-    description: "Modern decorative vase"
-  },
-  {
-    id: 6,
-    name: "Modern Log Table",
-    price: 122.75,
-    image: "../../../../assets/images/shop-06-Dys26vKi.jpg",
-    description: "Stylish modern wooden log table"
-  },
-  {
-    id: 7,
-    name: "New Modern Table with Pops",
-    price: 140.99,
-    image: "../../../../assets/images/shop-07-DFw55T-5.jpg",
-    description: "Luxury modern design table"
-  },
-  {
-    id: 8,
-    name: "Decorative Head Vase",
-    price: 122.75,
-    image: "../../../../assets/images/shop-09-C1D1hAdi.jpg",
-    description: "Artistic decorative head vase"
-  }
+const products = [
+
+{
+id:1,
+name:"White Ceramic Vase",
+category:"Decor",
+price:100,
+oldPrice:120,
+rating:4,
+badge:"New",
+discount:20,
+image: "../../assets/images/shop-04-2ZYcisKE.jpg",
+description:"Cillum dolore lorem ipsum decoration item",
+images:[
+"../../assets/images/2-600x800.jpg",
+"../../assets/images/1-600x800.jpg",
+"../../assets/images/5_1-600x800.jpg"
+]
+},
+
+{
+id:2,
+name:"Decor Round Pouf",
+category:"Decor",
+price:64,
+oldPrice:78,
+rating:4,
+badge:"New",
+image: "../../assets/images/shop-04-2ZYcisKE.jpg",
+discount:20,
+description:"Lorem ipsum cillium dolore decoration item",
+images:[
+"../../assets/images/4-600x800.jpg",
+"../../assets/images/6-600x800.jpg",
+"../../assets/images/1_1-600x800.jpg"
+]
+},
+
+{
+id:3,
+name:"Modern Table Lamp",
+category:"Vase",
+price:180,
+oldPrice:200,
+rating:4,
+badge:"New",
+image: "../../assets/images/shop-04-2ZYcisKE.jpg",
+discount:20,
+description:"Cillum dolore lorem ipsum decoration item",
+images:[
+"../../assets/images/10-600x800.jpg",
+"../../assets/images/9-600x800.jpg",
+"../../assets/images/8_1-600x800.jpg"
+]
+},
+
+{
+id:4,
+name:"Luxury Wall Lamp",
+category:"Lighting",
+price:122.75,
+oldPrice:150,
+rating:5,
+badge:"New",
+image: "../../assets/images/shop-04-2ZYcisKE.jpg",
+discount:18,
+description:"Modern wall luxury lamp with golden finish",
+images:[
+"../../assets/images/7-600x800.jpg",
+"../../assets/images/6-600x800.jpg",
+"../../assets/images/8_1-600x800.jpg"
+]
+},
+
+{
+id:5,
+name:"Minimal White Chair",
+category:"Furniture",
+price:140.99,
+oldPrice:170,
+rating:4,
+badge:"New",
+image: "../../assets/images/shop-04-2ZYcisKE.jpg",
+discount:17,
+description:"Elegant white minimal chair for modern homes",
+images:[
+"../../assets/images/2_1-600x800.jpg",
+"../../assets/images/3_1-600x800.jpg",
+"../../assets/images/4_1-600x800.jpg"
+]
+},
+
+{
+id:6,
+name:"Modern Wooden Table",
+category:"Furniture",
+price:122.75,
+oldPrice:150,
+rating:4,
+badge:"New",
+image: "../../assets/images/shop-04-2ZYcisKE.jpg",
+discount:18,
+description:"Stylish modern wooden log table",
+images:[
+"../../assets/images/2_1-600x800.jpg",
+"../../assets/images/3_1-600x800.jpg",
+"../../assets/images/4_1-600x800.jpg"
+]
+},
+
+{
+id:7,
+name:"Luxury Sofa",
+category:"Furniture",
+price:300,
+oldPrice:350,
+rating:5,
+badge:"New",
+image: "../../assets/images/shop-04-2ZYcisKE.jpg",
+discount:14,
+description:"Comfortable modern luxury sofa",
+images:[
+"../../assets/images/1_1-600x800.jpg",
+"../../assets/images/3_1-600x800.jpg",
+"../../assets/images/4_1-600x800.jpg"
+]
+},
+
+{
+id:8,
+name:"Art Head Vase",
+category:"Decor",
+price:122.75,
+oldPrice:150,
+rating:4,
+badge:"New",
+image: "../../assets/images/shop-04-2ZYcisKE.jpg",
+discount:18,
+description:"Artistic decorative head vase",
+images:[
+"../../assets/images/2_1-600x800.jpg",
+"../../assets/images/3_1-600x800.jpg",
+"../../assets/images/4_1-600x800.jpg"
+]
+}
+
 ];
-  storage.set(STORAGE_KEYS.PRODUCTS, products);
+
+storage.set(STORAGE_KEYS.PRODUCTS, products);
+
 }

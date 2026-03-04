@@ -1,17 +1,24 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 html, body {
     min-height: 100vh;
 }
+:root{
+  --main-color:#BB976D;
+}
+
+.bg{
+    background-color: var(--main-color);
+}
+.color{
+    color: var(--main-color);
+}
+
 
 body {
     display: flex;
     flex-direction: column;
+    font-family: "Poppins", sans-serif;
 }
+
 
 .main-section {
     flex: 1;
