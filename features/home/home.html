@@ -75,12 +75,8 @@
 
       </div>
 
-      <!-- ✅ Hero Pagination (scoped) -->
+      <!-- ✅ Hero Pagination -->
       <div class="swiper-pagination hero-pagination"></div>
-
-      <!-- ✅ Hero Navigation (optional) -->
-      <!-- <div class="swiper-button-prev hero-prev"></div>
-      <div class="swiper-button-next hero-next"></div> -->
     </div>
   </section>
 
@@ -89,6 +85,7 @@
     <div class="container-fluid px-lg-5">
       <div class="row g-4">
 
+        <!-- Banner 1 -->
         <div class="col-lg-4 col-md-6 col-sm-12">
           <div class="banner-item">
             <img src="../../assets/images/h1-banner-1.jpg" alt="banner">
@@ -103,6 +100,7 @@
           </div>
         </div>
 
+        <!-- Banner 2 -->
         <div class="col-lg-4 col-md-6 col-sm-12">
           <div class="banner-item">
             <img src="../../assets/images/h1-banner-2.jpg" alt="banner">
@@ -117,6 +115,7 @@
           </div>
         </div>
 
+        <!-- Banner 3 -->
         <div class="col-lg-4 col-md-6 col-sm-12">
           <div class="banner-item">
             <img src="../../assets/images/h1-banner-3.jpg" alt="banner">
@@ -136,124 +135,115 @@
   </section>
 
   <!-- FEATURED PRODUCTS -->
- <section class="featured-products py-5">
-  <div class="container">
+  <section class="featured-products py-5">
+    <div class="container">
+      <div class="fp-head d-flex align-items-center justify-content-between mb-4">
+        <h2 class="mb-0 fw-medium">Featured Products</h2>
 
-    <div class="fp-head d-flex align-items-center justify-content-between mb-4">
-      <h2 class="mb-0 fw-medium">Featured Products</h2>
-
-      <!-- ✅ Buttons like image -->
-      <div class="fp-nav">
-        <button class="fp-btn products-prev" type="button" aria-label="Previous">
-          <i class="fa-solid fa-angle-left"></i>
-        </button>
-        <button class="fp-btn products-next" type="button" aria-label="Next">
-          <i class="fa-solid fa-angle-right"></i>
-        </button>
-      </div>
-    </div>
-
-    <!-- Swiper -->
-    <div class="swiper productsSwiper" id="productsSwiperContainer">
-      <div class="swiper-wrapper">
-        <!-- slides injected by JS -->
+        <!-- Buttons like image -->
+        <div class="fp-nav">
+          <button class="fp-btn products-prev" type="button" aria-label="Previous">
+            <i class="fa-solid fa-angle-left"></i>
+          </button>
+          <button class="fp-btn products-next" type="button" aria-label="Next">
+            <i class="fa-solid fa-angle-right"></i>
+          </button>
+        </div>
       </div>
 
-      <!-- pagination لو محتاجها -->
-      <!-- <div class="swiper-pagination products-pagination"></div> -->
+      <!-- Swiper -->
+      <div class="swiper productsSwiper" id="productsSwiperContainer">
+        <div class="swiper-wrapper">
+          <!-- slides injected by JS -->
+        </div>
+
+        <!-- لو هتستخدم pagination للـ products -->
+        <!-- <div class="swiper-pagination products-pagination"></div> -->
+      </div>
     </div>
+  </section>
 
-  </div>
-</section>
+  <!-- PROMO BANNERS (full width) -->
+  <section class="promo-banners py-4">
+    <div class="container-fluid px-0">
+      <div class="row g-4 mx-0">
 
-
-<section class="promo-banners py-4">
-  <div class="container-fluid px-0">
-    <div class="row g-4 mx-0">
-
-      <!-- Banner 1 -->
-      <div class="col-12 col-lg-6 px-4">
-        <a href="#" class="promo-card d-block text-decoration-none">
-          <img src="../../assets/images/h1-banner-4.jpg" alt="Black Friday" class="promo-img">
-          <div class="promo-content">
-            <div class="promo-top">BLACK FRIDAY</div>
-            <h2 class="promo-title">Save Up To<br>50% Off</h2>
-
-            <div class="promo-link">
-              View Collection
-              <span class="promo-dot"><i class="fa-solid fa-play"></i></span>
+        <div class="col-12 col-lg-6 px-4">
+          <a href="#" class="promo-card d-block text-decoration-none">
+            <img src="../../assets/images/h1-banner-4.jpg" alt="Black Friday" class="promo-img">
+            <div class="promo-content">
+              <div class="promo-top">BLACK FRIDAY</div>
+              <h2 class="promo-title">Save Up To<br>50% Off</h2>
+              <div class="promo-link">
+                View Collection
+                <span class="promo-dot"><i class="fa-solid fa-play"></i></span>
+              </div>
             </div>
-          </div>
-        </a>
-      </div>
+          </a>
+        </div>
 
-      <!-- Banner 2 -->
-      <div class="col-12 col-lg-6 px-4">
-        <a href="#" class="promo-card d-block text-decoration-none">
-          <img src="../../assets/images/h1-banner-5.jpg" alt="Best Selling" class="promo-img">
-          <div class="promo-content">
-            <div class="promo-top">BEST SELLING !</div>
-            <h2 class="promo-title">Living Room<br>Up To 70%<br>Off</h2>
-
-            <div class="promo-link">
-              View Collection
-              <span class="promo-dot"><i class="fa-solid fa-play"></i></span>
+        <div class="col-12 col-lg-6 px-4">
+          <a href="#" class="promo-card d-block text-decoration-none">
+            <img src="../../assets/images/h1-banner-5.jpg" alt="Best Selling" class="promo-img">
+            <div class="promo-content">
+              <div class="promo-top">BEST SELLING !</div>
+              <h2 class="promo-title">Living Room<br>Up To 70%<br>Off</h2>
+              <div class="promo-link">
+                View Collection
+                <span class="promo-dot"><i class="fa-solid fa-play"></i></span>
+              </div>
             </div>
-          </div>
-        </a>
-      </div>
+          </a>
+        </div>
 
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
+  <!-- FEATURES STRIP -->
+  <section class="features-strip py-5">
+    <div class="container">
+      <div class="row g-4 text-center justify-content-center">
 
-<section class="features-strip py-5">
-  <div class="container">
-    <div class="row g-4 text-center justify-content-center">
-
-      <!-- item 1 -->
-      <div class="col-12 col-md-4">
-        <div class="feature-item">
-          <div class="feature-icon">
-            <i class="fa-solid fa-ship"></i>
+        <div class="col-12 col-md-4">
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="fa-solid fa-ship"></i>
+            </div>
+            <h6 class="feature-title">FREE SHIPPING WORLDWIDE</h6>
+            <p class="feature-desc">
+              Mirum est notare quam littera gothica, quam nunc putamus parum claram
+            </p>
           </div>
-          <h6 class="feature-title">FREE SHIPPING WORLDWIDE</h6>
-          <p class="feature-desc">
-            Mirum est notare quam littera gothica, quam nunc putamus parum claram
-          </p>
         </div>
-      </div>
 
-      <!-- item 2 -->
-      <div class="col-12 col-md-4">
-        <div class="feature-item">
-          <div class="feature-icon">
-            <i class="fa-solid fa-piggy-bank"></i>
+        <div class="col-12 col-md-4">
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="fa-solid fa-piggy-bank"></i>
+            </div>
+            <h6 class="feature-title">MONEY BACK GUARANTEE</h6>
+            <p class="feature-desc">
+              Mirum est notare quam littera gothica, quam nunc putamus parum claram
+            </p>
           </div>
-          <h6 class="feature-title">MONEY BACK GUARANTEE</h6>
-          <p class="feature-desc">
-            Mirum est notare quam littera gothica, quam nunc putamus parum claram
-          </p>
         </div>
-      </div>
 
-      <!-- item 3 -->
-      <div class="col-12 col-md-4">
-        <div class="feature-item">
-          <div class="feature-icon">
-            <i class="fa-solid fa-headset"></i>
+        <div class="col-12 col-md-4">
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="fa-solid fa-headset"></i>
+            </div>
+            <h6 class="feature-title">ONLINE SUPPORT 24/7</h6>
+            <p class="feature-desc">
+              Mirum est notare quam littera gothica, quam nunc putamus parum claram
+            </p>
           </div>
-          <h6 class="feature-title">ONLINE SUPPORT 24/7</h6>
-          <p class="feature-desc">
-            Mirum est notare quam littera gothica, quam nunc putamus parum claram
-          </p>
         </div>
-      </div>
 
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
   <footer></footer>
 
