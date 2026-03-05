@@ -1,9 +1,8 @@
 import { storage } from "../../shared/js/storage.js";
 import { STORAGE_KEYS } from "../../shared/js/storage-keys.js";
-import { renderNavbar, updateCartBadge } from "../../shared/js/navbar.js";
+import { renderNavbar, updateCartBadge, updateWishListBadge  } from "../../shared/js/navbar.js";
 import { renderFooter } from "../../shared/js/footer.js";
 import { seedProducts } from "../../shared/js/products-seed.js";
-
 /* ------------------ Render Layout ------------------ */
 
 renderNavbar();
@@ -45,6 +44,11 @@ function renderProducts() {
               class="btn btn-dark mt-auto add-to-cart"
               data-id="${product.id}">
               Add To Cart
+            </button>
+            <button 
+              class="btn btn-dark mt-auto add-to-wishList"
+              data-id="${product.id}">
+              Add To wishList
             </button>
           </div>
         </div>
@@ -108,6 +112,59 @@ function initAddToCart() {
   });
 }
 
+/* ------------------ Add To WichList ------------------ */
+function initAddToWishList() {
+
+  if (!container) return;
+
+  container.addEventListener("click", function (e) {
+
+    if (!e.target.classList.contains("add-to-wishList")) return;
+
+    const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
+
+    /* ❌ Not Logged In */
+    if (!currentUser || !currentUser.id) {
+
+      showToast("You must login first to add items to WishList.", "warning");
+
+      setTimeout(() => {
+        window.location.href = "../../features/auth/login.html";
+      }, 1500);
+
+      return;
+    }
+
+    /* ✅ Logged In */
+    const wishKey = `wishlist_${currentUser.id}`;
+    let wishList = storage.get(wishKey) || [];
+
+    const productId = parseInt(e.target.dataset.id);
+    const product = products.find(p => p.id === productId);
+
+    if (!product) return;
+
+    const existingItem = wishList.find(item => item.productId === productId);
+
+    if (!existingItem) {
+      wishList.push({
+        productId: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.image
+      });
+    }
+
+    // Update storage and badge
+    storage.set(wishKey, wishList);
+updateWishListBadge(); // must call here
+showToast("Product added to WishList ✔", "success");
+
+    // redirect to wishlist page
+    // window.location.href = "wishlist.html"; 
+  });
+}
+
 /* ------------------ Toast Function ------------------ */
 
 function showToast(message, type = "success") {
@@ -144,4 +201,5 @@ function showToast(message, type = "success") {
 
 renderProducts();
 initAddToCart();
+initAddToWishList();
 updateCartBadge();

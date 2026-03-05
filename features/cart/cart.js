@@ -144,6 +144,40 @@ document.getElementById("confirmDelete")
     modal.hide();
 });
 
+//take user to order page
+
+/* ---------------- Checkout ---------------- */
+
+const checkoutBtn = document.getElementById("checkoutBtn");
+
+checkoutBtn.addEventListener("click", function () {
+
+  if (cart.length === 0) return; // prevent checkout if empty
+
+  // Get existing orders
+  const orders = storage.get(STORAGE_KEYS.ORDERS);
+
+  // Create new order
+  const newOrder = {
+    id: Date.now(),            // unique order ID
+    userId: currentUser.id,    // current user
+    items: cart,               // cart items
+    status: "Pending",         // always pending
+    date: new Date().toLocaleString() // order date/time
+  };
+
+  // Add to orders array
+  orders.push(newOrder);
+  storage.set(STORAGE_KEYS.ORDERS, orders);
+
+  // Clear user cart
+  storage.remove(cartKey);
+
+  // Redirect to checkout page
+  window.location.href = "checkout.html";
+});
+
+
 /* ---------------- Init ---------------- */
 
 renderCart();

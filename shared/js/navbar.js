@@ -70,13 +70,12 @@ export function renderNavbar() {
                 <li class="nav-item">
                     <a class="nav-link ${textClass}" href="${prefix}features/products/products-list.html">Products</a>
                 </li>
-                ${
-                    currentUser && currentUser.role === "admin"
-                    ? `<li class="nav-item">
+                ${currentUser && currentUser.role === "admin"
+            ? `<li class="nav-item">
                           <a class="nav-link ${textClass}" href="${prefix}features/admin/panel.html">Dashboard</a>
                        </li>`
-                    : ""
-                }
+            : ""
+        }
                 <li class="nav-item">
                     <a class="nav-link ${textClass}" href="#">About Us</a>
                 </li>
@@ -93,19 +92,20 @@ export function renderNavbar() {
                     <i class="fa-solid ${themeIcon}"></i>
                   </button>
                 </li>
-                ${
-                    currentUser && 
-                    (currentUser.role === "customer" || 
-                        currentUser.role === "admin" || 
-                        currentUser.role === "seller"
-                    )
-                    ? `
-                        <!-- Wishlist -->
-                        <li class="nav-item">
-                            <a class="nav-link ${textClass}" href="${prefix}features/wishlist/wishlist.html">
-                                <i class="fa-regular fa-heart fs-5"></i>
-                            </a>
-                        </li>
+                ${currentUser &&
+            (currentUser.role === "customer" ||
+                currentUser.role === "admin" ||
+                currentUser.role === "seller"
+            )
+            ? `
+
+<!-- Wishlist -->
+<li class="nav-item">
+<a class="nav-link position-relative ${textClass}" href="${prefix}features/wishlist/wishlist.html">
+    <i class="fa-regular fa-heart fs-5"></i>
+        <span class="wishList-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+    </a>
+</li>
 
                         <!-- Cart -->
                         <li class="nav-item">
@@ -122,8 +122,8 @@ export function renderNavbar() {
                             </button>
                         </li>
                     `
-                    :
-                    `
+            :
+            `
                         <li class="nav-item">
                             <a class="nav-link ${textClass}" href="${prefix}features/auth/login.html">
                                 Login
@@ -135,7 +135,7 @@ export function renderNavbar() {
                             </a>
                         </li>
                     `
-                }
+        }
 
             </ul>
 
@@ -203,6 +203,54 @@ export function updateCartBadge() {
         badge.style.display = "none";
     }
 }
+
+// export function updateWishListBadge() {
+//     const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
+//     if (!currentUser) return;
+
+//     const wishKey = `wishlist_${currentUser.id}`;
+//     const wishList = storage.get(wishKey) || [];
+//     const badgeEl = document.getElementById("wishListBadge");
+//     if (badgeEl) badgeEl.textContent = wishList.length;
+// }
+
+// export function updateWishListBadge() { 
+//     const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER); 
+//     if (!currentUser) return; 
+
+//     const wishKey = `wishlist_${currentUser.id}`; 
+//     const wishList = storage.get(wishKey) || []; 
+
+//     const badgeEl = document.querySelector(".wishList-badge"); // use querySelector for class
+//     if (!badgeEl) return;
+
+//     if (wishList.length > 0) {
+//         badgeEl.textContent = wishList.length;
+//         badgeEl.style.display = "inline-block";
+//     } else {
+//         badgeEl.style.display = "none";
+//     }
+// } 
+
+export function updateWishListBadge() { 
+    const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER); 
+    if (!currentUser) return; 
+
+    const wishKey = `wishlist_${currentUser.id}`; 
+    const wishList = storage.get(wishKey) || []; 
+
+    const badgeEl = document.querySelector(".wishList-badge"); // ✅ correct
+    if (!badgeEl) return;
+
+    if (wishList.length > 0) {
+        badgeEl.textContent = wishList.length;
+        badgeEl.style.display = "inline-block";
+    } else {
+        badgeEl.style.display = "none";
+    }
+}
+
+
 
 function setActiveLink() {
 
