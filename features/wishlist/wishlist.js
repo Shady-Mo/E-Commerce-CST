@@ -93,3 +93,4 @@ document.getElementById("confirmDelete").addEventListener("click", function () {
 
 /* ---------------- Initialize ---------------- */
 renderWishlist();
+updateWishListBadge();

@@ -1,0 +1,151 @@
+:root{
+  --main-color:#BB976D;
+}
+
+/* ===== Top section like products ===== */
+.page-hero{
+  position: relative;
+  background: #f4f4f4;
+  padding: 70px 0;
+  overflow: hidden;
+}
+
+.page-title{
+  font-size: 40px;
+  font-weight: 700;
+  color: #222;
+}
+
+.breadcrumb-wrap .breadcrumb{
+  --bs-breadcrumb-divider: '/';
+  font-size: 16px;
+}
+
+.breadcrumb-wrap .breadcrumb a{
+  color: #777;
+  text-decoration: none;
+}
+
+.breadcrumb-wrap .breadcrumb a:hover{
+  color: var(--main-color);
+}
+
+.breadcrumb-wrap .breadcrumb .active{
+  color: var(--main-color);
+  font-weight: 500;
+}
+
+/* decorative images */
+.page-hero::before,
+.page-hero::after{
+  content:"";
+  position:absolute;
+  top: 0;
+  width: 360px;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: .85;
+  pointer-events: none;
+}
+
+.page-hero::before{
+  left: 0;
+  background-image: url("../../assets/images/breadcrumb.jpg"); /* change */
+  background-position: left center;
+}
+
+.page-hero::after{
+  right: 0;
+  background-image: url("../../assets/images/breadcrumb.jpg"); /* change */
+  background-position: right center;
+}
+
+/* ===== About section ===== */
+.section-title{
+  font-size: 32px;
+  font-weight: 700;
+  color: #222;
+}
+
+/* ===== Team cards ===== */
+.team-card{
+  background: #fff;
+  border: 1px solid #eee;
+  transition: .25s ease;
+}
+
+.team-card:hover{
+  transform: translateY(-4px);
+  border-color: #e4e4e4;
+  box-shadow: 0 14px 30px rgba(0,0,0,.08);
+}
+
+.team-img{
+  /* height: 260px; */
+  overflow: hidden;
+  background: #f7f7f7;
+}
+
+.team-img img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .4s ease;
+}
+
+.team-card:hover .team-img img{
+  transform: scale(1.05);
+}
+
+.team-body{
+  padding: 18px 16px 22px;
+}
+
+.team-name{
+  font-size: 18px;
+  font-weight: 700;
+  color: #222;
+}
+
+.team-role{
+  font-size: 14px;
+  color: #888;
+}
+
+.team-social{
+  display:flex;
+  justify-content:center;
+  gap: 12px;
+}
+
+.team-social a{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #e7e7e7;
+  display:grid;
+  place-items:center;
+  color: #333;
+  transition: .2s ease;
+  text-decoration:none;
+}
+
+.team-social a:hover{
+  border-color: var(--main-color);
+  color: var(--main-color);
+  transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 991.98px){
+  .page-title{ font-size: 44px; }
+  .page-hero::before, .page-hero::after{ width: 240px; opacity: .6; }
+  /* .team-img{ height: 240px; } */
+}
+
+@media (max-width: 575.98px){
+  .page-hero{ padding: 55px 0; }
+  .page-title{ font-size: 36px; }
+  .page-hero::before, .page-hero::after{ display:none; }
+}

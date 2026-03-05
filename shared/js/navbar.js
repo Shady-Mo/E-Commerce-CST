@@ -77,7 +77,7 @@ export function renderNavbar() {
             : ""
         }
                 <li class="nav-item">
-                    <a class="nav-link ${textClass}" href="#">About Us</a>
+                    <a class="nav-link ${textClass}" href="${prefix}features/aboutus/aboutus.html">About Us</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link ${textClass}" href="#">Contact Us</a>
@@ -93,9 +93,7 @@ export function renderNavbar() {
                   </button>
                 </li>
                 ${currentUser &&
-            (currentUser.role === "customer" ||
-                currentUser.role === "admin" ||
-                currentUser.role === "seller"
+            (currentUser.role === "customer"
             )
             ? `
 
@@ -145,6 +143,7 @@ export function renderNavbar() {
 
     attachLogout();
     updateCartBadge();
+    updateWishListBadge();
     setActiveLink();
     attachThemeToggle();
 }
@@ -184,24 +183,23 @@ function attachLogout() {
 }
 
 export function updateCartBadge() {
+  const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
+  if (!currentUser) return;
 
-    const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
-    if (!currentUser) return;
+  const cartKey = `cart_${currentUser.id}`;
+  const cart = storage.get(cartKey) || [];
 
-    const cartKey = `cart_${currentUser.id}`;
-    const cart = storage.get(cartKey) || [];
+  const badge = document.querySelector(".cart-badge");
+  if (!badge) return;
 
-    const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const totalItems = cart.length; // ✅ unique products only
 
-    const badge = document.querySelector(".cart-badge");
-    if (!badge) return;
-
-    if (totalQuantity > 0) {
-        badge.textContent = totalQuantity;
-        badge.style.display = "inline-block";
-    } else {
-        badge.style.display = "none";
-    }
+  if (totalItems > 0) {
+    badge.textContent = totalItems;
+    badge.style.display = "inline-block";
+  } else {
+    badge.style.display = "none";
+  }
 }
 
 // export function updateWishListBadge() {
@@ -253,20 +251,30 @@ export function updateWishListBadge() {
 
 
 function setActiveLink() {
+  // current page file name
+  let currentPage = window.location.pathname.split("/").pop().toLowerCase();
 
-    const currentPage = window.location.pathname.split("/").pop();
+  // if opened as "/" => treat as index.html
+  if (!currentPage) currentPage = "index.html";
 
-    document.querySelectorAll(".navbar .nav-link").forEach(link => {
+  // pages that should activate "Home"
+  const homePages = new Set(["index.html", "home.html"]);
 
-        const href = link.getAttribute("href");
-        if (!href) return;
+  document.querySelectorAll(".navbar .nav-link").forEach(link => {
+    const href = (link.getAttribute("href") || "").toLowerCase();
+    if (!href || href.startsWith("#")) return;
 
-        const linkPage = href.split("/").pop();
+    const linkPage = href.split("/").pop();
 
-        if (linkPage === currentPage) {
-            link.classList.add("active");
-        }
-    });
+    // ✅ if current is (index.html or home.html) and link points to one of them => active
+    const isHomeActive = homePages.has(currentPage) && homePages.has(linkPage);
+
+    if (isHomeActive || linkPage === currentPage) {
+      link.classList.add("active");
+    } else {
+      link.classList.remove("active");
+    }
+  });
 }
 
 export { applyTheme };
