@@ -24,32 +24,42 @@ function renderProducts() {
   container.innerHTML = "";
 
   products.forEach(product => {
+    const hasOldPrice = product.oldPrice && product.oldPrice > product.price;
+    const discount = hasOldPrice ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100) : 0;
+    
     container.innerHTML += `
-      <div class="col-md-4 col-lg-3">
-        <div class="card h-100 shadow-sm">
-          <img src="${product.image}" 
-               class="card-img-top" 
-               style="height:200px;object-fit:cover;">
-               
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">${product.name}</h5>
-            <p class="card-text text-muted small">
+      <div class="col-md-4 col-lg-3 mb-4">
+        <div class="product-card h-100">
+          <div class="product-image-wrapper">
+            <img src="${product.image}" 
+                 class="product-image" 
+                 alt="${product.name}">
+            
+            <div class="product-badges">
+              ${product.badge ? `<span class="badge-new">${product.badge}</span>` : ''}
+              ${discount > 0 ? `<span class="badge-discount">-${discount}%</span>` : ''}
+            </div>
+
+            <div class="product-actions">
+              <button class="action-btn add-to-cart" data-id="${product.id}" title="Add to Cart">
+                <i class="fas fa-shopping-cart"></i>
+              </button>
+              <button class="action-btn add-to-wishList" data-id="${product.id}" title="Add to Wishlist">
+                <i class="far fa-heart"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="product-info">
+            <h5 class="product-title">${product.name}</h5>
+            <p class="product-description">
               ${product.description ?? ""}
             </p>
-            <h6 class="text-primary fw-bold mb-3">
-              ${product.price} EGP
-            </h6>
-
-            <button 
-              class="btn btn-dark mt-auto add-to-cart"
-              data-id="${product.id}">
-              Add To Cart
-            </button>
-            <button 
-              class="btn btn-dark mt-auto add-to-wishList"
-              data-id="${product.id}">
-              Add To wishList
-            </button>
+            
+            <div class="product-price">
+              ${hasOldPrice ? `<span class="old-price">$${product.oldPrice.toFixed(2)}</span>` : ''}
+              <span class="current-price">$${product.price.toFixed(2)}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -65,7 +75,8 @@ function initAddToCart() {
 
   container.addEventListener("click", function (e) {
 
-    if (!e.target.classList.contains("add-to-cart")) return;
+    const addToCartBtn = e.target.closest(".add-to-cart");
+    if (!addToCartBtn) return;
 
     const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
 
@@ -87,7 +98,7 @@ function initAddToCart() {
     const cartKey = `cart_${currentUser.id}`;
     let cart = storage.get(cartKey) || [];
 
-    const productId = parseInt(e.target.dataset.id);
+    const productId = parseInt(addToCartBtn.dataset.id);
     const product = products.find(p => p.id === productId);
 
     if (!product) return;
@@ -112,14 +123,15 @@ function initAddToCart() {
   });
 }
 
-/* ------------------ Add To WichList ------------------ */
+/* ------------------ Add To WishList ------------------ */
 function initAddToWishList() {
 
   if (!container) return;
 
   container.addEventListener("click", function (e) {
 
-    if (!e.target.classList.contains("add-to-wishList")) return;
+    const wishlistBtn = e.target.closest(".add-to-wishList");
+    if (!wishlistBtn) return;
 
     const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
 
@@ -139,7 +151,7 @@ function initAddToWishList() {
     const wishKey = `wishlist_${currentUser.id}`;
     let wishList = storage.get(wishKey) || [];
 
-    const productId = parseInt(e.target.dataset.id);
+    const productId = parseInt(wishlistBtn.dataset.id);
     const product = products.find(p => p.id === productId);
 
     if (!product) return;
@@ -157,11 +169,8 @@ function initAddToWishList() {
 
     // Update storage and badge
     storage.set(wishKey, wishList);
-updateWishListBadge(); // must call here
-showToast("Product added to WishList ✔", "success");
-
-    // redirect to wishlist page
-    // window.location.href = "wishlist.html"; 
+    updateWishListBadge();
+    showToast("Product added to WishList ✔", "success");
   });
 }
 
@@ -203,3 +212,4 @@ renderProducts();
 initAddToCart();
 initAddToWishList();
 updateCartBadge();
+updateWishListBadge();

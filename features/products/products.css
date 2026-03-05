@@ -1,0 +1,77 @@
+:root{
+  --main-color:#BB976D;
+}
+
+.page-hero{
+  position: relative;
+  background: #f4f4f4;
+  padding: 70px 0;
+  overflow: hidden;
+}
+
+.page-title{
+  font-size: 40px;
+  font-weight: 700;
+  color: #222;
+}
+
+.breadcrumb-wrap .breadcrumb{
+  --bs-breadcrumb-divider: '/';
+  font-size: 16px;
+}
+
+.breadcrumb-wrap .breadcrumb a{
+  color: #777;
+  text-decoration: none;
+}
+
+.breadcrumb-wrap .breadcrumb a:hover{
+  color: var(--main-color);
+}
+
+.breadcrumb-wrap .breadcrumb .active{
+  color: var(--main-color);
+  font-weight: 500;
+}
+
+/* Decorative images left/right like screenshot */
+.page-hero::before,
+.page-hero::after{
+  content:"";
+  position:absolute;
+  top: 0;
+  width: 360px;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: .85;
+  pointer-events: none;
+}
+
+/* left hanging lamps */
+.page-hero::before{
+  left: 0;
+  background-image: url("../../assets/images/breadcrumb.jpg"); /* ✅ change */
+  background-position: left center;
+}
+
+/* right lamp */
+.page-hero::after{
+  right: 0;
+  background-image: url("../../assets/images/breadcrumb.jpg"); /* ✅ change */
+  background-position: right center;
+}
+
+/* Responsive */
+@media (max-width: 991.98px){
+  .page-title{ font-size: 44px; }
+  .page-hero::before,
+  .page-hero::after{ width: 240px; opacity: .6; }
+}
+
+@media (max-width: 575.98px){
+  .page-hero{ padding: 55px 0; }
+  .page-title{ font-size: 36px; }
+  .page-hero::before,
+  .page-hero::after{ display:none; } /* اخفاء الديكور على الموبايل */
+}

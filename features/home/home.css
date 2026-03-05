@@ -276,3 +276,175 @@ background:var(--main-color);
 .banner-content h3{font-size:20px;}
 
 }
+
+/* ===== Featured Products header buttons like image ===== */
+.fp-head{
+  position: relative;
+}
+
+.fp-nav{
+  display: flex;
+  gap: 12px;
+}
+
+.fp-btn{
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.fp-btn i{
+  font-size: 16px;
+  color: #111;
+}
+
+.fp-btn:hover{
+  border-color: var(--main-color);
+  transform: translateY(-1px);
+}
+
+.fp-btn:hover i{
+  color: var(--main-color);
+}
+
+/* optional: لو الأسهم عندك بتعمل overlay بسبب Swiper default styles */
+.products-prev::after,
+.products-next::after{
+  display: none !important; /* يمنع Swiper يحط أسهمه الافتراضية */
+}
+
+
+.promo-card{
+  position: relative;
+  overflow: hidden;
+  background: #f6f6f6;
+  min-height: 320px;
+}
+
+.promo-img{
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+  object-fit: cover;
+  display: block;
+  transition: transform .45s ease;
+}
+
+.promo-card:hover .promo-img{
+  transform: scale(1.02);
+}
+
+.promo-content{
+  position: absolute;
+  inset: 0;
+  padding: 48px 56px;      /* زي الصورة مساحات هادية */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #222;
+}
+
+.promo-top{
+  font-size: 14px;         /* أصغر */
+  letter-spacing: 1px;
+  font-weight: 500;
+  margin-bottom: 14px;
+  color: #333;
+}
+
+/* ✅ حجم ناعم مش ضخم */
+.promo-title{
+  font-size: 44px;         /* كان 60 */
+  line-height: 1.05;
+  font-weight: 600;        /* أخف من 700 */
+  margin: 0 0 22px;
+  color: #2a2a2a;
+}
+
+.promo-link{
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+  color: #6f6f6f;
+  font-weight: 500;
+}
+
+.promo-dot{
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--main-color);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.promo-dot i{
+  font-size: 7px;
+  color: #fff;
+  margin-left: 1px;
+}
+
+/* ✅ Responsive ناعم */
+@media (max-width: 1199.98px){
+  .promo-content{ padding: 40px 44px; }
+  .promo-title{ font-size: 38px; }
+}
+
+@media (max-width: 991.98px){
+  .promo-card, .promo-img{ min-height: 280px; }
+  .promo-content{ padding: 32px 28px; }
+  .promo-title{ font-size: 34px; }
+  .promo-link{ font-size: 16px; }
+}
+
+@media (max-width: 575.98px){
+  .promo-card, .promo-img{ min-height: 240px; }
+  .promo-title{ font-size: 28px; }
+  .promo-top{ font-size: 13px; }
+}
+
+
+
+.features-strip{
+  background: #fff;
+}
+
+.feature-item{
+  padding: 30px 10px;
+}
+
+.feature-icon{
+  font-size: 54px;
+  color: #bdbdbd;
+  margin-bottom: 18px;
+}
+
+.feature-title{
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  color: #222;
+  margin-bottom: 18px;
+}
+
+.feature-desc{
+  max-width: 360px;
+  margin: 0 auto;
+  color: #9b9b9b;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+/* responsive */
+@media (max-width: 575.98px){
+  .feature-icon{ font-size: 48px; }
+  .feature-desc{ font-size: 15px; }
+}
