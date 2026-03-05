@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Shopping Cart</title>
@@ -11,65 +12,69 @@
 
 <body>
 
-<nav></nav>
+  <nav></nav>
 
-<div class="container py-5">
+  <div class="container py-5">
 
-  <h3 class="mb-4">Shopping Cart</h3>
+    <h3 class="mb-4">Shopping Cart</h3>
 
-  <div class="table-responsive">
-    <table class="table align-middle">
-      <thead>
-        <tr>
-          <th>Product Info</th>
-          <th>Price</th>
-          <th>Quantity</th>
-          <th>Total</th>
-          <th>Remove</th>
-        </tr>
-      </thead>
-      <tbody id="cartBody"></tbody>
-    </table>
-  </div>
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>Product Info</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th>Remove</th>
+          </tr>
+        </thead>
+        <tbody id="cartBody"></tbody>
+      </table>
+    </div>
 
-  <div class="text-end mt-4">
-    <h4>Total: <span id="grandTotal">0</span> EGP</h4>
-  </div>
-
-</div>
-
-<footer></footer>
-
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <h5 class="modal-title">Remove Item</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body text-center">
-        <i class="fa-solid fa-triangle-exclamation text-danger fs-1 mb-3"></i>
-        <p>Are you sure you want to remove this item from your cart?</p>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Cancel
-        </button>
-        <button type="button" class="btn btn-danger" id="confirmDelete">
-          Yes, Remove
-        </button>
-      </div>
+    <div class="text-end mt-4">
+      <h4>Total: <span id="grandTotal">0</span> EGP</h4>
+      <!-- order button -->
+      <button class="btn btn-secondary mt-3" id="checkoutBtn">Proceed to Checkout</button>
 
     </div>
-  </div>
-</div>
 
-<script src="../../shared/js/bootstrap/bootstrap.bundle.min.js"></script>
-<script type="module" src="./cart.js"></script>
+  </div>
+  <footer></footer>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title">Remove Item</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body text-center">
+          <i class="fa-solid fa-triangle-exclamation text-danger fs-1 mb-3"></i>
+          <p>Are you sure you want to remove this item from your cart?</p>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-danger" id="confirmDelete">
+            Yes, Remove
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <script src="../../shared/js/bootstrap/bootstrap.bundle.min.js"></script>
+  <script type="module" src="./cart.js"></script>
 
 </body>
+
 </html>
