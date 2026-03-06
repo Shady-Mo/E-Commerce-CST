@@ -242,8 +242,7 @@ u=>u.username.toLowerCase()===username.toLowerCase()
 );
 
 if(usernameExists){
-generalError.textContent="Username already exists";
-generalError.classList.remove("d-none");
+showError(usernameInput,usernameError,"This username is already taken.");
 return;
 }
 
@@ -252,8 +251,7 @@ u=>u.email.toLowerCase()===email.toLowerCase()
 );
 
 if(emailExists){
-generalError.textContent="Email already exists";
-generalError.classList.remove("d-none");
+showError(emailInput,emailError,"An account with this email already exists.");
 return;
 }
 
@@ -320,7 +318,9 @@ isValid = false;
 
 }else{
 
-showValid(identifierInput,identifierError);
+identifierInput.classList.remove("is-invalid");
+identifierError.textContent = "";
+identifierError.classList.add("d-none");
 
 }
 
@@ -338,7 +338,9 @@ isValid = false;
 
 }else{
 
-showValid(passwordInput,passwordError);
+passwordInput.classList.remove("is-invalid");
+passwordError.textContent = "";
+passwordError.classList.add("d-none");
 
 }
 
@@ -348,25 +350,52 @@ if(!isValid) return;
 
 const users = storage.get(STORAGE_KEYS.USERS) || [];
 
-const user = users.find(
-u =>
-(u.email === identifier || u.username === identifier) &&
-u.password === password
+const userByIdentifier = users.find(
+u => u.email === identifier || u.username === identifier
 );
 
-/* ❌ login failed */
+/* ❌ no account found */
 
-if(!user){
+if(!userByIdentifier){
+
+showError(
+identifierInput,
+identifierError,
+"No account found with this email or username."
+);
+
+return;
+
+}
+
+/* 🚫 banned check */
+if(userByIdentifier.banned === true){
 
 Swal.fire({
 icon:"error",
-title:"Login Failed",
-text:"Invalid email or password"
+title:"Account Banned",
+text:"Your account has been banned. Contact an administrator."
 });
 
 return;
 
 }
+
+/* ❌ wrong password */
+
+if(userByIdentifier.password !== password){
+
+showError(
+passwordInput,
+passwordError,
+"Incorrect password. Please try again."
+);
+
+return;
+
+}
+
+const user = userByIdentifier;
 
 /* ✅ login success */
 
