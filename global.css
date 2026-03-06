@@ -284,3 +284,13 @@ body.theme-dark .table {
         font-size: 14px;
     }
 }
+
+
+
+.offcanvas{
+
+width:50vw !important;
+
+max-width:420px;
+
+}
