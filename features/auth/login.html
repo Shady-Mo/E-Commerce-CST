@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css" />
     <link rel="stylesheet" href="../../global.css" />
     <link rel="stylesheet" href="auth.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </head>
 
   <body>
@@ -26,50 +27,117 @@
         <section
           class="col-md-6 col-12 d-flex flex-column align-items-center justify-content-center"
         >
-          <form id="loginForm" class="d-flex flex-column gap-3">
-            <h2>Welcome back!</h2>
-            <p>Buy & sale your exclusive product only on Furnixar</p>
+           <form id="loginForm" class="auth-form needs-validation" novalidate>
 
-            <div class="w-100 mt-5">
-              <input
-                type="text"
-                placeholder="Enter your email or username"
-                id="loginIdentifier"
-                class="form-control"
-              />
-              <small class="text-danger d-none" id="loginIdentifierError"></small>
-            </div>
+<h2 class="mb-2 text-center">Welcome Back!</h2>
 
-            <div class="w-100">
-              <input
-                type="password"
-                placeholder="* * * * * * * *"
-                id="loginPassword"
-                class="form-control"
-              />
-              <small class="text-danger d-none" id="loginPasswordError"></small>
-            </div>
+<p class="text-center text-muted mb-4">
+Buy & sell your exclusive product only on Furnixar
+</p>
 
-            <div class="selection-box">
-              <input type="checkbox" id="rememberMe" />
-              <label for="rememberMe">Remember me</label>
-            </div>
 
-            <div class="alert alert-danger d-none" id="loginGeneralError"></div>
+<!-- EMAIL / USERNAME -->
 
-            <input
-              type="submit"
-              value="Login"
-              class="form-control btn btn-primary"
-            />
-          </form>
+<div class="mb-3">
 
-          <p class="register-text">
-            Don't have an account yet?
-            <a href="../auth/register.html" class="text-decoration-none">
-              Register
-            </a>
-          </p>
+<label class="form-label">Email or Username</label>
+
+<div class="input-group custom-input">
+
+<span class="input-group-text">
+<i class="fa-regular fa-user"></i>
+</span>
+
+<input
+type="text"
+class="form-control"
+id="loginIdentifier"
+placeholder="Enter your email or username"
+/>
+
+</div>
+
+<div class="invalid-feedback" id="loginIdentifierError"></div>
+
+</div>
+
+
+<!-- PASSWORD -->
+
+<div class="mb-3">
+
+<label class="form-label">Password</label>
+
+<div class="input-group custom-input">
+
+<span class="input-group-text">
+<i class="fa-solid fa-lock"></i>
+</span>
+
+<input
+type="password"
+class="form-control"
+id="loginPassword"
+placeholder="Enter password"
+/>
+
+<button
+class="input-group-text password-toggle"
+type="button"
+id="toggleLoginPassword"
+>
+
+<i class="fa-regular fa-eye"></i>
+
+</button>
+
+</div>
+
+<div class="invalid-feedback" id="loginPasswordError"></div>
+
+</div>
+
+
+<!-- REMEMBER ME -->
+
+<div class="form-check mb-2">
+
+<input
+class="form-check-input"
+type="checkbox"
+id="rememberMe"
+/>
+
+<label class="form-check-label" for="rememberMe">
+Remember me
+</label>
+
+</div>
+
+
+<!-- GENERAL ERROR -->
+
+<div class="alert alert-danger d-none" id="loginGeneralError"></div>
+
+
+<!-- BUTTON -->
+
+<button class="btn btn-main w-100 mt-2">
+Login
+</button>
+
+
+<p class="text-center mt-3 link">
+
+Don't have an account?
+<a href="../auth/register.html" class="">
+Register
+</a>
+
+</p>
+
+</form>
+ 
 
         </section>
       </div>

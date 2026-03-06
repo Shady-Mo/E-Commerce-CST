@@ -1,5 +1,6 @@
 body {
     overflow-x: hidden;
+    --main-color:#BB976D;
 }
 
 .img-wrapper {
@@ -25,3 +26,106 @@ input {
 .register-text {
     margin-top: 10px;
 }
+
+
+/* VALID INPUT */
+
+.form-control.is-valid,.form-control:focus{
+  border-color: var(--main-color) !important;
+  box-shadow: 0 0 0 .2rem rgba(187,151,109,.25) !important;
+}
+
+/* INVALID INPUT */
+
+.form-control.is-invalid{
+  border-color:#dc3545;
+}
+
+/* SUCCESS MESSAGE */
+
+.valid-feedback{
+  color:var(--main-color);
+}
+
+
+/* MAIN BUTTON */
+
+.btn-main{
+background: var(--main-color);
+border: 1px solid var(--main-color);
+color:#fff;
+padding:12px 18px;
+font-weight:600;
+border-radius:6px;
+transition: all .3s ease;
+}
+
+/* hover */
+
+.btn-main:hover{
+background:#a88257;
+border-color:#a88257;
+color:#fff;
+transform:translateY(-2px);
+box-shadow:0 6px 14px rgba(187,151,109,.35);
+}
+
+/* active */
+
+.btn-main:active{
+transform:scale(.97);
+box-shadow:none;
+}
+
+/* focus */
+
+.btn-main:focus{
+box-shadow:0 0 0 .25rem rgba(187,151,109,.35);
+}
+
+.link a{
+    color: var(--main-color);
+}
+
+.auth-form{
+
+max-width:500px;
+width:100%;
+
+}
+
+.custom-input{
+
+border-radius:12px;
+/* overflow:hidden; */
+
+}
+
+.custom-input .form-control{
+
+border-left:none;
+/* border-right:none; */
+padding:12px;
+
+}
+
+.custom-input .input-group-text{
+
+background:#f5f6f8;
+border:none;
+color:#7a8ca6;
+}
+
+.custom-input .password-toggle{
+
+cursor:pointer;
+}
+
+.form-control:focus{
+
+box-shadow:none;
+border-color:var(--main-color);
+
+}
+
+ 
