@@ -2,7 +2,6 @@ import { storage } from "../../shared/js/storage.js";
 import { STORAGE_KEYS } from "../../shared/js/storage-keys.js";
 import { showError, hideAllErrors, showConfirm } from "./admin.js";
 
-/* ---------- Validation ---------- */
 
 function validateUsername(username) {
     if (!username || username.trim() === "") {
@@ -63,13 +62,11 @@ function validateConfirmPassword(password, confirmPassword) {
     return null;
 }
 
-/* ---------- State ---------- */
 
 let userFilter = '';
 let userPage = 1;
 let userPageSize = 10;
 
-/* ---------- Create User ---------- */
 
 export function initUserCreation() {
     const form = document.getElementById("createUserForm");
@@ -166,7 +163,6 @@ export function initUserCreation() {
     form.addEventListener("submit", handleSubmit);
 }
 
-/* ---------- Render Users ---------- */
 
 export function renderUsers() {
     const container = document.getElementById("usersListContainer");
@@ -348,7 +344,6 @@ export function renderUsers() {
     });
 }
 
-/* ---------- Edit User Modal ---------- */
 
 function openEditUserModal(id) {
     const all = storage.get(STORAGE_KEYS.USERS) || [];
@@ -420,7 +415,6 @@ export function initEditUserForm() {
     });
 }
 
-/* ---------- Search & Pagination Bindings ---------- */
 
 export function initUserSearch() {
     const searchEl = document.getElementById('userSearch');

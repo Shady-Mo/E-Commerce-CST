@@ -2,13 +2,11 @@ import { storage } from "../../shared/js/storage.js";
 import { STORAGE_KEYS } from "../../shared/js/storage-keys.js";
 import { showConfirm } from "./admin.js";
 
-/* ---------- State ---------- */
 
 let productFilter = '';
 let productPage = 1;
 let productPageSize = 10;
 
-/* ---------- Render Products ---------- */
 
 export function renderProducts() {
     const container = document.getElementById('productsListContainer');
@@ -26,7 +24,6 @@ export function renderProducts() {
     });
     storage.set(STORAGE_KEYS.PRODUCTS, normalized);
 
-    // Filter by search
     const filtered = normalized.filter(p =>
         p.name.toLowerCase().includes(productFilter) ||
         String(p.id).includes(productFilter) ||
@@ -38,7 +35,6 @@ export function renderProducts() {
         return;
     }
 
-    // Pagination
     const totalPages = Math.max(1, Math.ceil(filtered.length / productPageSize));
     if (productPage > totalPages) productPage = totalPages;
     const startIndex = (productPage - 1) * productPageSize;
@@ -78,7 +74,6 @@ export function renderProducts() {
 
     html += `</tbody></table></div>`;
 
-    // Pagination controls
     if (totalPages > 1) {
         html += '<nav><ul class="pagination justify-content-center mt-3">';
         for (let p = 1; p <= totalPages; p++) {
@@ -89,7 +84,6 @@ export function renderProducts() {
 
     container.innerHTML = html;
 
-    // Pagination events
     container.querySelectorAll('.product-page-link').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
@@ -128,7 +122,6 @@ export function renderProducts() {
     });
 }
 
-/* ---------- Search & Pagination Bindings ---------- */
 
 export function initProductSearch() {
     const productSearchEl = document.getElementById('productSearch');

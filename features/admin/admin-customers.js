@@ -1,7 +1,6 @@
 import { storage } from "../../shared/js/storage.js";
 import { STORAGE_KEYS } from "../../shared/js/storage-keys.js";
 
-/* ---------- Helpers ---------- */
 
 function getStatusBadge(status) {
     const s = (status || 'Pending').toLowerCase();
@@ -15,7 +14,6 @@ function getUserById(userId) {
     return users.find(u => u.id === userId);
 }
 
-/* ---------- Render Customer Service ---------- */
 
 export function renderCustomerService() {
     const container = document.getElementById('csListContainer');
@@ -63,7 +61,6 @@ export function renderCustomerService() {
     html += '</div>';
     container.innerHTML = html;
 
-    /* ---------- Status Change with SweetAlert ---------- */
     container.querySelectorAll('.change-status').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const target = e.target.closest('.change-status');

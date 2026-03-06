@@ -1,16 +1,12 @@
 import { storage } from "../../shared/js/storage.js";
 import { STORAGE_KEYS } from "../../shared/js/storage-keys.js";
 
-/* ============================================================
-   Dashboard Home — Stats & Charts
-   ============================================================ */
 
 export function renderDashboardHome() {
     const orders   = storage.get(STORAGE_KEYS.ORDERS)   || [];
     const users    = storage.get(STORAGE_KEYS.USERS)     || [];
     const products = storage.get(STORAGE_KEYS.PRODUCTS)  || [];
 
-    /* ---------- Stat cards ---------- */
     const totalRevenue = orders
         .filter(o => (o.status || '').toLowerCase() === 'received')
         .reduce((sum, o) => {
@@ -22,7 +18,6 @@ export function renderDashboardHome() {
     setText('statTotalUsers',    users.length);
     setText('statTotalProducts', products.length);
 
-    /* ---------- Sales Rate Line Chart ---------- */
     const receivedOrders = orders.filter(o => (o.status || '').toLowerCase() === 'received');
     const salesByDate = buildSalesByDate(receivedOrders);
     const sortedDates = Object.keys(salesByDate).sort((a, b) => salesByDate[a].timestamp - salesByDate[b].timestamp);
@@ -85,7 +80,6 @@ export function renderDashboardHome() {
         });
     }
 
-    /* ---------- Order Status Doughnut ---------- */
     const statusCounts = {};
     orders.forEach(o => {
         const s = (o.status || 'Pending').toLowerCase();
@@ -128,7 +122,6 @@ export function renderDashboardHome() {
         });
     }
 
-    /* ---------- Top Selling Products Bar Chart ---------- */
     const productSales = {};
     orders.filter(o => (o.status || '').toLowerCase() === 'received').forEach(o => {
         (o.items || []).forEach(i => {
@@ -184,7 +177,6 @@ export function renderDashboardHome() {
         });
     }
 
-    /* ---------- Recent Orders List ---------- */
     const container = document.getElementById('recentOrdersList');
     if (container) {
         const recent = [...orders].sort((a, b) => b.id - a.id).slice(0, 8);
@@ -212,7 +204,6 @@ export function renderDashboardHome() {
     }
 }
 
-/* ---------- Helpers ---------- */
 
 function setText(id, value) {
     const el = document.getElementById(id);

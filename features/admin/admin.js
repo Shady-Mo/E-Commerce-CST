@@ -2,13 +2,11 @@ import { storage } from "../../shared/js/storage.js";
 import { STORAGE_KEYS } from "../../shared/js/storage-keys.js";
 import { applyTheme } from "../../shared/js/navbar.js";
 
-/* ---------- Module Imports ---------- */
 import { renderDashboardHome } from "./admin-home.js";
 import { renderUsers, initUserCreation, initEditUserForm, initUserSearch } from "./admin-users.js";
 import { renderProducts, initProductSearch } from "./admin-products.js";
 import { renderCustomerService } from "./admin-customers.js";
 
-/* ---------- Access Control ---------- */
 (function enforceAdminAccess() {
     const current = storage.get(STORAGE_KEYS.CURRENT_USER);
     if (!current || current.role !== "admin") {
@@ -16,7 +14,6 @@ import { renderCustomerService } from "./admin-customers.js";
     }
 })();
 
-/* ---------- Theme ---------- */
 const savedTheme = localStorage.getItem("theme") || "light";
 applyTheme(savedTheme);
 updateThemeIcon(savedTheme);
@@ -40,7 +37,6 @@ if (themeBtn) {
     });
 }
 
-/* ---------- Logout ---------- */
 const logoutBtn = document.getElementById("logoutBtn");
 if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
@@ -49,7 +45,6 @@ if (logoutBtn) {
     });
 }
 
-/* ---------- Sidebar Navigation ---------- */
 function initSidebarNav() {
     const links = document.querySelectorAll(".sidebar-link[data-section]");
     links.forEach(link => {
@@ -69,7 +64,6 @@ function initSidebarNav() {
     });
 }
 
-/* ---------- Mobile Sidebar ---------- */
 function initMobileSidebar() {
     const toggleBtn = document.getElementById("sidebarToggle");
     const closeBtn = document.getElementById("sidebarClose");
@@ -94,7 +88,6 @@ function closeMobileSidebar() {
     if (overlay) overlay.classList.remove("active");
 }
 
-/* ---------- Shared Helpers (exported for sub-modules) ---------- */
 
 export function showError(elementId, message) {
     const el = document.getElementById(elementId);
@@ -128,19 +121,16 @@ export function showConfirm(message, onConfirm) {
     new bootstrap.Modal(modalEl).show();
 }
 
-/* ---------- Bootstrap ---------- */
 
 document.addEventListener('DOMContentLoaded', () => {
     initSidebarNav();
     initMobileSidebar();
 
-    // Render all sections
     renderDashboardHome();
     renderUsers();
     renderProducts();
     renderCustomerService();
 
-    // Init forms & search bindings
     initUserCreation();
     initEditUserForm();
     initUserSearch();
