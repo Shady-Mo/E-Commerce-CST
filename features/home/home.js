@@ -12,7 +12,6 @@ seedProducts();
 
 /* ------------------ Hero Swiper ------------------ */
 
-// Initialize Hero Swiper
 function initHeroSwiper() {
   const heroSwiper = new Swiper(".heroSwiper", {
     loop: true,
@@ -22,21 +21,22 @@ function initHeroSwiper() {
       disableOnInteraction: false
     },
     pagination: {
-      el: ".swiper-pagination",
+      // ✅ scoped (prevents conflict with other swipers)
+      el: ".heroSwiper .swiper-pagination",
       clickable: true
     },
     on: {
-      init: function() {
+      init() {
         animateText();
       },
-      slideChangeTransitionStart: function() {
+      slideChangeTransitionStart() {
         document.querySelectorAll(".hero-subtitle, .hero-title, .hero-btn")
           .forEach(el => {
             el.classList.remove("animate__fadeInUp");
             el.style.opacity = "0";
           });
       },
-      slideChangeTransitionEnd: function() {
+      slideChangeTransitionEnd() {
         setTimeout(() => {
           animateText();
         }, 300);
@@ -45,9 +45,9 @@ function initHeroSwiper() {
   });
 
   function animateText() {
-    const activeSlide = document.querySelector(".swiper-slide-active");
+    const activeSlide = document.querySelector(".heroSwiper .swiper-slide-active");
     if (!activeSlide) return;
-    
+
     activeSlide.querySelectorAll(".hero-subtitle, .hero-title, .hero-btn")
       .forEach((el, index) => {
         setTimeout(() => {
@@ -64,7 +64,6 @@ function initHeroSwiper() {
 
 const productsContainer = document.getElementById("productsSwiperContainer");
 const allProducts = storage.get(STORAGE_KEYS.PRODUCTS) || [];
-// Get only first 8 products for homepage (or featured ones)
 const products = allProducts.filter(p => p.approved !== false).slice(0, 8);
 
 /* ------------------ Render Products for Swiper ------------------ */
@@ -72,30 +71,28 @@ const products = allProducts.filter(p => p.approved !== false).slice(0, 8);
 function renderProducts() {
   if (!productsContainer) return;
 
-  let swiperWrapper = productsContainer.querySelector('.swiper-wrapper');
-  if (!swiperWrapper) {
-    swiperWrapper = document.createElement('div');
-    swiperWrapper.className = 'swiper-wrapper';
-    productsContainer.appendChild(swiperWrapper);
-  }
+  const swiperWrapper = productsContainer.querySelector(".swiper-wrapper");
+  if (!swiperWrapper) return;
 
   swiperWrapper.innerHTML = "";
 
   products.forEach(product => {
     const hasOldPrice = product.oldPrice && product.oldPrice > product.price;
-    const discount = hasOldPrice ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100) : 0;
-    
+    const discount = hasOldPrice
+      ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
+      : 0;
+
     swiperWrapper.innerHTML += `
       <div class="swiper-slide">
         <div class="product-card h-100">
           <div class="product-image-wrapper">
-            <img src="${product.image}" 
-                 class="product-image" 
+            <img src="${product.image}"
+                 class="product-image"
                  alt="${product.name}">
-            
+
             <div class="product-badges">
-              ${product.badge ? `<span class="badge-new">${product.badge}</span>` : ''}
-              ${discount > 0 ? `<span class="badge-discount">-${discount}%</span>` : ''}
+              ${product.badge ? `<span class="badge-new">${product.badge}</span>` : ""}
+              ${discount > 0 ? `<span class="badge-discount">-${discount}%</span>` : ""}
             </div>
 
             <div class="product-actions">
@@ -107,16 +104,14 @@ function renderProducts() {
               </button>
             </div>
           </div>
-          
+
           <div class="product-info">
             <h5 class="product-title">${product.name}</h5>
-            <p class="product-description">
-              ${product.description ?? ""}
-            </p>
-            
+            <p class="product-description">${product.description ?? ""}</p>
+
             <div class="product-price">
-              ${hasOldPrice ? `<span class="old-price">$${product.oldPrice.toFixed(2)}</span>` : ''}
-              <span class="current-price">$${product.price.toFixed(2)}</span>
+              ${hasOldPrice ? `<span class="old-price">$${Number(product.oldPrice).toFixed(2)}</span>` : ""}
+              <span class="current-price">$${Number(product.price).toFixed(2)}</span>
             </div>
           </div>
         </div>
@@ -128,19 +123,17 @@ function renderProducts() {
 /* ------------------ Initialize Products Swiper ------------------ */
 
 function initProductsSwiper() {
-  // Check if Swiper is available
-  if (typeof Swiper === 'undefined') {
-    console.error('Swiper not loaded');
+  if (typeof Swiper === "undefined") {
+    console.error("Swiper not loaded");
     return;
   }
 
-  // Make sure the container exists before initializing
   if (!productsContainer) {
-    console.error('Products container not found');
+    console.error("Products container not found");
     return;
   }
 
-  const productsSwiper = new Swiper('#productsSwiperContainer', {
+  const productsSwiper = new Swiper("#productsSwiperContainer", {
     slidesPerView: 1,
     spaceBetween: 20,
     loop: true,
@@ -148,28 +141,19 @@ function initProductsSwiper() {
       delay: 3000,
       disableOnInteraction: false,
     },
-    pagination: {
-      el: '#productsSwiperContainer .swiper-pagination',
-      clickable: true,
-    },
+
+    // ✅ navigation buttons on header (like design)
     navigation: {
-  nextEl: ".products-next",
-  prevEl: ".products-prev",
-},
-    breakpoints: {
-      576: {
-        slidesPerView: 2,
-        spaceBetween: 20,
-      },
-      768: {
-        slidesPerView: 3,
-        spaceBetween: 30,
-      },
-      992: {
-        slidesPerView: 4,
-        spaceBetween: 30,
-      },
+      nextEl: ".products-next",
+      prevEl: ".products-prev",
     },
+
+    breakpoints: {
+      576: { slidesPerView: 2, spaceBetween: 20 },
+      768: { slidesPerView: 3, spaceBetween: 30 },
+      992: { slidesPerView: 4, spaceBetween: 30 },
+    },
+
     speed: 800,
   });
 
@@ -196,7 +180,7 @@ function initAddToCart() {
     }
 
     const cartKey = `cart_${currentUser.id}`;
-    let cart = storage.get(cartKey) || [];
+    const cart = storage.get(cartKey) || [];
 
    const productId = parseInt(addToCartBtn.dataset.id);
 const product = products.find(p => p.id === productId);
@@ -237,6 +221,7 @@ showToast("Product added to cart successfully ✔", "success");
 }
 
 /* ------------------ Add To WishList ------------------ */
+
 function initAddToWishList() {
   if (!productsContainer) return;
 
@@ -255,16 +240,15 @@ function initAddToWishList() {
     }
 
     const wishKey = `wishlist_${currentUser.id}`;
-    let wishList = storage.get(wishKey) || [];
+    const wishList = storage.get(wishKey) || [];
 
-    const productId = parseInt(wishlistBtn.dataset.id);
+    const productId = parseInt(wishlistBtn.dataset.id, 10);
     const product = products.find(p => p.id === productId);
-
     if (!product) return;
 
-    const existingItem = wishList.find(item => item.productId === productId);
+    const exists = wishList.some(item => item.productId === productId);
 
-    if (!existingItem) {
+    if (!exists) {
       wishList.push({
         productId: product.id,
         name: product.name,
@@ -285,13 +269,8 @@ function showToast(message, type = "success") {
   const toastHTML = `
     <div class="toast align-items-center text-bg-${type} border-0 position-fixed bottom-0 end-0 m-3 z-3">
       <div class="d-flex">
-        <div class="toast-body">
-          ${message}
-        </div>
-        <button type="button" 
-                class="btn-close btn-close-white me-2 m-auto"
-                data-bs-dismiss="toast">
-        </button>
+        <div class="toast-body">${message}</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
       </div>
     </div>
   `;
@@ -302,31 +281,22 @@ function showToast(message, type = "success") {
 
   const toastEl = wrapper.querySelector(".toast");
   const toast = new bootstrap.Toast(toastEl);
-
   toast.show();
 
-  setTimeout(() => {
-    wrapper.remove();
-  }, 3000);
+  setTimeout(() => wrapper.remove(), 3000);
 }
 
 /* ------------------ Initialize ------------------ */
 
-// Wait for DOM and Swiper to load
-document.addEventListener('DOMContentLoaded', () => {
-  // Initialize Hero Swiper first
+document.addEventListener("DOMContentLoaded", () => {
   initHeroSwiper();
-  
-  // Then render products and initialize products swiper
+
   renderProducts();
-  
-  // Small delay to ensure DOM is updated
-  setTimeout(() => {
-    initProductsSwiper();
-  }, 100);
-  
+  setTimeout(() => initProductsSwiper(), 50);
+
   initAddToCart();
   initAddToWishList();
+
   updateCartBadge();
   updateWishListBadge();
 });

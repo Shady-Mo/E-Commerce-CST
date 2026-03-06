@@ -6,7 +6,7 @@ export function seedProducts() {
 const existingProducts = storage.get(STORAGE_KEYS.PRODUCTS);
 if (existingProducts && existingProducts.length > 0) return;
 
-const products = [
+  const products = [
 
 {
 id:1,
@@ -160,8 +160,7 @@ images:[
 ]
 }
 
-];
+  ];
 
-storage.set(STORAGE_KEYS.PRODUCTS, products);
-
+  storage.set(STORAGE_KEYS.PRODUCTS, products);
 }
