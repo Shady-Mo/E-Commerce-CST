@@ -8,39 +8,74 @@
   <link href="../../shared/bootstrap/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <link href="../../global.css" rel="stylesheet">
+  <link rel="stylesheet" href="../products/products.css">
+  <link rel="stylesheet" href="./cart.css">
 </head>
 
 <body>
 
   <nav></nav>
+  <section class="page-hero">
+  <div class="container position-relative text-center">
+    <h1 class="page-title mb-2">Shopping Cart</h1>
 
-  <div class="container py-5">
-
-    <h3 class="mb-4">Shopping Cart</h3>
-
-    <div class="table-responsive">
-      <table class="table align-middle">
-        <thead>
-          <tr>
-            <th>Product Info</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Total</th>
-            <th>Remove</th>
-          </tr>
-        </thead>
-        <tbody id="cartBody"></tbody>
-      </table>
-    </div>
-
-    <div class="text-end mt-4">
-      <h4>Total: <span id="grandTotal">0</span> EGP</h4>
-      <!-- order button -->
-      <button class="btn btn-secondary mt-3" id="checkoutBtn">Proceed to Checkout</button>
-
-    </div>
-
+    <nav class="breadcrumb-wrap" aria-label="breadcrumb">
+      <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="../home/home.html">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
+      </ol>
+    </nav>
   </div>
+</section>
+  <div class="container py-5 px-3 px-lg-5">
+
+  <!-- TABLE (full width) -->
+  <div class="table-responsive cart-table-wrap">
+    <table class="table align-middle cart-table w-100">
+      <thead>
+        <tr>
+          <th class="th-img" data-label="Image">Image</th>
+          <th class="th-product" data-label="Product">Product</th>
+          <th class="th-price" data-label="Price">Price</th>
+          <th class="th-qty" data-label="Quantity">Quantity</th>
+          <th class="th-total" data-label="Total">Total</th>
+          <th class="th-remove" data-label="Remove">Remove</th>
+        </tr>
+      </thead>
+      <tbody id="cartBody"></tbody>
+    </table>
+  </div>
+
+  <!-- SUMMARY (below table) -->
+  <div class="cart-summary-wrap mt-5">
+    <div class="cart-summary">
+      <h4 class="summary-title">Cart Summary</h4>
+
+      <div class="summary-row">
+        <span>Sub Total</span>
+        <span id="subTotal">0 EGP</span>
+      </div>
+
+      <div class="summary-row">
+        <span>Shipping Cost</span>
+        <span id="shippingCost">0 EGP</span>
+      </div>
+
+      <hr class="summary-hr">
+
+      <div class="summary-row summary-grand">
+        <span>Grand Total</span>
+        <span><span id="grandTotal">0</span> EGP</span>
+      </div>
+
+      <div class="summary-actions">
+        <button class="btn btn-outline-main" id="updateCartBtn" type="button">Update Cart</button>
+        <button class="btn btn-main" id="checkoutBtn" type="button">Checkout</button>
+      </div>
+    </div>
+  </div>
+
+</div>
   <footer></footer>
 
   <!-- Delete Confirmation Modal -->

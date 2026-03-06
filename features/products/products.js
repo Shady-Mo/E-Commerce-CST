@@ -99,27 +99,40 @@ function initAddToCart() {
     let cart = storage.get(cartKey) || [];
 
     const productId = parseInt(addToCartBtn.dataset.id);
-    const product = products.find(p => p.id === productId);
+const product = products.find(p => p.id === productId);
 
-    if (!product) return;
+if (!product) return;
 
-    const existingItem = cart.find(item => item.productId === productId);
+/* ⭐ CHECK STOCK */
+if (product.stock <= 0) {
 
-    if (existingItem) {
-      existingItem.quantity += 1;
-    } else {
-      cart.push({
-        productId: product.id,
-        name: product.name,
-        price: product.price,
-        image: product.image,
-        quantity: 1
-      });
-    }
+  showToast("This product is out of stock ❌", "warning");
 
-    storage.set(cartKey, cart);
-    updateCartBadge();
-    showToast("Product added to cart successfully ✔", "success");
+  return;
+}
+
+const existingItem = cart.find(item => item.productId === productId);
+
+if (existingItem) {
+  existingItem.quantity += 1;
+} else {
+  cart.push({
+    productId: product.id,
+    name: product.name,
+    price: product.price,
+    image: product.image,
+    quantity: 1
+  });
+}
+
+/* ⭐ decrease stock */
+product.stock -= 1;
+
+storage.set(STORAGE_KEYS.PRODUCTS, allProducts);
+storage.set(cartKey, cart);
+
+updateCartBadge();
+showToast("Product added to cart successfully ✔", "success");
   });
 }
 
