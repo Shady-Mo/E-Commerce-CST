@@ -78,11 +78,24 @@ This e-commerce system is designed to provide a complete online shopping experie
 
 ### 7. Seller Dashboard
 
-- Product management (Create, Read, Update, Delete)
-- Order processing and status updates
-- Sales analytics with charts
-- Inventory management
-- Performance metrics
+- **Analytics Dashboard**
+  - Real-time statistics (products, orders, sales, low stock alerts)
+  - Sales trend visualization with Chart.js (7-day line chart)
+  - Product status distribution (doughnut chart)
+  - Recent orders overview (last 5 orders)
+  - Quick action buttons for common tasks
+- **Product Management**
+  - Separate pages for listing, adding, and editing products
+  - Two-column form layout to eliminate scrolling
+  - Image upload with live preview
+  - CRUD operations (Create, Read, Update, Delete)
+  - Stock management with color-coded badges
+- **Order Processing**
+  - Order status updates
+  - Performance metrics
+- **Inventory Management**
+  - Low stock alerts
+  - Stock tracking
 
 ### 8. Admin Panel
 
@@ -110,6 +123,8 @@ This e-commerce system is designed to provide a complete online shopping experie
 - **CSS3**: Custom styling and animations
 - **Bootstrap 5**: Responsive framework and UI components
 - **JavaScript ES6+**: Dynamic functionality and interactivity
+- **Chart.js**: Data visualization for analytics dashboards
+- **FontAwesome**: Icon library for UI elements
 
 ### Data Management
 
@@ -148,8 +163,14 @@ E-Commerce-CST/
 │   │   └── cart.css           # Cart styles
 │   │
 │   ├── seller/                # Seller dashboard module
-│   │   ├── dashboard.html     # Seller dashboard
-│   │   ├── seller.js          # Seller logic
+│   │   ├── dashboard.html     # Main analytics dashboard
+│   │   ├── dashboard.js       # Dashboard logic and charts
+│   │   ├── manage-products.html  # Product listing
+│   │   ├── manage-products.js    # Product management logic
+│   │   ├── add-product.html   # Add new product form
+│   │   ├── add-product.js     # Product creation logic
+│   │   ├── edit-product.html  # Edit product form
+│   │   ├── edit-product.js    # Product update logic
 │   │   └── seller.css         # Seller styles
 │   │
 │   └── admin/                 # Admin panel module
@@ -158,12 +179,18 @@ E-Commerce-CST/
 │       └── admin.css          # Admin styles
 │
 ├── shared/                    # Shared resources
-│   ├── css/
-│   │   └── global.css         # Global styles
+│   ├── bootstrap/             # Bootstrap framework
+│   ├── fontawesome/           # FontAwesome icons
 │   └── js/
-│       ├── storage.js         # LocalStorage management
-│       ├── utils.js           # Utility functions
-│       └── app.js             # Main application logic
+│       ├── navbar.js          # Navigation bar component
+│       ├── footer.js          # Footer component
+│       ├── storage.js         # LocalStorage wrapper
+│       ├── storage-keys.js    # Storage key constants
+│       ├── Product.js         # Product class model
+│       ├── User.js            # User class model
+│       ├── products-seed.js   # Product seed data
+│       ├── user-seed.js       # User seed data
+│       └── utils.js           # Utility functions
 │
 └── assets/                    # Static assets
     ├── images/                # Image files
@@ -228,20 +255,29 @@ Handles shopping cart and checkout process.
 
 #### 4. Seller Module (`features/seller/`)
 
-Provides seller dashboard and product management.
+Provides seller dashboard and product management with analytics.
 
 **Files:**
 
-- `dashboard.html`: Seller control panel
-- `seller.js`: Product CRUD, order management, analytics
-- `seller.css`: Dashboard styling
+- `dashboard.html`: Main analytics dashboard with charts and statistics
+- `dashboard.js`: Dashboard logic, Chart.js implementation
+- `manage-products.html`: Product listing with edit/delete actions
+- `manage-products.js`: Product management operations
+- `add-product.html`: Add new product form (two-column layout)
+- `add-product.js`: Product creation with image upload
+- `edit-product.html`: Edit product form (two-column layout)
+- `edit-product.js`: Product update logic
+- `seller.css`: Seller module styling
 
 **Responsibilities:**
 
-- Product inventory management
-- Order processing
-- Sales analytics visualization
-- Statistics display
+- Analytics visualization (sales trends, product status distribution)
+- Real-time statistics (products, orders, sales, low stock alerts)
+- Product CRUD operations with separate pages for each action
+- Image upload with live preview
+- Order processing and status updates
+- Inventory management with stock tracking
+- Two-column form design to eliminate scrolling
 
 #### 5. Admin Module (`features/admin/`)
 
@@ -267,12 +303,35 @@ Administrators can create additional admin accounts directly from the dashboard 
 
 #### 6. Shared Resources (`shared/`)
 
-Common utilities and styles used across modules.
+Common utilities, components, and data models used across modules.
 
 **Files:**
 
-- `global.css`: Application-wide styles
-- `storage.js`: LocalStorage CRUD operations
+- `js/navbar.js`: Dynamic navigation bar component
+- `js/footer.js`: Footer component with company info and links
+- `js/storage.js`: LocalStorage wrapper with get/set/remove functions
+- `js/storage-keys.js`: Centralized storage key constants
+- `js/Product.js`: Product class model with validation
+- `js/User.js`: User class model for authentication
+- `js/products-seed.js`: Default product data for development
+- `js/user-seed.js`: Default user accounts (admin, sellers, customers)
+- `js/utils.js`: Utility helper functions
+- `global.css`: Application-wide styles and theme
+- `bootstrap/`: Bootstrap 5 framework files
+- `fontawesome/`: FontAwesome icon library
+
+**Data Models:**
+
+- **Product Class**: (id, name, price, oldPrice, rating, badge, discount, stock, image, description, images, sellerId, reviews, createdAt, updatedAt)
+- **User Class**: (id, username, email, password, role, createdAt)
+
+**Responsibilities:**
+
+- Consistent UI components across all pages
+- Data persistence and retrieval
+- Input validation and sanitization
+- Date/time formatting
+- Global styling and theming
 - `utils.js`: Helper functions (validation, formatting, etc.)
 - `app.js`: Core application initialization
 
@@ -342,3 +401,30 @@ Common utilities and styles used across modules.
 **Access Restrictions:**
 
 - None (full access)
+
+---
+
+## Recent Updates
+
+### March 6, 2026 - Seller Dashboard Restructuring
+
+Major improvements to the seller interface:
+
+- **Separated seller functionality** into distinct pages (dashboard, manage, add, edit)
+- **Analytics dashboard** with Chart.js visualizations (sales trends, product distribution)
+- **Two-column form layout** for add/edit pages to eliminate scrolling
+- **Data model cleanup** - removed category from Product class, removed sellerId from User class
+- **UI/UX enhancements** - optimized spacing, color-coded stock badges, live image preview
+
+For detailed changelog, see [ziad-hany-changelog-2026-03-01.md](ziad-hany-changelog-2026-03-06.md)
+
+---
+
+## Development Notes
+
+- Project uses **LocalStorage** for data persistence (no backend required)
+- Default admin credentials: `username: admin, password: Admin@123`
+- Default seller accounts available in seed data
+- **Chart.js** CDN used for analytics visualization
+- **Bootstrap 5.3.2** for responsive design
+- All forms include client-side validation
