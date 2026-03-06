@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Products</title>
+    <link rel="stylesheet" href="../../shared/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="../../global.css" />
+    <link rel="stylesheet" href="./seller.css" />
+  </head>
+  <body>
+    <section class="bg-gradient py-4 mb-5">
+      <div class="container position-relative">
+        <nav class="breadcrumb-wrap" aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item">
+              <a href="../home/home.html">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="./dashboard.html">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Manage Products
+            </li>
+          </ol>
+        </nav>
+      </div>
+    </section>
+
+    <main class="container my-5">
+      <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+          <h2 class="page-title">Manage Products</h2>
+          <a href="add-product.html" class="btn btn-main">
+            <i class="fas fa-plus me-2"></i>Add New Product
+          </a>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-header bg-gradient">
+              <h5 class="mb-0"><i class="fas fa-boxes me-2"></i>My Products</h5>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                  <thead>
+                    <tr>
+                      <th>Image</th>
+                      <th>Name</th>
+                      <th>Price</th>
+                      <th>Stock</th>
+                      <th>Created</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="productsTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="../../shared/js/bootstrap/bootstrap.bundle.min.js"></script>
+    <script type="module" src="./manage-products.js"></script>
+  </body>
+</html>
