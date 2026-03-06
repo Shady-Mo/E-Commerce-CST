@@ -11,34 +11,185 @@
     <link href="admin.css" rel="stylesheet" />
 
     <script src="../../shared/js/bootstrap/bootstrap.bundle.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="module" src="admin.js" defer></script>
   </head>
 
   <body>
-    <nav></nav>
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-header">
+        <a href="../../index.html">
+          <img src="../../assets/images/logo-DXjmQiDB.svg" height="36" alt="Logo" class="sidebar-logo" />
+        </a>
+        <button class="btn btn-link sidebar-close d-lg-none" id="sidebarClose">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
 
-    <div id="adminPanelContainer" class="main-section container-fluid mt-4">
-      <h1 class="mb-3">Admin Dashboard</h1>
-      <p class="mb-4">Administrative control panel: manage users, moderate products, and handle customer service.</p>
+      <nav class="sidebar-nav">
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-label">Main</li>
+          <li>
+            <a href="#" class="sidebar-link active" data-section="home">
+              <i class="fas fa-chart-line"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="sidebar-link" data-section="users">
+              <i class="fas fa-users"></i>
+              <span>Users</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="sidebar-link" data-section="products">
+              <i class="fas fa-boxes-stacked"></i>
+              <span>Products</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="sidebar-link" data-section="customer-service">
+              <i class="fas fa-headset"></i>
+              <span>Customer Service</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
 
-      <ul class="nav nav-tabs" id="adminTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-          <button class="nav-link active" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">Users</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="products-tab" data-bs-toggle="tab" data-bs-target="#products" type="button" role="tab">Products</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="cs-tab" data-bs-toggle="tab" data-bs-target="#customer-service" type="button" role="tab">Customer Service</button>
-        </li>
-      </ul>
+      <div class="sidebar-footer">
+        <button class="sidebar-link w-100 text-start" id="themeToggleBtn">
+          <i class="fas fa-moon"></i>
+          <span>Toggle Theme</span>
+        </button>
+        <button class="sidebar-link w-100 text-start" id="logoutBtn">
+          <i class="fas fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
 
-      <div class="tab-content mt-3">
-        <div class="tab-pane fade show active" id="users" role="tabpanel">
+    <!-- Sidebar Overlay for mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Content -->
+    <div class="admin-main" id="adminMain">
+      <!-- Top bar for mobile -->
+      <div class="admin-topbar d-lg-none">
+        <button class="btn btn-link" id="sidebarToggle">
+          <i class="fas fa-bars fs-5"></i>
+        </button>
+        <span class="fw-semibold">Admin Panel</span>
+      </div>
+
+      <div id="adminPanelContainer" class="main-section">
+        <!-- Home / Dashboard Section -->
+        <div class="admin-section active" id="section-home">
+          <!-- Stats Cards -->
+          <div class="row g-4 mb-4">
+            <div class="col-sm-6 col-xl-3">
+              <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(187,151,109,0.15); color: var(--main-color);">
+                  <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-value" id="statTotalOrders">0</span>
+                  <span class="stat-label">Total Orders</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+              <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(25,135,84,0.15); color: #198754;">
+                  <i class="fas fa-coins"></i>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-value" id="statTotalRevenue">0</span>
+                  <span class="stat-label">Total Revenue (EGP)</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+              <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(13,110,253,0.15); color: #0d6efd;">
+                  <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-value" id="statTotalUsers">0</span>
+                  <span class="stat-label">Total Users</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+              <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(220,53,69,0.15); color: #dc3545;">
+                  <i class="fas fa-box-open"></i>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-value" id="statTotalProducts">0</span>
+                  <span class="stat-label">Total Products</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts -->
+          <div class="row g-4 mb-4">
+            <div class="col-12 col-lg-8">
+              <div class="card shadow-sm">
+                <div class="card-header">
+                  <h5 class="mb-0"><i class="fas fa-chart-area me-2"></i>Sales Rate</h5>
+                </div>
+                <div class="card-body">
+                  <div style="position:relative; height:300px;">
+                    <canvas id="salesChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-lg-4">
+              <div class="card shadow-sm">
+                <div class="card-header">
+                  <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Order Status</h5>
+                </div>
+                <div class="card-body">
+                  <canvas id="statusChart" height="300"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-4">
+            <div class="col-12 col-lg-6">
+              <div class="card shadow-sm">
+                <div class="card-header">
+                  <h5 class="mb-0"><i class="fas fa-ranking-star me-2"></i>Top Selling Products</h5>
+                </div>
+                <div class="card-body">
+                  <canvas id="topProductsChart" height="280"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-lg-6">
+              <div class="card shadow-sm">
+                <div class="card-header">
+                  <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Recent Orders</h5>
+                </div>
+                <div class="card-body p-0">
+                  <div id="recentOrdersList" class="recent-orders-list"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Users Section -->
+        <div class="admin-section" id="section-users">
           <div class="row g-4">
             <div class="col-12 col-xl-7">
               <div class="card shadow-sm">
-                <div class="card-header bg-primary bg-gradient text-white">
+                <div class="card-header">
                   <h5 class="mb-0"><i class="fas fa-users me-2"></i>All Users</h5>
                 </div>
                 <div class="card-body">
@@ -57,72 +208,88 @@
                       </select>
                     </div>
                   </div>
-                  <div id="usersListContainer">
-                  </div>
+                  <div id="usersListContainer"></div>
                 </div>
               </div>
             </div>
             <div class="col-12 col-xl-5">
               <div class="card shadow-sm">
-                <div class="card-header bg-success bg-gradient text-white">
+                <div class="card-header">
                   <h5 class="mb-0"><i class="fas fa-user-plus me-2"></i>Create New User</h5>
                 </div>
                 <div class="card-body">
-              <form id="createUserForm" class="row g-3">
-                <div class="col-12">
-                  <label for="adminUsername" class="form-label">Username</label>
-                  <input type="text" class="form-control" id="adminUsername" />
-                  <div id="adminUsernameError" class="text-danger d-none"></div>
-                </div>
-                <div class="col-12">
-                  <label for="adminEmail" class="form-label">Email</label>
-                  <input type="email" class="form-control" id="adminEmail" />
-                  <div id="adminEmailError" class="text-danger d-none"></div>
-                </div>
-                <div class="col-12">
-                  <label for="adminPassword" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="adminPassword" />
-                  <div id="adminPasswordError" class="text-danger d-none"></div>
-                </div>
-                <div class="col-12">
-                  <label for="adminConfirmPassword" class="form-label">Confirm Password</label>
-                  <input type="password" class="form-control" id="adminConfirmPassword" />
-                  <div id="adminConfirmPasswordError" class="text-danger d-none"></div>
-                </div>
-                <div class="col-12">
-                  <label for="adminRole" class="form-label">Role</label>
-                  <select id="adminRole" class="form-select">
-                    <option value="customer">Customer</option>
-                    <option value="seller">Seller</option>
-                    <option value="admin">Administrator</option>
-                  </select>
-                </div>
-                <div class="col-12">
-                  <button type="submit" class="btn btn-success w-100"><i class="fas fa-plus-circle me-1"></i>Create User</button>
-                </div>
-                <div id="adminGeneralError" class="text-danger d-none col-12"></div>
-                <div id="adminSuccessMsg" class="text-success d-none col-12"></div>
-              </form>
+                  <form id="createUserForm" class="row g-3">
+                    <div class="col-12">
+                      <label for="adminUsername" class="form-label">Username</label>
+                      <input type="text" class="form-control" id="adminUsername" />
+                      <div id="adminUsernameError" class="text-danger d-none"></div>
+                    </div>
+                    <div class="col-12">
+                      <label for="adminEmail" class="form-label">Email</label>
+                      <input type="email" class="form-control" id="adminEmail" />
+                      <div id="adminEmailError" class="text-danger d-none"></div>
+                    </div>
+                    <div class="col-12">
+                      <label for="adminPassword" class="form-label">Password</label>
+                      <input type="password" class="form-control" id="adminPassword" />
+                      <div id="adminPasswordError" class="text-danger d-none"></div>
+                    </div>
+                    <div class="col-12">
+                      <label for="adminConfirmPassword" class="form-label">Confirm Password</label>
+                      <input type="password" class="form-control" id="adminConfirmPassword" />
+                      <div id="adminConfirmPasswordError" class="text-danger d-none"></div>
+                    </div>
+                    <div class="col-12">
+                      <label for="adminRole" class="form-label">Role</label>
+                      <select id="adminRole" class="form-select">
+                        <option value="customer">Customer</option>
+                        <option value="seller">Seller</option>
+                        <option value="admin">Administrator</option>
+                      </select>
+                    </div>
+                    <div class="col-12">
+                      <button type="submit" class="btn btn-main w-100"><i class="fas fa-plus-circle me-1"></i>Create User</button>
+                    </div>
+                    <div id="adminGeneralError" class="text-danger d-none col-12"></div>
+                    <div id="adminSuccessMsg" class="text-success d-none col-12"></div>
+                  </form>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="tab-pane fade" id="products" role="tabpanel">
+        <!-- Products Section -->
+        <div class="admin-section" id="section-products">
           <div class="card shadow-sm">
-            <div class="card-header bg-info bg-gradient text-white">
+            <div class="card-header">
               <h5 class="mb-0"><i class="fas fa-boxes me-2"></i>Product Listings</h5>
             </div>
             <div class="card-body">
+              <div class="row g-2 mb-3">
+                <div class="col-sm-7 col-md-8">
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input id="productSearch" type="text" class="form-control" placeholder="Search products by name or ID..." />
+                  </div>
+                </div>
+                <div class="col-sm-5 col-md-4">
+                  <select id="productPageSize" class="form-select">
+                    <option value="5">5 per page</option>
+                    <option value="10" selected>10 per page</option>
+                    <option value="25">25 per page</option>
+                  </select>
+                </div>
+              </div>
               <div id="productsListContainer"></div>
             </div>
           </div>
         </div>
 
-        <div class="tab-pane fade" id="customer-service" role="tabpanel">
+        <!-- Customer Service Section -->
+        <div class="admin-section" id="section-customer-service">
           <div class="card shadow-sm">
-            <div class="card-header bg-warning bg-gradient">
+            <div class="card-header">
               <h5 class="mb-0"><i class="fas fa-headset me-2"></i>Customer Service / Orders</h5>
             </div>
             <div class="card-body">
@@ -171,7 +338,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button id="saveEditUserBtn" type="button" class="btn btn-primary">Save changes</button>
+            <button id="saveEditUserBtn" type="button" class="btn btn-main">Save changes</button>
           </div>
         </div>
       </div>
@@ -187,12 +354,11 @@
           <div class="modal-body" id="confirmModalBody"></div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" id="confirmModalBtn">OK</button>
+            <button type="button" class="btn btn-main" id="confirmModalBtn">OK</button>
           </div>
         </div>
       </div>
     </div>
 
-    <footer></footer>
   </body>
 </html>
