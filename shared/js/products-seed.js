@@ -4,7 +4,7 @@ import { STORAGE_KEYS } from "./storage-keys.js";
 export function seedProducts() {
 
 const existingProducts = storage.get(STORAGE_KEYS.PRODUCTS);
-if (existingProducts.length > 0) return;
+if (existingProducts && existingProducts.length > 0) return;
 
 const products = [
 
@@ -17,7 +17,8 @@ oldPrice:120,
 rating:4,
 badge:"New",
 discount:20,
-image: "../../assets/images/1-600x800.jpg",
+stock:12,
+image:"../../assets/images/1-600x800.jpg",
 description:"Cillum dolore lorem ipsum decoration item",
 images:[
 "../../assets/images/2-600x800.jpg",
@@ -34,8 +35,9 @@ price:64,
 oldPrice:78,
 rating:4,
 badge:"New",
-image: "../../assets/images/2-600x800.jpg",
 discount:20,
+stock:7,
+image:"../../assets/images/2-600x800.jpg",
 description:"Lorem ipsum cillium dolore decoration item",
 images:[
 "../../assets/images/4-600x800.jpg",
@@ -52,8 +54,9 @@ price:180,
 oldPrice:200,
 rating:4,
 badge:"New",
-image: "../../assets/images/3-600x800.jpg",
 discount:20,
+stock:0,   // Out of stock example
+image:"../../assets/images/3-600x800.jpg",
 description:"Cillum dolore lorem ipsum decoration item",
 images:[
 "../../assets/images/10-600x800.jpg",
@@ -70,8 +73,9 @@ price:122.75,
 oldPrice:150,
 rating:5,
 badge:"New",
-image: "../../assets/images/4-600x800.jpg",
 discount:18,
+stock:5,
+image:"../../assets/images/4-600x800.jpg",
 description:"Modern wall luxury lamp with golden finish",
 images:[
 "../../assets/images/7-600x800.jpg",
@@ -88,8 +92,9 @@ price:140.99,
 oldPrice:170,
 rating:4,
 badge:"New",
-image: "../../assets/images/5-600x800.jpg",
 discount:17,
+stock:3,
+image:"../../assets/images/5-600x800.jpg",
 description:"Elegant white minimal chair for modern homes",
 images:[
 "../../assets/images/2_1-600x800.jpg",
@@ -106,8 +111,9 @@ price:122.75,
 oldPrice:150,
 rating:4,
 badge:"New",
-image: "../../assets/images/6-600x800.jpg",
 discount:18,
+stock:0,   // Out of stock
+image:"../../assets/images/6-600x800.jpg",
 description:"Stylish modern wooden log table",
 images:[
 "../../assets/images/2_1-600x800.jpg",
@@ -124,8 +130,9 @@ price:300,
 oldPrice:350,
 rating:5,
 badge:"New",
-image: "../../assets/images/7-600x800.jpg",
 discount:14,
+stock:4,
+image:"../../assets/images/7-600x800.jpg",
 description:"Comfortable modern luxury sofa",
 images:[
 "../../assets/images/1_1-600x800.jpg",
@@ -142,8 +149,9 @@ price:122.75,
 oldPrice:150,
 rating:4,
 badge:"New",
-image: "../../assets/images/9-600x800.jpg",
 discount:18,
+stock:0,
+image:"../../assets/images/9-600x800.jpg",
 description:"Artistic decorative head vase",
 images:[
 "../../assets/images/2_1-600x800.jpg",

@@ -19,12 +19,44 @@ if (!currentUser) {
 /* ---------------- Setup ---------------- */
 
 const cartKey = `cart_${currentUser.id}`;
-let cart = storage.get(cartKey);
+let cart = storage.get(cartKey) || [];
 
 const cartBody = document.getElementById("cartBody");
 const grandTotalEl = document.getElementById("grandTotal");
 
 let productToDelete = null;
+
+/* ---------------- Toast ---------------- */
+
+function showToast(message, type = "warning") {
+
+  const toastHTML = `
+    <div class="toast align-items-center text-bg-${type} border-0 position-fixed bottom-0 end-0 m-3">
+      <div class="d-flex">
+        <div class="toast-body">
+          ${message}
+        </div>
+        <button type="button" 
+                class="btn-close btn-close-white me-2 m-auto"
+                data-bs-dismiss="toast">
+        </button>
+      </div>
+    </div>
+  `;
+
+  const wrapper = document.createElement("div");
+  wrapper.innerHTML = toastHTML;
+  document.body.appendChild(wrapper);
+
+  const toastEl = wrapper.querySelector(".toast");
+  const toast = new bootstrap.Toast(toastEl);
+
+  toast.show();
+
+  setTimeout(() => {
+    wrapper.remove();
+  }, 3000);
+}
 
 /* ---------------- Render Cart ---------------- */
 
@@ -35,90 +67,129 @@ function renderCart() {
   if (cart.length === 0) {
     cartBody.innerHTML = `
       <tr>
-        <td colspan="5" class="text-center py-4">
+        <td colspan="6" class="text-center py-4">
           Your cart is empty 🛒
         </td>
       </tr>
     `;
+
+    document.getElementById("subTotal").textContent = "0 EGP";
+    document.getElementById("shippingCost").textContent = "0 EGP";
     grandTotalEl.textContent = 0;
+
     return;
   }
 
-  let grandTotal = 0;
+  let subTotal = 0;
 
   cart.forEach(item => {
 
     const itemTotal = item.price * item.quantity;
-    grandTotal += itemTotal;
+    subTotal += itemTotal;
 
     cartBody.innerHTML += `
       <tr>
+
         <td>
-          <div class="d-flex align-items-center gap-3">
-            <img src="${item.image}" width="80" height="80" style="object-fit:cover;">
-            <div class="fw-semibold">${item.name}</div>
+          <div class="cart-img-box">
+            <img src="${item.image}" class="cart-img" alt="${item.name}">
           </div>
         </td>
 
-        <td>${item.price} EGP</td>
+        <td>
+          <div class="cart-name">${item.name}</div>
+        </td>
+
+        <td>${Number(item.price).toFixed(2)} EGP</td>
 
         <td>
-          <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-sm btn-outline-secondary decrease" data-id="${item.productId}">-</button>
-            <span>${item.quantity}</span>
-            <button class="btn btn-sm btn-outline-secondary increase" data-id="${item.productId}">+</button>
+          <div class="qty-box">
+            <button class="qty-btn decrease" data-id="${item.productId}">-</button>
+            <div class="qty-value">${item.quantity}</div>
+            <button class="qty-btn increase" data-id="${item.productId}">+</button>
           </div>
         </td>
 
-        <td>${itemTotal} EGP</td>
+        <td>${Number(itemTotal).toFixed(2)} EGP</td>
 
         <td>
-          <button class="btn btn-sm btn-outline-danger remove" data-id="${item.productId}">
-            <i class="fa-solid fa-xmark"></i>
+          <button class="remove-btn remove" data-id="${item.productId}">
+            <i class="fa-regular fa-trash-can"></i>
           </button>
         </td>
+
       </tr>
     `;
   });
 
-  grandTotalEl.textContent = grandTotal;
+  const shipping = 0;
+  const grandTotal = subTotal + shipping;
+
+  document.getElementById("subTotal").textContent = `${grandTotal.toFixed(2)} EGP`;
+  document.getElementById("shippingCost").textContent = `${shipping.toFixed(2)} EGP`;
+  grandTotalEl.textContent = grandTotal.toFixed(2);
 }
 
 /* ---------------- Events ---------------- */
 
 cartBody.addEventListener("click", function (e) {
 
-  const productId = parseInt(e.target.dataset.id);
+  const incBtn = e.target.closest(".increase");
+  const decBtn = e.target.closest(".decrease");
+  const removeBtn = e.target.closest(".remove");
 
-  if (!productId) return;
+  /* ---------------- Remove ---------------- */
 
-  const item = cart.find(p => p.productId === productId);
+  if (removeBtn) {
 
-  if (e.target.classList.contains("increase")) {
-    item.quantity += 1;
-  }
+    productToDelete = parseInt(removeBtn.dataset.id);
 
-  if (e.target.classList.contains("decrease")) {
-    if (item.quantity > 1) {
-      item.quantity -= 1;
-    }
-  }
-
-  if (e.target.classList.contains("remove") ||
-      e.target.closest(".remove")) {
-
-    productToDelete = productId;
-
-    const modal = new bootstrap.Modal(
-      document.getElementById("deleteModal")
-    );
+    const modalEl = document.getElementById("deleteModal");
+    const modal = new bootstrap.Modal(modalEl);
 
     modal.show();
-
     return;
   }
 
+  /* ---------------- Increase / Decrease ---------------- */
+
+  const btn = incBtn || decBtn;
+  if (!btn) return;
+
+  const productId = parseInt(btn.dataset.id);
+  const item = cart.find(p => p.productId === productId);
+  if (!item) return;
+
+  const products = storage.get(STORAGE_KEYS.PRODUCTS) || [];
+  const product = products.find(p => p.id === productId);
+
+  if (!product) return;
+
+  /* Increase */
+
+  if (incBtn) {
+
+    if (product.stock <= 0) {
+
+      showToast("No more stock available ❌", "warning");
+      return;
+    }
+
+    item.quantity += 1;
+    product.stock -= 1;
+  }
+
+  /* Decrease */
+
+  if (decBtn && item.quantity > 1) {
+
+    item.quantity -= 1;
+    product.stock += 1;
+  }
+
+  storage.set(STORAGE_KEYS.PRODUCTS, products);
   storage.set(cartKey, cart);
+
   renderCart();
   updateCartBadge();
 });
@@ -126,25 +197,34 @@ cartBody.addEventListener("click", function (e) {
 /* ---------------- Confirm Delete ---------------- */
 
 document.getElementById("confirmDelete")
-  .addEventListener("click", function () {
+.addEventListener("click", function () {
 
-    if (!productToDelete) return;
+  if (!productToDelete) return;
 
-    cart = cart.filter(p => p.productId !== productToDelete);
+  const item = cart.find(p => p.productId === productToDelete);
 
-    storage.set(cartKey, cart);
+  const products = storage.get(STORAGE_KEYS.PRODUCTS) || [];
+  const product = products.find(p => p.id === productToDelete);
 
-    renderCart();
-    updateCartBadge();
+  if (product && item) {
+    product.stock += item.quantity;
+  }
 
-    productToDelete = null;
+  cart = cart.filter(p => p.productId !== productToDelete);
 
-    const modalEl = document.getElementById("deleteModal");
-    const modal = bootstrap.Modal.getInstance(modalEl);
-    modal.hide();
+  storage.set(STORAGE_KEYS.PRODUCTS, products);
+  storage.set(cartKey, cart);
+
+  renderCart();
+  updateCartBadge();
+
+  productToDelete = null;
+
+  const modalEl = document.getElementById("deleteModal");
+  const modal = bootstrap.Modal.getInstance(modalEl);
+
+  modal.hide();
 });
-
-//take user to order page
 
 /* ---------------- Checkout ---------------- */
 
@@ -152,31 +232,25 @@ const checkoutBtn = document.getElementById("checkoutBtn");
 
 checkoutBtn.addEventListener("click", function () {
 
-  if (cart.length === 0) return; // prevent checkout if empty
+  if (cart.length === 0) return;
 
-  // Get existing orders
-  const orders = storage.get(STORAGE_KEYS.ORDERS);
+  const orders = storage.get(STORAGE_KEYS.ORDERS) || [];
 
-  // Create new order
   const newOrder = {
-    id: Date.now(),            // unique order ID
-    userId: currentUser.id,    // current user
-    items: cart,               // cart items
-    status: "Pending",         // always pending
-    date: new Date().toLocaleString() // order date/time
+    id: Date.now(),
+    userId: currentUser.id,
+    items: cart,
+    status: "Pending",
+    date: new Date().toLocaleString()
   };
 
-  // Add to orders array
   orders.push(newOrder);
   storage.set(STORAGE_KEYS.ORDERS, orders);
 
-  // Clear user cart
   storage.remove(cartKey);
 
-  // Redirect to checkout page
   window.location.href = "checkout.html";
 });
-
 
 /* ---------------- Init ---------------- */
 

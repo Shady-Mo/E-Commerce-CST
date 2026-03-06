@@ -1,96 +1,212 @@
 import { storage } from "../../shared/js/storage.js";
 import { STORAGE_KEYS } from "../../shared/js/storage-keys.js";
-import { renderNavbar, updateWishListBadge } from "../../shared/js/navbar.js";
+import { renderNavbar, updateCartBadge, updateWishListBadge } from "../../shared/js/navbar.js";
 import { renderFooter } from "../../shared/js/footer.js";
 
 /* ---------------- Layout ---------------- */
+
 renderNavbar();
 renderFooter();
 
 /* ---------------- Auth Protection ---------------- */
+
 const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
-if (!currentUser) {
-    window.location.href = "../auth/login.html";
-}
+if (!currentUser) window.location.href = "../auth/login.html";
 
 /* ---------------- Setup ---------------- */
-const wishKey = `wishlist_${currentUser.id}`;
-let wishList = storage.get(wishKey) || [];
 
-const wishListBody = document.getElementById("wishListBody");
+const wishKey = `wishlist_${currentUser.id}`;
+const cartKey = `cart_${currentUser.id}`;
+
+let wishList = storage.get(wishKey) || [];
+let cart = storage.get(cartKey) || [];
+
+const wishlistBody = document.getElementById("wishlistBody");
 
 let productToDelete = null;
 
+/* ---------------- Helpers ---------------- */
+
+function getStockStatus(productId){
+  // optional: try get product from PRODUCTS to decide stock
+  const allProducts = storage.get(STORAGE_KEYS.PRODUCTS) || [];
+  const p = allProducts.find(x => x.id === productId);
+
+  // if you ever add stock: {stock:0} or {inStock:false}
+  if (p && (p.stock === 0 || p.inStock === false)) return "out";
+  return "in";
+}
+
+function showToast(message, type = "success") {
+  const toastHTML = `
+    <div class="toast align-items-center text-bg-${type} border-0 position-fixed bottom-0 end-0 m-3 z-3">
+      <div class="d-flex">
+        <div class="toast-body">${message}</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  `;
+
+  const wrapper = document.createElement("div");
+  wrapper.innerHTML = toastHTML;
+  document.body.appendChild(wrapper);
+
+  const toastEl = wrapper.querySelector(".toast");
+  const toast = new bootstrap.Toast(toastEl);
+  toast.show();
+
+  setTimeout(() => wrapper.remove(), 3000);
+}
+
 /* ---------------- Render Wishlist ---------------- */
-function renderWishlist() {
-    wishListBody.innerHTML = "";
+function renderWishlist(){
 
-    if (wishList.length === 0) {
-        wishListBody.innerHTML = `
-            <tr>
-                <td colspan="3" class="text-center py-4">
-                    Your wishlist is empty 💔
-                </td>
-            </tr>
-        `;
-        updateWishListBadge();
-        return;
-    }
+  wishlistBody.innerHTML = "";
 
-    wishList.forEach(item => {
-        wishListBody.innerHTML += `
-            <tr>
-                <td>
-                    <div class="d-flex align-items-center gap-3">
-                        <img src="${item.image}" width="80" height="80" style="object-fit:cover;">
-                        <div class="fw-semibold">${item.name}</div>
-                    </div>
-                </td>
-                <td>${item.price} EGP</td>
-                <td>
-                    <button class="btn btn-sm btn-outline-danger remove" data-id="${item.productId}">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </td>
-            </tr>
-        `;
-    });
+  const allProducts = storage.get(STORAGE_KEYS.PRODUCTS) || [];
 
-    updateWishListBadge();
+  if (wishList.length === 0){
+    wishlistBody.innerHTML = `
+      <tr>
+        <td colspan="6" class="text-center py-4">
+          Your wishlist is empty 💛
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  wishList.forEach(item => {
+
+    // get real product
+    const product = allProducts.find(p => p.id === item.productId);
+
+    const isInStock = product && product.stock > 0;
+
+    wishlistBody.innerHTML += `
+      <tr>
+
+        <td data-label="Image">
+          <div class="wish-img-box">
+            <img src="${item.image}" class="wish-img" alt="${item.name}">
+          </div>
+        </td>
+
+        <td data-label="Product">
+          <div class="wish-name">${item.name}</div>
+        </td>
+
+        <td data-label="Price">
+          ${Number(item.price).toFixed(2)} EGP
+        </td>
+
+        <td data-label="Stock Status">
+          <span class="${isInStock ? "stock-in" : "stock-out"}">
+            ${isInStock ? "In Stock" : "Out of Stock"}
+          </span>
+        </td>
+
+        <td data-label="Add to cart">
+          <button 
+            class="btn-wish-add add-to-cart" 
+            data-id="${item.productId}"
+            ${!isInStock ? "disabled" : ""}
+          >
+            Add To Cart
+          </button>
+        </td>
+
+        <td data-label="Remove">
+          <button 
+            class="wish-remove remove" 
+            data-id="${item.productId}" 
+            title="Remove">
+            <i class="fa-regular fa-trash-can"></i>
+          </button>
+        </td>
+
+      </tr>
+    `;
+  });
 }
 
 /* ---------------- Events ---------------- */
-wishListBody.addEventListener("click", function (e) {
-    const productId = parseInt(e.target.dataset.id);
 
-    if (!productId) return;
+wishlistBody.addEventListener("click", (e) => {
+  const addBtn = e.target.closest(".add-to-cart");
+  const removeBtn = e.target.closest(".remove");
 
-    if (e.target.classList.contains("remove") || e.target.closest(".remove")) {
-        productToDelete = productId;
+  // Remove -> modal
+  if (removeBtn){
+    productToDelete = parseInt(removeBtn.dataset.id, 10);
+    const modalEl = document.getElementById("deleteModal");
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
+    return;
+  }
 
-        const modal = new bootstrap.Modal(document.getElementById("deleteModal"));
-        modal.show();
+  // Add to cart
+  if (addBtn){
 
-        return;
-    }
+  const productId = parseInt(addBtn.dataset.id, 10);
+  const item = wishList.find(x => x.productId === productId);
+  if (!item) return;
+
+  const products = storage.get(STORAGE_KEYS.PRODUCTS) || [];
+  const product = products.find(p => p.id === productId);
+
+  if (!product || product.stock <= 0){
+    showToast("Product is out of stock", "warning");
+    return;
+  }
+
+  const existing = cart.find(x => x.productId === productId);
+
+  if (existing){
+    existing.quantity += 1;
+  } else {
+    cart.push({
+      productId: item.productId,
+      name: item.name,
+      price: item.price,
+      image: item.image,
+      quantity: 1
+    });
+  }
+
+  // decrease stock
+  product.stock -= 1;
+
+  storage.set(STORAGE_KEYS.PRODUCTS, products);
+  storage.set(cartKey, cart);
+
+  updateCartBadge();
+  showToast("Added to cart ✔", "success");
+
+  renderWishlist();
+}
 });
 
 /* ---------------- Confirm Delete ---------------- */
-document.getElementById("confirmDelete").addEventListener("click", function () {
-    if (!productToDelete) return;
 
-    wishList = wishList.filter(p => p.productId !== productToDelete);
-    storage.set(wishKey, wishList);
+document.getElementById("confirmDelete").addEventListener("click", () => {
+  if (!productToDelete) return;
 
-    renderWishlist();
+  wishList = wishList.filter(x => x.productId !== productToDelete);
+  storage.set(wishKey, wishList);
 
-    productToDelete = null;
+  renderWishlist();
+  updateWishListBadge();
 
-    const modalEl = document.getElementById("deleteModal");
-    const modal = bootstrap.Modal.getInstance(modalEl);
-    modal.hide();
+  productToDelete = null;
+
+  const modalEl = document.getElementById("deleteModal");
+  const modal = bootstrap.Modal.getInstance(modalEl);
+  modal.hide();
 });
 
-/* ---------------- Initialize ---------------- */
+/* ---------------- Init ---------------- */
+
 renderWishlist();
+updateCartBadge();
 updateWishListBadge();
