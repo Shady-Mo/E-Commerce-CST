@@ -3,278 +3,429 @@ import { STORAGE_KEYS } from "./storage-keys.js";
 
 export function renderNavbar() {
 
-    const nav = document.querySelector("nav");
-    if (!nav) return;
+const nav = document.querySelector("nav");
+if (!nav) return;
 
-    const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
+const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
 
-    function computePrefix() {
-        const moduleUrl = new URL(import.meta.url);
-        const modulePath = decodeURIComponent(moduleUrl.pathname);
-        const marker = "/shared/js/navbar.js";
-        const markerIdx = modulePath.lastIndexOf(marker);
-        if (markerIdx === -1) {
-            console.warn("computePrefix: could not locate navbar.js path", modulePath);
-            return "";
-        }
-        const rootPath = modulePath.substring(0, markerIdx) + "/";
+/* ---------------- prefix ---------------- */
 
-        const pagePath = decodeURIComponent(window.location.pathname);
-        const pageDir = pagePath.substring(0, pagePath.lastIndexOf("/") + 1);
+function computePrefix(){
 
-        if (pageDir.startsWith(rootPath)) {
-            const relative = pageDir.substring(rootPath.length);
-            const depth = relative.split("/").filter(Boolean).length;
-            if (depth === 0) return "";
-            return "../".repeat(depth);
-        }
+const moduleUrl = new URL(import.meta.url);
+const modulePath = decodeURIComponent(moduleUrl.pathname);
+const marker="/shared/js/navbar.js";
+const markerIdx=modulePath.lastIndexOf(marker);
 
-        return "";
-    }
-    const prefix = computePrefix();
-    console.debug("navbar prefix", prefix);
+if(markerIdx===-1) return "";
 
-    const theme = localStorage.getItem('theme') || 'light';
+const rootPath=modulePath.substring(0,markerIdx)+"/";
 
-    applyTheme(theme);
+const pagePath=decodeURIComponent(window.location.pathname);
+const pageDir=pagePath.substring(0,pagePath.lastIndexOf("/")+1);
 
-    const themeIcon = theme === 'dark' ? 'fa-sun' : 'fa-moon';
-    if (theme === 'dark') {
-        nav.className = "navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-3";
-    } else {
-        nav.className = "navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3";
-    }
+if(pageDir.startsWith(rootPath)){
 
-    const textClass = theme === 'dark' ? 'text-light' : 'text-dark';
-    nav.innerHTML = `
-    <div class="container">
+const relative=pageDir.substring(rootPath.length);
+const depth=relative.split("/").filter(Boolean).length;
 
-        <!-- Logo -->
-        <a class="navbar-brand" href="${prefix}index.html">
-            <img src="${prefix}assets/images/logo-DXjmQiDB.svg" alt="Logo" height="40">
-        </a>
+return "../".repeat(depth);
 
-        <button class="navbar-toggler" type="button" 
-            data-bs-toggle="collapse" 
-            data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+}
 
-        <div class="collapse navbar-collapse" id="navbarNav">
+return "";
 
-            <!-- Middle Links -->
-            <ul class="navbar-nav mx-auto gap-4 fw-semibold">
-                <li class="nav-item">
-                    <a class="nav-link ${textClass}" href="${prefix}features/home/home.html">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link ${textClass}" href="${prefix}features/products/products-list.html">Products</a>
-                </li>
-                ${currentUser && currentUser.role === "admin"
-            ? `<li class="nav-item">
-                          <a class="nav-link ${textClass}" href="${prefix}features/admin/panel.html">Dashboard</a>
-                       </li>`
-            : ""
-        }
-                <li class="nav-item">
-                    <a class="nav-link ${textClass}" href="${prefix}features/aboutus/aboutus.html">About Us</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link ${textClass}" href="#">Contact Us</a>
-                </li>
-            </ul>
+}
 
-            <!-- Right Side -->
-            <ul class="navbar-nav align-items-center gap-3">
-                <!-- theme toggle -->
-                <li class="nav-item">
-                  <button class="btn nav-link" id="themeToggleBtn">
-                    <i class="fa-solid ${themeIcon}"></i>
-                  </button>
-                </li>
-                ${currentUser &&
-            (currentUser.role === "customer"
-            )
-            ? `
+const prefix=computePrefix();
 
-<!-- Wishlist -->
+/* ---------------- theme ---------------- */
+
+const theme=localStorage.getItem("theme")||"light";
+
+applyTheme(theme);
+
+const themeIcon=theme==="dark"?"fa-sun":"fa-moon";
+
+nav.className=
+theme==="dark"
+? "navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-3"
+: "navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3";
+
+const textClass=theme==="dark"?"text-light":"text-dark";
+
+/* ---------------- HTML ---------------- */
+
+nav.innerHTML=`
+
+<div class="container">
+
+<!-- LOGO -->
+
+<a class="navbar-brand" href="${prefix}index.html">
+
+<img src="${prefix}assets/images/logo-DXjmQiDB.svg" height="40">
+
+</a>
+
+
+<!-- MOBILE TOGGLER -->
+
+<button class="navbar-toggler"
+
+type="button"
+
+data-bs-toggle="offcanvas"
+
+data-bs-target="#mobileMenu">
+
+<span class="navbar-toggler-icon"></span>
+
+</button>
+
+
+<!-- DESKTOP MENU -->
+
+<div class="navbar-collapse d-none d-lg-flex">
+
+<ul class="navbar-nav mx-auto gap-4 fw-semibold">
+
 <li class="nav-item">
-<a class="nav-link position-relative ${textClass}" href="${prefix}features/wishlist/wishlist.html">
-    <i class="fa-regular fa-heart fs-5"></i>
-        <span class="wishList-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
-    </a>
+<a class="nav-link ${textClass}" href="${prefix}features/home/home.html">Home</a>
 </li>
 
-                        <!-- Cart -->
-                        <li class="nav-item">
-                            <a class="nav-link position-relative ${textClass}" href="${prefix}features/cart/cart.html">
-                                <i class="fa-solid fa-bag-shopping fs-5"></i>
-                                <span class="cart-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"></span>
-                            </a>
-                        </li>
+<li class="nav-item">
+<a class="nav-link ${textClass}" href="${prefix}features/products/products-list.html">Products</a>
+</li>
 
-                        <!-- Logout -->
-                        <li class="nav-item">
-                            <button class="btn border-0 nav-link ${textClass}" id="logoutBtn">
-                                <i class="fa-solid fa-right-from-bracket fs-5"></i>
-                            </button>
-                        </li>
-                    `
-            :
-            `
-                        <li class="nav-item">
-                            <a class="nav-link ${textClass}" href="${prefix}features/auth/login.html">
-                                Login
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link ${textClass}" href="${prefix}features/auth/register.html">
-                                Register
-                            </a>
-                        </li>
-                    `
-        }
-
-            </ul>
-
-        </div>
-    </div>
-    `;
-
-    attachLogout();
-    updateCartBadge();
-    updateWishListBadge();
-    setActiveLink();
-    attachThemeToggle();
+${currentUser && currentUser.role==="admin"
+? `<li class="nav-item">
+<a class="nav-link ${textClass}" href="${prefix}features/admin/panel.html">Dashboard</a>
+</li>`
+:""
 }
 
-function applyTheme(theme) {
-    document.body.classList.toggle("theme-dark", theme === "dark");
+<li class="nav-item">
+<a class="nav-link ${textClass}" href="${prefix}features/aboutus/aboutus.html">About Us</a>
+</li>
 
-    if (theme === "dark") {
-        document.documentElement.setAttribute("data-bs-theme", "dark");
-    } else {
-        document.documentElement.setAttribute("data-bs-theme", "light");
-    }
+<li class="nav-item">
+<a class="nav-link ${textClass}" href="#">Contact Us</a>
+</li>
+
+</ul>
+
+
+<ul class="navbar-nav align-items-center gap-3">
+
+<li class="nav-item">
+
+<button class="btn nav-link" id="themeToggleBtn">
+
+<i class="fa-solid ${themeIcon}"></i>
+
+</button>
+
+</li>
+
+${renderRightSide(currentUser,prefix,textClass)}
+
+</ul>
+
+</div>
+
+
+<!-- MOBILE MENU -->
+
+<div class="offcanvas offcanvas-end d-lg-none"
+
+tabindex="-1"
+
+id="mobileMenu">
+
+<div class="offcanvas-header">
+
+<h5 class="offcanvas-title">Menu</h5>
+
+<button type="button"
+
+class="btn-close"
+
+data-bs-dismiss="offcanvas">
+
+</button>
+
+</div>
+
+
+<div class="offcanvas-body">
+
+<ul class="navbar-nav gap-3 fw-semibold">
+
+<li class="nav-item">
+<a class="nav-link" href="${prefix}features/home/home.html">Home</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" href="${prefix}features/products/products-list.html">Products</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" href="${prefix}features/aboutus/aboutus.html">About Us</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" href="#">Contact Us</a>
+</li>
+
+</ul>
+
+<hr>
+
+<ul class="navbar-nav gap-3">
+
+${renderRightSide(currentUser,prefix,textClass)}
+
+</ul>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+attachLogout();
+updateCartBadge();
+updateWishListBadge();
+setActiveLink();
+attachThemeToggle();
+
 }
 
-function attachThemeToggle() {
-    const btn = document.getElementById('themeToggleBtn');
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-        const current = localStorage.getItem('theme') || 'light';
-        const next = current === 'light' ? 'dark' : 'light';
-        localStorage.setItem('theme', next);
-        applyTheme(next);
-        renderNavbar();
-    });
+/* ---------------- right side ---------------- */
+
+function renderRightSide(currentUser,prefix,textClass){
+
+if(currentUser && currentUser.role==="customer"){
+
+return `
+
+<li class="nav-item">
+
+<a class="nav-link position-relative ${textClass}"
+
+href="${prefix}features/wishlist/wishlist.html">
+
+<i class="fa-regular fa-heart fs-5"></i>
+
+<span class="wishList-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+
+</a>
+
+</li>
+
+
+<li class="nav-item">
+
+<a class="nav-link position-relative ${textClass}"
+
+href="${prefix}features/cart/cart.html">
+
+<i class="fa-solid fa-bag-shopping fs-5"></i>
+
+<span class="cart-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"></span>
+
+</a>
+
+</li>
+
+
+<li class="nav-item">
+
+<button class="btn border-0 nav-link ${textClass}" id="logoutBtn">
+
+<i class="fa-solid fa-right-from-bracket fs-5"></i>
+
+</button>
+
+</li>
+
+`;
+
 }
 
-function attachLogout() {
+return `
 
-    const logoutBtn = document.getElementById("logoutBtn");
+<li class="nav-item">
 
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", function () {
-            storage.remove(STORAGE_KEYS.CURRENT_USER);
-            window.location.href = "../../index.html";
-        });
-    }
+<a class="nav-link ${textClass}"
+
+href="${prefix}features/auth/login.html">
+
+Login
+
+</a>
+
+</li>
+
+<li class="nav-item">
+
+<a class="nav-link ${textClass}"
+
+href="${prefix}features/auth/register.html">
+
+Register
+
+</a>
+
+</li>
+
+`;
+
 }
+
+/* ---------------- theme ---------------- */
+
+function applyTheme(theme){
+
+document.body.classList.toggle("theme-dark",theme==="dark");
+
+if(theme==="dark")
+document.documentElement.setAttribute("data-bs-theme","dark");
+else
+document.documentElement.setAttribute("data-bs-theme","light");
+
+}
+
+function attachThemeToggle(){
+
+const btn=document.getElementById("themeToggleBtn");
+
+if(!btn) return;
+
+btn.addEventListener("click",()=>{
+
+const current=localStorage.getItem("theme")||"light";
+
+const next=current==="light"?"dark":"light";
+
+localStorage.setItem("theme",next);
+
+applyTheme(next);
+
+renderNavbar();
+
+});
+
+}
+
+/* ---------------- logout ---------------- */
+
+function attachLogout(){
+
+const logoutBtn=document.getElementById("logoutBtn");
+
+if(logoutBtn){
+
+logoutBtn.addEventListener("click",function(){
+
+storage.remove(STORAGE_KEYS.CURRENT_USER);
+
+window.location.href="../../index.html";
+
+});
+
+}
+
+}
+
+/* ---------------- cart badge ---------------- */
 
 export function updateCartBadge() {
-  const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
-  if (!currentUser) return;
 
-  const cartKey = `cart_${currentUser.id}`;
-  const cart = storage.get(cartKey) || [];
+const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
+if (!currentUser) return;
 
-  const badge = document.querySelector(".cart-badge");
-  if (!badge) return;
+const cartKey = `cart_${currentUser.id}`;
+const cart = storage.get(cartKey) || [];
 
-  const totalItems = cart.length; // ✅ unique products only
+const badges = document.querySelectorAll(".cart-badge");
 
-  if (totalItems > 0) {
-    badge.textContent = totalItems;
-    badge.style.display = "inline-block";
-  } else {
-    badge.style.display = "none";
-  }
+badges.forEach(badge => {
+
+if (cart.length > 0) {
+
+badge.textContent = cart.length;
+badge.style.display = "inline-block";
+
+} else {
+
+badge.style.display = "none";
+
 }
 
-// export function updateWishListBadge() {
-//     const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
-//     if (!currentUser) return;
+});
 
-//     const wishKey = `wishlist_${currentUser.id}`;
-//     const wishList = storage.get(wishKey) || [];
-//     const badgeEl = document.getElementById("wishListBadge");
-//     if (badgeEl) badgeEl.textContent = wishList.length;
-// }
-
-// export function updateWishListBadge() { 
-//     const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER); 
-//     if (!currentUser) return; 
-
-//     const wishKey = `wishlist_${currentUser.id}`; 
-//     const wishList = storage.get(wishKey) || []; 
-
-//     const badgeEl = document.querySelector(".wishList-badge"); // use querySelector for class
-//     if (!badgeEl) return;
-
-//     if (wishList.length > 0) {
-//         badgeEl.textContent = wishList.length;
-//         badgeEl.style.display = "inline-block";
-//     } else {
-//         badgeEl.style.display = "none";
-//     }
-// } 
-
-export function updateWishListBadge() { 
-    const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER); 
-    if (!currentUser) return; 
-
-    const wishKey = `wishlist_${currentUser.id}`; 
-    const wishList = storage.get(wishKey) || []; 
-
-    const badgeEl = document.querySelector(".wishList-badge"); // ✅ correct
-    if (!badgeEl) return;
-
-    if (wishList.length > 0) {
-        badgeEl.textContent = wishList.length;
-        badgeEl.style.display = "inline-block";
-    } else {
-        badgeEl.style.display = "none";
-    }
 }
 
+/* ---------------- wishlist badge ---------------- */
 
+export function updateWishListBadge() {
 
-function setActiveLink() {
-  // current page file name
-  let currentPage = window.location.pathname.split("/").pop().toLowerCase();
+const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
+if (!currentUser) return;
 
-  // if opened as "/" => treat as index.html
-  if (!currentPage) currentPage = "index.html";
+const wishKey = `wishlist_${currentUser.id}`;
+const wishList = storage.get(wishKey) || [];
 
-  // pages that should activate "Home"
-  const homePages = new Set(["index.html", "home.html"]);
+const badges = document.querySelectorAll(".wishList-badge");
 
-  document.querySelectorAll(".navbar .nav-link").forEach(link => {
-    const href = (link.getAttribute("href") || "").toLowerCase();
-    if (!href || href.startsWith("#")) return;
+badges.forEach(badge => {
 
-    const linkPage = href.split("/").pop();
+if (wishList.length > 0) {
 
-    // ✅ if current is (index.html or home.html) and link points to one of them => active
-    const isHomeActive = homePages.has(currentPage) && homePages.has(linkPage);
+badge.textContent = wishList.length;
+badge.style.display = "inline-block";
 
-    if (isHomeActive || linkPage === currentPage) {
-      link.classList.add("active");
-    } else {
-      link.classList.remove("active");
-    }
-  });
+} else {
+
+badge.style.display = "none";
+
+}
+
+});
+
+}
+
+/* ---------------- active link ---------------- */
+
+function setActiveLink(){
+
+let currentPage=window.location.pathname.split("/").pop().toLowerCase();
+if(!currentPage) currentPage="index.html";
+
+const homePages=new Set(["index.html","home.html"]);
+
+document.querySelectorAll(".navbar .nav-link").forEach(link=>{
+
+const href=(link.getAttribute("href")||"").toLowerCase();
+if(!href || href.startsWith("#")) return;
+
+const linkPage=href.split("/").pop();
+
+if(homePages.has(currentPage) && homePages.has(linkPage))
+link.classList.add("active");
+
+else if(linkPage===currentPage)
+link.classList.add("active");
+
+else
+link.classList.remove("active");
+
+});
+
 }
 
 export { applyTheme };

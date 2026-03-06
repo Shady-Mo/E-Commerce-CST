@@ -27,7 +27,7 @@
         <section
           class="col-md-6 col-12 d-flex flex-column align-items-center justify-content-center"
         >
-           <form id="loginForm" class="auth-form needs-validation" novalidate>
+   <form id="loginForm" class="auth-form needs-validation" novalidate>
 
 <h2 class="mb-2 text-center">Welcome Back!</h2>
 
@@ -42,7 +42,7 @@ Buy & sell your exclusive product only on Furnixar
 
 <label class="form-label">Email or Username</label>
 
-<div class="input-group custom-input">
+<div class="input-group custom-input has-validation">
 
 <span class="input-group-text">
 <i class="fa-regular fa-user"></i>
@@ -55,9 +55,9 @@ id="loginIdentifier"
 placeholder="Enter your email or username"
 />
 
-</div>
-
 <div class="invalid-feedback" id="loginIdentifierError"></div>
+
+</div>
 
 </div>
 
@@ -68,7 +68,7 @@ placeholder="Enter your email or username"
 
 <label class="form-label">Password</label>
 
-<div class="input-group custom-input">
+<div class="input-group custom-input has-validation">
 
 <span class="input-group-text">
 <i class="fa-solid fa-lock"></i>
@@ -86,21 +86,19 @@ class="input-group-text password-toggle"
 type="button"
 id="toggleLoginPassword"
 >
-
 <i class="fa-regular fa-eye"></i>
-
 </button>
 
-</div>
-
 <div class="invalid-feedback" id="loginPasswordError"></div>
+
+</div>
 
 </div>
 
 
 <!-- REMEMBER ME -->
 
-<div class="form-check mb-2">
+<div class="form-check mb-3">
 
 <input
 class="form-check-input"
@@ -130,7 +128,7 @@ Login
 <p class="text-center mt-3 link">
 
 Don't have an account?
-<a href="../auth/register.html" class="">
+<a href="../auth/register.html">
 Register
 </a>
 

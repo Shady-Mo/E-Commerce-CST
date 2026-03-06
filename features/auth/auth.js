@@ -288,55 +288,112 @@ window.location.href="login.html";
 
 function initLogin(){
 
-    const form=document.getElementById("loginForm");
-    if(!form) return;
+const form = document.getElementById("loginForm");
+if(!form) return;
 
-    form.addEventListener("submit",(e)=>{
+const identifierInput = document.getElementById("loginIdentifier");
+const passwordInput = document.getElementById("loginPassword");
 
-        e.preventDefault();
+const identifierError = document.getElementById("loginIdentifierError");
+const passwordError = document.getElementById("loginPasswordError");
 
-        const identifier=document.getElementById("loginIdentifier").value.trim().toLowerCase();
-        const password=document.getElementById("loginPassword").value;
+form.addEventListener("submit",(e)=>{
 
-        const users=storage.get(STORAGE_KEYS.USERS);
+e.preventDefault();
 
-        const user=users.find(
-            u=>
-            (u.email===identifier || u.username===identifier) &&
-            u.password===password
-        );
+const identifier = identifierInput.value.trim().toLowerCase();
+const password = passwordInput.value;
 
-        if(!user){
+let isValid = true;
 
-            Swal.fire({
-                icon:"error",
-                title:"Login Failed",
-                text:"Invalid email or password"
-            });
+/* identifier validation */
 
-            return;
-        }
+if(!identifier){
 
-        const sessionUser={
-            id:user.id,
-            username:user.username,
-            email:user.email,
-            role:user.role
-        };
+showError(
+identifierInput,
+identifierError,
+"Email or username is required"
+);
 
-        storage.set(STORAGE_KEYS.CURRENT_USER,sessionUser);
+isValid = false;
 
-        if(user.role==="admin"){
-            window.location.href="../admin/panel.html";
-        }
-        else if(user.role==="seller"){
-            window.location.href="../seller/dashboard.html";
-        }
-        else{
-            window.location.href="../products/products-list.html";
-        }
+}else{
 
-    });
+showValid(identifierInput,identifierError);
+
+}
+
+/* password validation */
+
+if(!password){
+
+showError(
+passwordInput,
+passwordError,
+"Password is required"
+);
+
+isValid = false;
+
+}else{
+
+showValid(passwordInput,passwordError);
+
+}
+
+if(!isValid) return;
+
+/* check user */
+
+const users = storage.get(STORAGE_KEYS.USERS) || [];
+
+const user = users.find(
+u =>
+(u.email === identifier || u.username === identifier) &&
+u.password === password
+);
+
+/* ❌ login failed */
+
+if(!user){
+
+Swal.fire({
+icon:"error",
+title:"Login Failed",
+text:"Invalid email or password"
+});
+
+return;
+
+}
+
+/* ✅ login success */
+
+const sessionUser = {
+id:user.id,
+username:user.username,
+email:user.email,
+role:user.role
+};
+
+storage.set(STORAGE_KEYS.CURRENT_USER,sessionUser);
+
+ 
+
+if(user.role==="admin"){
+window.location.href="../admin/panel.html";
+}
+else if(user.role==="seller"){
+window.location.href="../seller/dashboard.html";
+}
+else{
+window.location.href="../products/products-list.html";
+}
+
+ 
+
+});
 
 }
 
