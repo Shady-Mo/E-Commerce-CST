@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Product Details</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<link href="../../global.css" rel="stylesheet">
+
+<link rel="stylesheet" href="./products.css">
+<link rel="stylesheet" href="./product-details.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+
+</head>
+
+<body>
+
+<nav></nav>
+
+<section class="page-hero">
+  <div class="container position-relative text-center">
+    <h1 class="page-title mb-2">Product-details</h1>
+
+    <nav class="breadcrumb-wrap" aria-label="breadcrumb">
+      <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="../home/home.html">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Product-details</li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<section class="container py-5 product-details-section">
+  <div class="row g-5 align-items-start">
+    
+    <!-- Product Images -->
+    <div class="col-lg-6">
+      <div class="main-image-wrapper">
+        <div class="swiper mainSwiper">
+          <div class="swiper-wrapper" id="mainImages"></div>
+        </div>
+      </div>
+
+      <div class="swiper thumbsSwiper mt-3">
+        <div class="swiper-wrapper" id="thumbImages"></div>
+      </div>
+    </div>
+
+    <!-- Product Info -->
+    <div class="col-lg-6">
+      <div class="product-info-box">
+        <h2 id="productName" class="product-title mb-3"></h2>
+
+        <!-- Rating -->
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div id="productRating" class="product-rating"></div>
+          <span id="reviewCount" class="review-count"></span>
+        </div>
+
+        <!-- Price -->
+        <div class="product-price mb-4">
+          <span class="current-price" id="productPrice"></span>
+          <span class="old-price ms-2" id="oldPrice"></span>
+        </div>
+
+        <!-- Description -->
+        <p id="productDescription" class="product-description mb-4"></p>
+
+        <!-- Quantity + Add to cart -->
+        <div class="d-flex gap-3 mt-4 flex-wrap">
+          <input
+            type="number"
+            id="qty"
+            value="1"
+            min="1"
+            class="form-control qty-input"
+          />
+
+          <button id="addToCartBtn" class="btn btn-main add-cart-btn">
+            <i class="fa-solid fa-cart-shopping me-2"></i>
+            Add To Cart
+          </button>
+        </div>
+
+        <!-- Wishlist + Compare -->
+        <div class="d-flex gap-3 mt-3 flex-wrap">
+          <button id="addToWishlistBtn" class="btn btn-outline-dark action-btn">
+            <i class="fa-regular fa-heart me-2"></i>
+            Add To Wishlist
+          </button>
+
+          <button class="btn btn-outline-dark action-btn">
+            Compare
+          </button>
+        </div>
+
+        <!-- Categories -->
+        <div class="product-meta mt-4">
+          <p class="mb-3">
+            <strong>CATEGORIES:</strong>
+            <span id="productCategories"></span>
+          </p>
+        </div>
+
+        <!-- Share -->
+        <div class="product-share d-flex align-items-center gap-3 flex-wrap">
+          <strong>SHARE THIS PRODUCT</strong>
+          <div class="social-icons d-flex gap-3">
+            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#"><i class="fa-brands fa-google-plus-g"></i></a>
+            <a href="#"><i class="fa-brands fa-pinterest-p"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-vimeo-v"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+
+<footer></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script type="module" src="./products.js"></script>
+
+</body>
+</html>

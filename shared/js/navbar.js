@@ -244,13 +244,43 @@ href="${prefix}features/cart/cart.html">
 </li>
 
 
-<li class="nav-item">
+<li class="nav-item dropdown">
 
-<button class="btn border-0 nav-link ${textClass}" id="logoutBtn">
+<button 
+class="btn nav-link dropdown-toggle border-0 ${textClass}" 
+data-bs-toggle="dropdown"
+>
 
-<i class="fa-solid fa-right-from-bracket fs-5"></i>
+<i class="fa-regular fa-user fs-5"></i>
 
 </button>
+
+<ul class="dropdown-menu dropdown-menu-end shadow">
+
+<li>
+<a class="dropdown-item" href="${prefix}features/customer/myOrders/order.html">
+<i class="fa-solid fa-box me-2"></i>
+My Orders
+</a>
+</li>
+
+<li>
+<a class="dropdown-item" href="${prefix}features/customer/profile/profile.html">
+<i class="fa-solid fa-user me-2"></i>
+My Profile
+</a>
+</li>
+
+<li><hr class="dropdown-divider"></li>
+
+<li>
+<button class="dropdown-item text-danger" id="logoutBtn">
+<i class="fa-solid fa-right-from-bracket me-2"></i>
+Logout
+</button>
+</li>
+
+</ul>
 
 </li>
 

@@ -5,6 +5,7 @@ export class Product {
         price = 0,
         oldPrice = null,
         rating = 0,
+        category = "",
         badge = null,
         discount = 0,
         stock = 0,
@@ -21,6 +22,7 @@ export class Product {
         this.price = price;
         this.oldPrice = oldPrice;
         this.rating = rating;
+        this.category = category;
         this.badge = badge;
         this.discount = discount;
         this.stock = stock;
@@ -76,6 +78,7 @@ export class Product {
             price: this.price,
             oldPrice: this.oldPrice,
             rating: this.rating,
+            category: this.category,
             badge: this.badge,
             discount: this.discount,
             stock: this.stock,

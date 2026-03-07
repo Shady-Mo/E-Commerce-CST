@@ -7,6 +7,7 @@ import { renderFooter } from "../../shared/js/footer.js";
 
 renderNavbar();
 renderFooter();
+
 /* ---------------- Auth Protection ---------------- */
 
 const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
@@ -15,50 +16,104 @@ if (!currentUser) {
   window.location.href = "../auth/login.html";
 }
 
-// Get all orders
-const orders = storage.get(STORAGE_KEYS.ORDERS) || [];
+/* ---------------- Cart Data ---------------- */
 
-// Filter orders by current user
-const userOrders = orders.filter(o => o.userId === currentUser.id);
+const cartKey = `cart_${currentUser.id}`;
+let cart = storage.get(cartKey) || [];
 
-// Get the last order
-const lastOrder = userOrders[userOrders.length - 1];
+const itemsContainer = document.getElementById("checkoutItems");
 
-// Get the container in HTML where cards will render
-const checkoutContainer = document.getElementById("checkoutContainer");
-const totalEl = document.getElementById("checkoutTotal");
+let subtotal = 0;
 
-function renderCheckout() {
-  if (!lastOrder) return; // No orders yet
+cart.forEach(item => {
 
-  let total = 0;
-  checkoutContainer.innerHTML = ""; // Clear container
+  const total = item.price * item.quantity;
+  subtotal += total;
 
-  lastOrder.items.forEach(item => {
-    const itemTotal = item.price * item.quantity;
-    total += itemTotal;
+  itemsContainer.innerHTML += `
+  <div class="cart-item d-flex justify-content-between">
+    <span>${item.name} x ${item.quantity}</span>
+    <span>$${total.toFixed(2)}</span>
+  </div>
+  `;
 
-    const card = document.createElement("div");
-    card.className = "col-md-4";
+});
 
-    card.innerHTML = `
-      <div class="card h-100">
-        <img src="${item.image}" class="card-img-top" style="height:200px; object-fit:cover;">
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title">${item.name}</h5>
-          <p class="card-text mb-1">Price: ${item.price} EGP</p>
-          <p class="card-text mb-1">Quantity: ${item.quantity}</p>
-          <p class="card-text mb-2">Total: ${itemTotal} EGP</p>
-          <span class="badge bg-warning text-dark">${lastOrder.status}</span>
-        </div>
-      </div>
-    `;
+const shipping = 0;
+const grandTotal = subtotal + shipping;
 
-    checkoutContainer.appendChild(card);
-  });
+document.getElementById("subTotal").textContent = `$${subtotal.toFixed(2)}`;
+document.getElementById("shipping").textContent = `$${shipping.toFixed(2)}`;
+document.getElementById("grandTotal").textContent = `$${grandTotal.toFixed(2)}`;
 
-  totalEl.textContent = total;
+/* ---------------- Place Order ---------------- */
+
+const placeBtn = document.getElementById("placeOrderBtn");
+
+placeBtn.addEventListener("click", () => {
+
+  if(cart.length === 0){
+    alert("Your cart is empty");
+    return;
+  }
+
+  const firstName = document.getElementById("firstName").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const address = document.getElementById("address1").value.trim();
+
+  if(!firstName || !email || !address){
+    Swal.fire({
+icon:"warning",
+title:"Payment required",
+text:"Please Enter required fields"
+});
+    return;
+  }
+
+  const payment = document.querySelector('input[name="payment"]:checked');
+
+  if(!payment){
+
+Swal.fire({
+icon:"warning",
+title:"Payment required",
+text:"Please select a payment method"
+});
+
+return;
+
 }
 
-// Render checkout on page load
-renderCheckout();
+  const orders = storage.get(STORAGE_KEYS.ORDERS) || [];
+
+  const newOrder = {
+    id: Date.now(),
+    userId: currentUser.id,
+    items: cart,
+    total: grandTotal,
+    payment: payment.value,
+    status: "Pending",
+    createdAt: new Date().toISOString()
+  };
+
+  orders.push(newOrder);
+
+  storage.set(STORAGE_KEYS.ORDERS, orders);
+
+  /* empty cart correctly */
+
+  storage.set(cartKey, []);
+  cart = [];
+
+  /* prevent multiple clicks */
+
+  placeBtn.disabled = true;
+
+  Swal.fire({
+    icon:"success",
+    title:"Order placed successfully"
+  }).then(()=>{
+    window.location.href="../customer/myOrders/order.html";
+  });
+
+});
