@@ -31,7 +31,7 @@ container.innerHTML = `
 
 <p class="text-muted">Start shopping and place your first order</p>
 
-<a href="../products/products-list.html" class="btn btn-primary">
+<a href="../../products/products-list.html" class="btn order-btn">
 Shop Now
 </a>
 
