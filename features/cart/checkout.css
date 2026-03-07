@@ -1,0 +1,111 @@
+:root{
+  --main-color: #BB976D;
+}
+
+.checkout-section label{
+font-weight:500;
+margin-bottom:6px;
+color:#333;
+}
+
+/* inputs */
+
+.checkout-section input,
+.checkout-section select{
+height:48px;
+border:1px solid #ddd;
+border-radius:4px;
+padding:10px;
+transition:0.3s;
+}
+
+.checkout-section input:focus,
+.checkout-section select:focus{
+border-color:var(--main-color);
+box-shadow:0 0 0 0.1rem rgba(187,151,109,0.25);
+outline:none;
+}
+
+/* cart summary */
+
+.cart-summary{
+background:#f8f8f8;
+padding:30px;
+border-radius:6px;
+border:1px solid #eee;
+}
+
+.cart-summary h4{
+color:var(--main-color);
+font-weight:600;
+}
+
+/* cart items */
+
+.cart-item{
+display:flex;
+justify-content:space-between;
+margin-bottom:12px;
+font-size:15px;
+}
+
+.cart-item span:last-child{
+font-weight:500;
+}
+
+/* totals */
+
+.cart-summary hr{
+margin:14px 0;
+}
+
+.cart-summary .fw-bold{
+color:var(--main-color);
+}
+
+/* payment method */
+
+.payment-method .form-check{
+margin-bottom:10px;
+}
+
+.payment-method input:checked{
+background-color:var(--main-color);
+border-color:var(--main-color);
+}
+
+/* place order button */
+
+.btn-main{
+background:var(--main-color);
+border:1px solid var(--main-color);
+color:white;
+padding:12px;
+font-weight:600;
+transition:0.3s;
+}
+
+.btn-main:hover{
+background:#a8845b;
+border-color:#a8845b;
+color:white;
+}
+/* fix radio & checkbox */
+
+input[type="radio"],
+input[type="checkbox"]{
+width:auto;
+height:auto;
+accent-color: var(--main-color);
+cursor:pointer;
+}
+
+/* responsive */
+
+@media(max-width:992px){
+
+.cart-summary{
+margin-top:30px;
+}
+
+}

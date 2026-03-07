@@ -228,28 +228,16 @@ document.getElementById("confirmDelete")
 
 /* ---------------- Checkout ---------------- */
 
+/* ---------------- Checkout ---------------- */
+
 const checkoutBtn = document.getElementById("checkoutBtn");
 
 checkoutBtn.addEventListener("click", function () {
 
   if (cart.length === 0) return;
 
-  const orders = storage.get(STORAGE_KEYS.ORDERS) || [];
-
-  const newOrder = {
-    id: Date.now(),
-    userId: currentUser.id,
-    items: cart,
-    status: "Pending",
-    date: new Date().toLocaleString()
-  };
-
-  orders.push(newOrder);
-  storage.set(STORAGE_KEYS.ORDERS, orders);
-
-  storage.remove(cartKey);
-
   window.location.href = "checkout.html";
+
 });
 
 /* ---------------- Init ---------------- */
