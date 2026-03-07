@@ -10,11 +10,79 @@ import { storage } from "../../shared/js/storage.js";
 
 const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
 
+function initSidebar() {
+    const sidebar = document.getElementById('sellerSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const closeBtn = document.getElementById('sidebarClose');
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.add('active');
+            overlay.classList.add('active');
+        });
+    }
+
+    function closeSidebar() {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeSidebar);
+    }
+
+    if (overlay) {
+        overlay.addEventListener('click', closeSidebar);
+    }
+
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    if (themeToggleBtn) {
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        applyTheme(currentTheme);
+        updateThemeIcon(currentTheme);
+
+        themeToggleBtn.addEventListener('click', () => {
+            const theme = localStorage.getItem('theme') || 'light';
+            const newTheme = theme === 'light' ? 'dark' : 'light';
+            localStorage.setItem('theme', newTheme);
+            applyTheme(newTheme);
+            updateThemeIcon(newTheme);
+        });
+    }
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            storage.remove(STORAGE_KEYS.CURRENT_USER);
+            window.location.href = "../../index.html";
+        });
+    }
+}
+
+function applyTheme(theme) {
+    document.body.classList.toggle('theme-dark', theme === 'dark');
+    if (theme === 'dark') {
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
+    } else {
+        document.documentElement.setAttribute('data-bs-theme', 'light');
+    }
+}
+
+function updateThemeIcon(theme) {
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    if (themeToggleBtn) {
+        const icon = themeToggleBtn.querySelector('i');
+        if (icon) {
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+    }
+}
+
 function initDashboard() {
     displaySellerName();
     calculateStatistics();
     initializeCharts();
-    displayRecentOrders();
 }
 
 function displaySellerName() {
@@ -39,8 +107,8 @@ function getSellerOrders() {
     );
 }
 
+const products = getSellerProducts();
 function calculateStatistics() {
-    const products = getSellerProducts();
     const orders = getSellerOrders();
 
     document.getElementById('totalProducts').textContent = products.length;
@@ -154,71 +222,7 @@ function initProductStatusChart() {
     });
 }
 
-function displayRecentOrders() {
-    const tbody = document.getElementById('ordersTableBody');
-    if (!tbody) return;
-
-    const orders = getSellerOrders();
-    const products = getSellerProducts();
-
-    if (orders.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="7" class="text-center py-5">
-                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                    <p class="text-muted">No orders yet</p>
-                </td>
-            </tr>
-        `;
-        return;
-    }
-
-    const recentOrders = orders.slice(-10).reverse();
-
-    tbody.innerHTML = recentOrders.map(order => {
-        const sellerItems = order.items.filter(item =>
-            products.some(p => p.id === item.productId)
-        );
-
-        if (sellerItems.length === 0) return '';
-
-        const firstItem = sellerItems[0];
-        const product = products.find(p => p.id === firstItem.productId);
-        const totalQty = sellerItems.reduce((sum, item) => sum + item.quantity, 0);
-        const totalPrice = sellerItems.reduce((sum, item) =>
-            sum + (item.price * item.quantity), 0
-        );
-
-        const orderDate = new Date(order.createdAt).toLocaleDateString();
-        const statusClass = getStatusClass(order.status);
-
-        return `
-            <tr>
-                <td>#${order.id}</td>
-                <td>${order.customerName || 'Customer'}</td>
-                <td>${product?.name || 'Product'}${sellerItems.length > 1 ? ` +${sellerItems.length - 1} more` : ''}</td>
-                <td>${totalQty}</td>
-                <td>$${totalPrice.toFixed(2)}</td>
-                <td>${orderDate}</td>
-                <td><span class="badge ${statusClass}">${order.status || 'Pending'}</span></td>
-            </tr>
-        `;
-    }).join('');
-}
-
-function getStatusClass(status) {
-    switch (status?.toLowerCase()) {
-        case 'delivered':
-        case 'completed':
-            return 'bg-success';
-        case 'processing':
-        case 'shipped':
-            return 'bg-info';
-        case 'cancelled':
-            return 'bg-danger';
-        default:
-            return 'bg-warning';
-    }
-}
-
-document.addEventListener('DOMContentLoaded', initDashboard);
+document.addEventListener('DOMContentLoaded', () => {
+    initSidebar();
+    initDashboard();
+});

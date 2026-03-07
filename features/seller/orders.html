@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Manage Products</title>
+    <title>Orders Management</title>
     <link rel="stylesheet" href="../../shared/bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css" />
     <link rel="stylesheet" href="../../global.css" />
@@ -36,7 +36,7 @@
             </a>
           </li>
           <li>
-            <a href="manage-products.html" class="sidebar-link active">
+            <a href="manage-products.html" class="sidebar-link">
               <i class="fas fa-boxes-stacked"></i>
               <span>Manage Products</span>
             </a>
@@ -48,7 +48,7 @@
             </a>
           </li>
           <li>
-            <a href="orders.html" class="sidebar-link">
+            <a href="orders.html" class="sidebar-link active">
               <i class="fas fa-shopping-cart"></i>
               <span>Orders</span>
             </a>
@@ -75,50 +75,67 @@
         <button class="btn btn-link" id="sidebarToggle">
           <i class="fas fa-bars fs-5"></i>
         </button>
-        <span class="fw-semibold">Manage Products</span>
+        <span class="fw-semibold">Orders Management</span>
       </div>
 
       <div id="sellerPanelContainer" class="main-section">
         <div class="row mb-4">
-          <div class="col-12 d-flex justify-content-between align-items-center">
-            <h2 class="page-title">Manage Products</h2>
-            <a href="add-product.html" class="btn btn-main">
-              <i class="fas fa-plus me-2"></i>Add New Product
-            </a>
+          <div class="col-12">
+            <h2 class="page-title">Order Management</h2>
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-12">
-            <div class="card shadow-sm">
-              <div class="card-header">
-                <h5 class="mb-0">
-                  <i class="fas fa-boxes me-2"></i>My Products
-                </h5>
-              </div>
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table table-hover align-middle">
-                    <thead>
-                      <tr>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Stock</th>
-                        <th>Created</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody id="productsTableBody"></tbody>
-                  </table>
-                </div>
-              </div>
+        <div class="row mb-4">
+          <div class="col-md-4">
+            <select class="form-select" id="statusFilter">
+              <option value="all">All Orders</option>
+              <option value="pending">Pending</option>
+              <option value="processing">Processing</option>
+              <option value="shipped">Shipped</option>
+              <option value="delivered">Delivered</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card shadow-sm">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="fas fa-shopping-cart me-2"></i>Orders List
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Products</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                  <tr>
+                    <td colspan="8" class="text-center py-4">
+                      <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <script src="../../shared/js/bootstrap/bootstrap.bundle.min.js"></script>
-    <script type="module" src="./manage-products.js"></script>
+
+    <script type="module" src="./orders.js"></script>
   </body>
 </html>
