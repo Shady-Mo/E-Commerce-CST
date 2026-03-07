@@ -3,60 +3,60 @@ import { STORAGE_KEYS } from "./storage-keys.js";
 
 export function renderNavbar() {
 
-const nav = document.querySelector("nav");
-if (!nav) return;
+    const nav = document.querySelector("nav");
+    if (!nav) return;
 
-const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
+    const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
 
-/* ---------------- prefix ---------------- */
+    /* ---------------- prefix ---------------- */
 
-function computePrefix(){
+    function computePrefix() {
 
-const moduleUrl = new URL(import.meta.url);
-const modulePath = decodeURIComponent(moduleUrl.pathname);
-const marker="/shared/js/navbar.js";
-const markerIdx=modulePath.lastIndexOf(marker);
+        const moduleUrl = new URL(import.meta.url);
+        const modulePath = decodeURIComponent(moduleUrl.pathname);
+        const marker = "/shared/js/navbar.js";
+        const markerIdx = modulePath.lastIndexOf(marker);
 
-if(markerIdx===-1) return "";
+        if (markerIdx === -1) return "";
 
-const rootPath=modulePath.substring(0,markerIdx)+"/";
+        const rootPath = modulePath.substring(0, markerIdx) + "/";
 
-const pagePath=decodeURIComponent(window.location.pathname);
-const pageDir=pagePath.substring(0,pagePath.lastIndexOf("/")+1);
+        const pagePath = decodeURIComponent(window.location.pathname);
+        const pageDir = pagePath.substring(0, pagePath.lastIndexOf("/") + 1);
 
-if(pageDir.startsWith(rootPath)){
+        if (pageDir.startsWith(rootPath)) {
 
-const relative=pageDir.substring(rootPath.length);
-const depth=relative.split("/").filter(Boolean).length;
+            const relative = pageDir.substring(rootPath.length);
+            const depth = relative.split("/").filter(Boolean).length;
 
-return "../".repeat(depth);
+            return "../".repeat(depth);
 
-}
+        }
 
-return "";
+        return "";
 
-}
+    }
 
-const prefix=computePrefix();
+    const prefix = computePrefix();
 
-/* ---------------- theme ---------------- */
+    /* ---------------- theme ---------------- */
 
-const theme=localStorage.getItem("theme")||"light";
+    const theme = localStorage.getItem("theme") || "light";
 
-applyTheme(theme);
+    applyTheme(theme);
 
-const themeIcon=theme==="dark"?"fa-sun":"fa-moon";
+    const themeIcon = theme === "dark" ? "fa-sun" : "fa-moon";
 
-nav.className=
-theme==="dark"
-? "navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-3"
-: "navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3";
+    nav.className =
+        theme === "dark"
+            ? "navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-3"
+            : "navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3";
 
-const textClass=theme==="dark"?"text-light":"text-dark";
+    const textClass = theme === "dark" ? "text-light" : "text-dark";
 
-/* ---------------- HTML ---------------- */
+    /* ---------------- HTML ---------------- */
 
-nav.innerHTML=`
+    nav.innerHTML = `
 
 <div class="container">
 
@@ -98,12 +98,12 @@ data-bs-target="#mobileMenu">
 <a class="nav-link ${textClass}" href="${prefix}features/products/products-list.html">Products</a>
 </li>
 
-${currentUser && currentUser.role==="admin"
-? `<li class="nav-item">
+${currentUser && currentUser.role === "admin"
+            ? `<li class="nav-item">
 <a class="nav-link ${textClass}" href="${prefix}features/admin/panel.html">Dashboard</a>
 </li>`
-:""
-}
+            : ""
+        }
 
 <li class="nav-item">
 <a class="nav-link ${textClass}" href="${prefix}features/aboutus/aboutus.html">About Us</a>
@@ -128,7 +128,7 @@ ${currentUser && currentUser.role==="admin"
 
 </li>
 
-${renderRightSide(currentUser,prefix,textClass)}
+${renderRightSide(currentUser, prefix, textClass)}
 
 </ul>
 
@@ -184,7 +184,7 @@ data-bs-dismiss="offcanvas">
 
 <ul class="navbar-nav gap-3">
 
-${renderRightSide(currentUser,prefix,textClass)}
+${renderRightSide(currentUser, prefix, textClass)}
 
 </ul>
 
@@ -196,21 +196,23 @@ ${renderRightSide(currentUser,prefix,textClass)}
 
 `;
 
-attachLogout();
-updateCartBadge();
-updateWishListBadge();
-setActiveLink();
-attachThemeToggle();
+    attachLogout();
+    updateCartBadge();
+    updateWishListBadge();
+    setActiveLink();
+    attachThemeToggle();
 
 }
 
 /* ---------------- right side ---------------- */
 
-function renderRightSide(currentUser,prefix,textClass){
+function renderRightSide(currentUser, prefix, textClass) {
 
-if(currentUser && currentUser.role==="customer"){
+    if (currentUser && currentUser.role) {
 
-return `
+        if (currentUser.role === "customer") {
+
+            return `
 
 <li class="nav-item">
 
@@ -284,9 +286,59 @@ Logout
 
 `;
 
-}
+        }
 
-return `
+        if (currentUser.role === "seller") {
+
+            return `
+
+<li class="nav-item">
+
+<a class="nav-link ${textClass}"
+
+href="${prefix}features/seller/dashboard.html">
+
+<i class="fa-solid fa-gauge fs-5"></i> Dashboard
+
+</a>
+
+</li>
+
+<li class="nav-item">
+
+<button class="btn border-0 nav-link ${textClass}" id="logoutBtn">
+
+<i class="fa-solid fa-right-from-bracket fs-5"></i>
+
+</button>
+
+</li>
+
+`;
+
+        }
+
+        if (currentUser.role === "admin") {
+
+            return `
+
+<li class="nav-item">
+
+<button class="btn border-0 nav-link ${textClass}" id="logoutBtn">
+
+<i class="fa-solid fa-right-from-bracket fs-5"></i>
+
+</button>
+
+</li>
+
+`;
+
+        }
+
+    }
+
+    return `
 
 <li class="nav-item">
 
@@ -318,56 +370,56 @@ Register
 
 /* ---------------- theme ---------------- */
 
-function applyTheme(theme){
+function applyTheme(theme) {
 
-document.body.classList.toggle("theme-dark",theme==="dark");
+    document.body.classList.toggle("theme-dark", theme === "dark");
 
-if(theme==="dark")
-document.documentElement.setAttribute("data-bs-theme","dark");
-else
-document.documentElement.setAttribute("data-bs-theme","light");
+    if (theme === "dark")
+        document.documentElement.setAttribute("data-bs-theme", "dark");
+    else
+        document.documentElement.setAttribute("data-bs-theme", "light");
 
 }
 
-function attachThemeToggle(){
+function attachThemeToggle() {
 
-const btn=document.getElementById("themeToggleBtn");
+    const btn = document.getElementById("themeToggleBtn");
 
-if(!btn) return;
+    if (!btn) return;
 
-btn.addEventListener("click",()=>{
+    btn.addEventListener("click", () => {
 
-const current=localStorage.getItem("theme")||"light";
+        const current = localStorage.getItem("theme") || "light";
 
-const next=current==="light"?"dark":"light";
+        const next = current === "light" ? "dark" : "light";
 
-localStorage.setItem("theme",next);
+        localStorage.setItem("theme", next);
 
-applyTheme(next);
+        applyTheme(next);
 
-renderNavbar();
+        renderNavbar();
 
-});
+    });
 
 }
 
 /* ---------------- logout ---------------- */
 
-function attachLogout(){
+function attachLogout() {
 
-const logoutBtn=document.getElementById("logoutBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
 
-if(logoutBtn){
+    if (logoutBtn) {
 
-logoutBtn.addEventListener("click",function(){
+        logoutBtn.addEventListener("click", function () {
 
-storage.remove(STORAGE_KEYS.CURRENT_USER);
+            storage.remove(STORAGE_KEYS.CURRENT_USER);
 
-window.location.href="../../index.html";
+            window.location.href = "../../index.html";
 
-});
+        });
 
-}
+    }
 
 }
 
@@ -375,28 +427,28 @@ window.location.href="../../index.html";
 
 export function updateCartBadge() {
 
-const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
-if (!currentUser) return;
+    const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
+    if (!currentUser) return;
 
-const cartKey = `cart_${currentUser.id}`;
-const cart = storage.get(cartKey) || [];
+    const cartKey = `cart_${currentUser.id}`;
+    const cart = storage.get(cartKey) || [];
 
-const badges = document.querySelectorAll(".cart-badge");
+    const badges = document.querySelectorAll(".cart-badge");
 
-badges.forEach(badge => {
+    badges.forEach(badge => {
 
-if (cart.length > 0) {
+        if (cart.length > 0) {
 
-badge.textContent = cart.length;
-badge.style.display = "inline-block";
+            badge.textContent = cart.length;
+            badge.style.display = "inline-block";
 
-} else {
+        } else {
 
-badge.style.display = "none";
+            badge.style.display = "none";
 
-}
+        }
 
-});
+    });
 
 }
 
@@ -404,57 +456,57 @@ badge.style.display = "none";
 
 export function updateWishListBadge() {
 
-const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
-if (!currentUser) return;
+    const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
+    if (!currentUser) return;
 
-const wishKey = `wishlist_${currentUser.id}`;
-const wishList = storage.get(wishKey) || [];
+    const wishKey = `wishlist_${currentUser.id}`;
+    const wishList = storage.get(wishKey) || [];
 
-const badges = document.querySelectorAll(".wishList-badge");
+    const badges = document.querySelectorAll(".wishList-badge");
 
-badges.forEach(badge => {
+    badges.forEach(badge => {
 
-if (wishList.length > 0) {
+        if (wishList.length > 0) {
 
-badge.textContent = wishList.length;
-badge.style.display = "inline-block";
+            badge.textContent = wishList.length;
+            badge.style.display = "inline-block";
 
-} else {
+        } else {
 
-badge.style.display = "none";
+            badge.style.display = "none";
 
-}
+        }
 
-});
+    });
 
 }
 
 /* ---------------- active link ---------------- */
 
-function setActiveLink(){
+function setActiveLink() {
 
-let currentPage=window.location.pathname.split("/").pop().toLowerCase();
-if(!currentPage) currentPage="index.html";
+    let currentPage = window.location.pathname.split("/").pop().toLowerCase();
+    if (!currentPage) currentPage = "index.html";
 
-const homePages=new Set(["index.html","home.html"]);
+    const homePages = new Set(["index.html", "home.html"]);
 
-document.querySelectorAll(".navbar .nav-link").forEach(link=>{
+    document.querySelectorAll(".navbar .nav-link").forEach(link => {
 
-const href=(link.getAttribute("href")||"").toLowerCase();
-if(!href || href.startsWith("#")) return;
+        const href = (link.getAttribute("href") || "").toLowerCase();
+        if (!href || href.startsWith("#")) return;
 
-const linkPage=href.split("/").pop();
+        const linkPage = href.split("/").pop();
 
-if(homePages.has(currentPage) && homePages.has(linkPage))
-link.classList.add("active");
+        if (homePages.has(currentPage) && homePages.has(linkPage))
+            link.classList.add("active");
 
-else if(linkPage===currentPage)
-link.classList.add("active");
+        else if (linkPage === currentPage)
+            link.classList.add("active");
 
-else
-link.classList.remove("active");
+        else
+            link.classList.remove("active");
 
-});
+    });
 
 }
 

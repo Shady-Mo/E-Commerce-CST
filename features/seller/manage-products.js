@@ -1,5 +1,11 @@
 import { storage } from "../../shared/js/storage.js";
 import { STORAGE_KEYS } from "../../shared/js/storage-keys.js";
+import { seedUsers } from "../../shared/js/user-seed.js";
+import { seedProducts } from "../../shared/js/products-seed.js";
+
+// Initialize seed data
+seedUsers();
+seedProducts();
 
 (function enforceSellerAccess() {
     const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
@@ -124,4 +130,77 @@ function showToast(message, type) {
     }, 3000);
 }
 
-renderProductsTable();
+function initSidebar() {
+    const sidebar = document.getElementById('sellerSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const closeBtn = document.getElementById('sidebarClose');
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.add('active');
+            overlay.classList.add('active');
+        });
+    }
+
+    function closeSidebar() {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeSidebar);
+    }
+
+    if (overlay) {
+        overlay.addEventListener('click', closeSidebar);
+    }
+
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    if (themeToggleBtn) {
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        applyTheme(currentTheme);
+        updateThemeIcon(currentTheme);
+
+        themeToggleBtn.addEventListener('click', () => {
+            const theme = localStorage.getItem('theme') || 'light';
+            const newTheme = theme === 'light' ? 'dark' : 'light';
+            localStorage.setItem('theme', newTheme);
+            applyTheme(newTheme);
+            updateThemeIcon(newTheme);
+        });
+    }
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            storage.remove(STORAGE_KEYS.CURRENT_USER);
+            window.location.href = "../../index.html";
+        });
+    }
+}
+
+function applyTheme(theme) {
+    document.body.classList.toggle('theme-dark', theme === 'dark');
+    if (theme === 'dark') {
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
+    } else {
+        document.documentElement.setAttribute('data-bs-theme', 'light');
+    }
+}
+
+function updateThemeIcon(theme) {
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    if (themeToggleBtn) {
+        const icon = themeToggleBtn.querySelector('i');
+        if (icon) {
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initSidebar();
+    renderProductsTable();
+});
+

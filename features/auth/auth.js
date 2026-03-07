@@ -8,9 +8,36 @@ renderNavbar();
 renderFooter();
 seedUsers();
 
+function checkAuthenticationAndRedirect() {
+    const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
+
+    if (!currentUser || (Array.isArray(currentUser) && currentUser.length === 0)) {
+        return;
+    }
+
+    if (currentUser && currentUser.role) {
+        switch (currentUser.role) {
+            case "admin":
+                window.location.href = "../admin/panel.html";
+                break;
+            case "seller":
+                window.location.href = "../seller/dashboard.html";
+                break;
+            case "customer":
+                window.location.href = "../products/products-list.html";
+                break;
+            default:
+
+                storage.remove(STORAGE_KEYS.CURRENT_USER);
+        }
+    }
+}
+
+checkAuthenticationAndRedirect();
+
 /* ---------------- Helpers ---------------- */
 
-function showError(input, errorEl, message){
+function showError(input, errorEl, message) {
 
     input.classList.add("is-invalid");
     input.classList.remove("is-valid");
@@ -19,7 +46,7 @@ function showError(input, errorEl, message){
     errorEl.classList.remove("d-none");
 }
 
-function showValid(input, errorEl){
+function showValid(input, errorEl) {
 
     input.classList.remove("is-invalid");
     input.classList.add("is-valid");
@@ -30,74 +57,74 @@ function showValid(input, errorEl){
 
 /* ---------------- Validation ---------------- */
 
-function validateUsername(username){
+function validateUsername(username) {
 
-    if(!username || username.trim()===""){
+    if (!username || username.trim() === "") {
         return "Username is required.";
     }
 
-    if(username.length < 3){
+    if (username.length < 3) {
         return "Username must be at least 3 characters.";
     }
 
-    if(username.length > 20){
+    if (username.length > 20) {
         return "Username must not exceed 20 characters.";
     }
 
-    if(!/^[a-zA-Z0-9_]+$/.test(username)){
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
         return "Only letters, numbers and underscore allowed.";
     }
 
     return null;
 }
 
-function validateEmail(email){
+function validateEmail(email) {
 
-    const emailRegex=/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-    if(!email){
+    if (!email) {
         return "Email is required.";
     }
 
-    if(!emailRegex.test(email)){
+    if (!emailRegex.test(email)) {
         return "Invalid email format.";
     }
 
     return null;
 }
 
-function validatePassword(password){
+function validatePassword(password) {
 
-    if(!password){
+    if (!password) {
         return "Password is required.";
     }
 
-    if(password.length < 8){
+    if (password.length < 8) {
         return "Password must be at least 8 characters.";
     }
 
-    if(!/[A-Z]/.test(password)){
+    if (!/[A-Z]/.test(password)) {
         return "Password must contain uppercase letter.";
     }
 
-    if(!/[a-z]/.test(password)){
+    if (!/[a-z]/.test(password)) {
         return "Password must contain lowercase letter.";
     }
 
-    if(!/[0-9]/.test(password)){
+    if (!/[0-9]/.test(password)) {
         return "Password must contain number.";
     }
 
     return null;
 }
 
-function validateConfirm(password,confirm){
+function validateConfirm(password, confirm) {
 
-    if(!confirm){
+    if (!confirm) {
         return "Please confirm password.";
     }
 
-    if(password!==confirm){
+    if (password !== confirm) {
         return "Passwords do not match.";
     }
 
@@ -106,349 +133,349 @@ function validateConfirm(password,confirm){
 
 /* ---------------- Register ---------------- */
 
-function initRegister(){
+function initRegister() {
 
-    const form=document.getElementById("registerForm");
-    if(!form) return;
+    const form = document.getElementById("registerForm");
+    if (!form) return;
 
-    const usernameInput=document.getElementById("regUsername");
-    const emailInput=document.getElementById("regEmail");
-    const passwordInput=document.getElementById("regPassword");
-    const confirmInput=document.getElementById("regConfirmPassword");
+    const usernameInput = document.getElementById("regUsername");
+    const emailInput = document.getElementById("regEmail");
+    const passwordInput = document.getElementById("regPassword");
+    const confirmInput = document.getElementById("regConfirmPassword");
 
-    const usernameError=document.getElementById("regUsernameError");
-    const emailError=document.getElementById("regEmailError");
-    const passwordError=document.getElementById("regPasswordError");
-    const confirmError=document.getElementById("regConfirmPasswordError");
-    const generalError=document.getElementById("regGeneralError");
+    const usernameError = document.getElementById("regUsernameError");
+    const emailError = document.getElementById("regEmailError");
+    const passwordError = document.getElementById("regPasswordError");
+    const confirmError = document.getElementById("regConfirmPasswordError");
+    const generalError = document.getElementById("regGeneralError");
 
     /* realtime validation */
 
-    usernameInput.addEventListener("input",()=>{
+    usernameInput.addEventListener("input", () => {
 
-        const err=validateUsername(usernameInput.value);
+        const err = validateUsername(usernameInput.value);
 
-        if(err){
-            showError(usernameInput,usernameError,err);
-        }else{
-            showValid(usernameInput,usernameError);
+        if (err) {
+            showError(usernameInput, usernameError, err);
+        } else {
+            showValid(usernameInput, usernameError);
         }
 
     });
 
-    emailInput.addEventListener("input",()=>{
+    emailInput.addEventListener("input", () => {
 
-        const err=validateEmail(emailInput.value);
+        const err = validateEmail(emailInput.value);
 
-        if(err){
-            showError(emailInput,emailError,err);
-        }else{
-            showValid(emailInput,emailError);
+        if (err) {
+            showError(emailInput, emailError, err);
+        } else {
+            showValid(emailInput, emailError);
         }
 
     });
 
-    passwordInput.addEventListener("input",()=>{
+    passwordInput.addEventListener("input", () => {
 
-        const err=validatePassword(passwordInput.value);
+        const err = validatePassword(passwordInput.value);
 
-        if(err){
-            showError(passwordInput,passwordError,err);
-        }else{
-            showValid(passwordInput,passwordError);
+        if (err) {
+            showError(passwordInput, passwordError, err);
+        } else {
+            showValid(passwordInput, passwordError);
         }
 
     });
 
-    confirmInput.addEventListener("input",()=>{
+    confirmInput.addEventListener("input", () => {
 
-        const err=validateConfirm(passwordInput.value,confirmInput.value);
+        const err = validateConfirm(passwordInput.value, confirmInput.value);
 
-        if(err){
-            showError(confirmInput,confirmError,err);
-        }else{
-            showValid(confirmInput,confirmError);
+        if (err) {
+            showError(confirmInput, confirmError, err);
+        } else {
+            showValid(confirmInput, confirmError);
         }
 
     });
 
     /* submit */
 
-    form.addEventListener("submit",(e)=>{
+    form.addEventListener("submit", (e) => {
 
-e.preventDefault();
+        e.preventDefault();
 
-const username=usernameInput.value.trim();
-const email=emailInput.value.trim();
-const password=passwordInput.value;
-const confirm=confirmInput.value;
+        const username = usernameInput.value.trim();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        const confirm = confirmInput.value;
 
-let isValid=true;
+        let isValid = true;
 
-/* username */
+        /* username */
 
-const usernameErr=validateUsername(username);
+        const usernameErr = validateUsername(username);
 
-if(usernameErr){
-showError(usernameInput,usernameError,usernameErr);
-isValid=false;
-}else{
-showValid(usernameInput,usernameError);
-}
+        if (usernameErr) {
+            showError(usernameInput, usernameError, usernameErr);
+            isValid = false;
+        } else {
+            showValid(usernameInput, usernameError);
+        }
 
-/* email */
+        /* email */
 
-const emailErr=validateEmail(email);
+        const emailErr = validateEmail(email);
 
-if(emailErr){
-showError(emailInput,emailError,emailErr);
-isValid=false;
-}else{
-showValid(emailInput,emailError);
-}
+        if (emailErr) {
+            showError(emailInput, emailError, emailErr);
+            isValid = false;
+        } else {
+            showValid(emailInput, emailError);
+        }
 
-/* password */
+        /* password */
 
-const passwordErr=validatePassword(password);
+        const passwordErr = validatePassword(password);
 
-if(passwordErr){
-showError(passwordInput,passwordError,passwordErr);
-isValid=false;
-}else{
-showValid(passwordInput,passwordError);
-}
+        if (passwordErr) {
+            showError(passwordInput, passwordError, passwordErr);
+            isValid = false;
+        } else {
+            showValid(passwordInput, passwordError);
+        }
 
-/* confirm */
+        /* confirm */
 
-const confirmErr=validateConfirm(password,confirm);
+        const confirmErr = validateConfirm(password, confirm);
 
-if(confirmErr){
-showError(confirmInput,confirmError,confirmErr);
-isValid=false;
-}else{
-showValid(confirmInput,confirmError);
-}
+        if (confirmErr) {
+            showError(confirmInput, confirmError, confirmErr);
+            isValid = false;
+        } else {
+            showValid(confirmInput, confirmError);
+        }
 
-/* stop register if invalid */
+        /* stop register if invalid */
 
-if(!isValid) return;
+        if (!isValid) return;
 
-/* continue register */
+        /* continue register */
 
-const users=storage.get(STORAGE_KEYS.USERS);
+        const users = storage.get(STORAGE_KEYS.USERS);
 
-const usernameExists=users.find(
-u=>u.username.toLowerCase()===username.toLowerCase()
-);
+        const usernameExists = users.find(
+            u => u.username.toLowerCase() === username.toLowerCase()
+        );
 
-if(usernameExists){
-showError(usernameInput,usernameError,"This username is already taken.");
-return;
-}
+        if (usernameExists) {
+            showError(usernameInput, usernameError, "This username is already taken.");
+            return;
+        }
 
-const emailExists=users.find(
-u=>u.email.toLowerCase()===email.toLowerCase()
-);
+        const emailExists = users.find(
+            u => u.email.toLowerCase() === email.toLowerCase()
+        );
 
-if(emailExists){
-showError(emailInput,emailError,"An account with this email already exists.");
-return;
-}
+        if (emailExists) {
+            showError(emailInput, emailError, "An account with this email already exists.");
+            return;
+        }
 
-const newUser={
-id:Date.now(),
-username:username.toLowerCase(),
-email:email.toLowerCase(),
-password:password,
-role:"customer",
-createdAt:new Date().toISOString()
-};
+        const newUser = {
+            id: Date.now(),
+            username: username.toLowerCase(),
+            email: email.toLowerCase(),
+            password: password,
+            role: "customer",
+            createdAt: new Date().toISOString()
+        };
 
-users.push(newUser);
-storage.set(STORAGE_KEYS.USERS,users);
+        users.push(newUser);
+        storage.set(STORAGE_KEYS.USERS, users);
 
-form.reset();
+        form.reset();
 
-Swal.fire({
-icon:"success",
-title:"Account Created!",
-text:"Your account created successfully",
-confirmButtonText:"Go to Login"
-}).then(()=>{
-window.location.href="login.html";
-});
+        Swal.fire({
+            icon: "success",
+            title: "Account Created!",
+            text: "Your account created successfully",
+            confirmButtonText: "Go to Login"
+        }).then(() => {
+            window.location.href = "login.html";
+        });
 
-});
+    });
 
 }
 
 /* ---------------- Login ---------------- */
 
-function initLogin(){
+function initLogin() {
 
-const form = document.getElementById("loginForm");
-if(!form) return;
+    const form = document.getElementById("loginForm");
+    if (!form) return;
 
-const identifierInput = document.getElementById("loginIdentifier");
-const passwordInput = document.getElementById("loginPassword");
+    const identifierInput = document.getElementById("loginIdentifier");
+    const passwordInput = document.getElementById("loginPassword");
 
-const identifierError = document.getElementById("loginIdentifierError");
-const passwordError = document.getElementById("loginPasswordError");
+    const identifierError = document.getElementById("loginIdentifierError");
+    const passwordError = document.getElementById("loginPasswordError");
 
-form.addEventListener("submit",(e)=>{
+    form.addEventListener("submit", (e) => {
 
-e.preventDefault();
+        e.preventDefault();
 
-const identifier = identifierInput.value.trim().toLowerCase();
-const password = passwordInput.value;
+        const identifier = identifierInput.value.trim().toLowerCase();
+        const password = passwordInput.value;
 
-let isValid = true;
+        let isValid = true;
 
-/* identifier validation */
+        /* identifier validation */
 
-if(!identifier){
+        if (!identifier) {
 
-showError(
-identifierInput,
-identifierError,
-"Email or username is required"
-);
+            showError(
+                identifierInput,
+                identifierError,
+                "Email or username is required"
+            );
 
-isValid = false;
+            isValid = false;
 
-}else{
+        } else {
 
-identifierInput.classList.remove("is-invalid");
-identifierError.textContent = "";
-identifierError.classList.add("d-none");
+            identifierInput.classList.remove("is-invalid");
+            identifierError.textContent = "";
+            identifierError.classList.add("d-none");
 
-}
+        }
 
-/* password validation */
+        /* password validation */
 
-if(!password){
+        if (!password) {
 
-showError(
-passwordInput,
-passwordError,
-"Password is required"
-);
+            showError(
+                passwordInput,
+                passwordError,
+                "Password is required"
+            );
 
-isValid = false;
+            isValid = false;
 
-}else{
+        } else {
 
-passwordInput.classList.remove("is-invalid");
-passwordError.textContent = "";
-passwordError.classList.add("d-none");
+            passwordInput.classList.remove("is-invalid");
+            passwordError.textContent = "";
+            passwordError.classList.add("d-none");
 
-}
+        }
 
-if(!isValid) return;
+        if (!isValid) return;
 
-/* check user */
+        /* check user */
 
-const users = storage.get(STORAGE_KEYS.USERS) || [];
+        const users = storage.get(STORAGE_KEYS.USERS) || [];
 
-const userByIdentifier = users.find(
-u => u.email === identifier || u.username === identifier
-);
+        const userByIdentifier = users.find(
+            u => u.email === identifier || u.username === identifier
+        );
 
-/* ❌ no account found */
+        /* ❌ no account found */
 
-if(!userByIdentifier){
+        if (!userByIdentifier) {
 
-showError(
-identifierInput,
-identifierError,
-"No account found with this email or username."
-);
+            showError(
+                identifierInput,
+                identifierError,
+                "No account found with this email or username."
+            );
 
-return;
+            return;
 
-}
+        }
 
-/* 🚫 banned check */
-if(userByIdentifier.banned === true){
+        /* 🚫 banned check */
+        if (userByIdentifier.banned === true) {
 
-Swal.fire({
-icon:"error",
-title:"Account Banned",
-text:"Your account has been banned. Contact an administrator."
-});
+            Swal.fire({
+                icon: "error",
+                title: "Account Banned",
+                text: "Your account has been banned. Contact an administrator."
+            });
 
-return;
+            return;
 
-}
+        }
 
-/* ❌ wrong password */
+        /* ❌ wrong password */
 
-if(userByIdentifier.password !== password){
+        if (userByIdentifier.password !== password) {
 
-showError(
-passwordInput,
-passwordError,
-"Incorrect password. Please try again."
-);
+            showError(
+                passwordInput,
+                passwordError,
+                "Incorrect password. Please try again."
+            );
 
-return;
+            return;
 
-}
+        }
 
-const user = userByIdentifier;
+        const user = userByIdentifier;
 
-/* ✅ login success */
+        /* ✅ login success */
 
-const sessionUser = {
-id:user.id,
-username:user.username,
-email:user.email,
-role:user.role
-};
+        const sessionUser = {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            role: user.role
+        };
 
-storage.set(STORAGE_KEYS.CURRENT_USER,sessionUser);
-
- 
-
-if(user.role==="admin"){
-window.location.href="../admin/panel.html";
-}
-else if(user.role==="seller"){
-window.location.href="../seller/dashboard.html";
-}
-else{
-window.location.href="../products/products-list.html";
-}
-
- 
-
-});
-
-}
+        storage.set(STORAGE_KEYS.CURRENT_USER, sessionUser);
 
 
-const togglePassword=document.getElementById("togglePassword");
 
-if(togglePassword){
+        if (user.role === "admin") {
+            window.location.href = "../admin/panel.html";
+        }
+        else if (user.role === "seller") {
+            window.location.href = "../seller/dashboard.html";
+        }
+        else {
+            window.location.href = "../products/products-list.html";
+        }
 
-togglePassword.addEventListener("click",()=>{
 
-const passwordInput=document.getElementById("regPassword");
-const icon=togglePassword.querySelector("i");
 
-if(passwordInput.type==="password"){
-
-passwordInput.type="text";
-icon.classList.replace("fa-eye","fa-eye-slash");
-
-}else{
-
-passwordInput.type="password";
-icon.classList.replace("fa-eye-slash","fa-eye");
+    });
 
 }
 
-});
+
+const togglePassword = document.getElementById("togglePassword");
+
+if (togglePassword) {
+
+    togglePassword.addEventListener("click", () => {
+
+        const passwordInput = document.getElementById("regPassword");
+        const icon = togglePassword.querySelector("i");
+
+        if (passwordInput.type === "password") {
+
+            passwordInput.type = "text";
+            icon.classList.replace("fa-eye", "fa-eye-slash");
+
+        } else {
+
+            passwordInput.type = "password";
+            icon.classList.replace("fa-eye-slash", "fa-eye");
+
+        }
+
+    });
 
 }
 
@@ -456,24 +483,24 @@ const toggleLoginPassword = document.getElementById("toggleLoginPassword");
 
 if (toggleLoginPassword) {
 
-toggleLoginPassword.addEventListener("click", () => {
+    toggleLoginPassword.addEventListener("click", () => {
 
-const input = document.getElementById("loginPassword");
-const icon = toggleLoginPassword.querySelector("i");
+        const input = document.getElementById("loginPassword");
+        const icon = toggleLoginPassword.querySelector("i");
 
-if (input.type === "password") {
+        if (input.type === "password") {
 
-input.type = "text";
-icon.classList.replace("fa-eye","fa-eye-slash");
+            input.type = "text";
+            icon.classList.replace("fa-eye", "fa-eye-slash");
 
-} else {
+        } else {
 
-input.type = "password";
-icon.classList.replace("fa-eye-slash","fa-eye");
+            input.type = "password";
+            icon.classList.replace("fa-eye-slash", "fa-eye");
 
-}
+        }
 
-});
+    });
 
 }
 
