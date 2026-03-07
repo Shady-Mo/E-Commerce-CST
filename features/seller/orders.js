@@ -1,5 +1,11 @@
-import storage from '../../shared/js/storage.js';
+import { storage } from '../../shared/js/storage.js';
 import { STORAGE_KEYS } from '../../shared/js/storage-keys.js';
+import { seedUsers } from "../../shared/js/user-seed.js";
+import { seedProducts } from "../../shared/js/products-seed.js";
+
+// Initialize seed data
+seedUsers();
+seedProducts();
 
 function checkAuth() {
     const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
