@@ -139,7 +139,7 @@ export function seedProducts() {
         "../../assets/images/3_1-600x800.jpg",
         "../../assets/images/4_1-600x800.jpg"
       ],
-      sellerId: 2002
+      sellerId: 2003
     }).toJSON(),
 
     new Product({
@@ -158,7 +158,7 @@ export function seedProducts() {
         "../../assets/images/3_1-600x800.jpg",
         "../../assets/images/4_1-600x800.jpg"
       ],
-      sellerId: 2002
+      sellerId: 2003
     }).toJSON()
 
   ];
