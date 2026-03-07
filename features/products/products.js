@@ -17,262 +17,193 @@ const container = document.getElementById("productsContainer");
 const allProducts = storage.get(STORAGE_KEYS.PRODUCTS) || [];
 const products = allProducts.filter(p => p.approved !== false);
 
-
 /* =========================================================
-   GLOBAL FUNCTIONS (NO REPEAT LOGIC)
+   AUTH CHECK
 ========================================================= */
 
-function addProductToCart(productId, qty = 1){
+function requireLogin(message = "You must login first.") {
+  const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
 
-const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
+  if (!currentUser || !currentUser.id) {
+    showToast(message, "warning");
 
-if(!currentUser){
+    setTimeout(() => {
+      window.location.href = "../../features/auth/login.html";
+    }, 1500);
 
-showToast("You must login first to add items to cart.","warning");
+    return null;
+  }
 
-setTimeout(()=>{
-window.location.href="../../features/auth/login.html";
-},1500);
-
-return;
+  return currentUser;
 }
 
-const cartKey = `cart_${currentUser.id}`;
+/* =========================================================
+   GLOBAL FUNCTIONS
+========================================================= */
 
-let cart = storage.get(cartKey) || [];
+function addProductToCart(productId, qty = 1) {
+  const currentUser = requireLogin("You must login first to add items to cart.");
+  if (!currentUser) return;
 
-const product = products.find(p => p.id === productId);
+  const cartKey = `cart_${currentUser.id}`;
+  let cart = storage.get(cartKey) || [];
 
-if(!product) return;
+  const product = products.find(p => p.id === productId);
+  if (!product) return;
 
-/* stock check */
+  if (product.stock < qty) {
+    showToast("Not enough stock ❌", "warning");
+    return;
+  }
 
-if(product.stock < qty){
+  const existingItem = cart.find(item => item.productId === productId);
 
-showToast("Not enough stock ❌","warning");
-return;
+  if (existingItem) {
+    existingItem.quantity += qty;
+  } else {
+    cart.push({
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      quantity: qty
+    });
+  }
 
+  product.stock -= qty;
+
+  storage.set(STORAGE_KEYS.PRODUCTS, allProducts);
+  storage.set(cartKey, cart);
+
+  updateCartBadge();
+  showToast("Product added to cart ✔", "success");
 }
 
-const existingItem = cart.find(item => item.productId === productId);
+function addProductToWishlist(productId) {
+  const currentUser = requireLogin("You must login first to add items to wishlist.");
+  if (!currentUser) return;
 
-if(existingItem){
+  const wishKey = `wishlist_${currentUser.id}`;
+  let wishList = storage.get(wishKey) || [];
 
-existingItem.quantity += qty;
+  const product = products.find(p => p.id === productId);
+  if (!product) return;
 
-}else{
+  const existing = wishList.find(item => item.productId === productId);
 
-cart.push({
-productId: product.id,
-name: product.name,
-price: product.price,
-image: product.image,
-quantity: qty
-});
+  if (existing) {
+    showToast("Already in wishlist", "info");
+    return;
+  }
 
+  wishList.push({
+    productId: product.id,
+    name: product.name,
+    price: product.price,
+    image: product.image
+  });
+
+  storage.set(wishKey, wishList);
+
+  updateWishListBadge();
+  showToast("Product added to wishlist ✔", "success");
 }
-
-/* decrease stock */
-
-product.stock -= qty;
-
-storage.set(STORAGE_KEYS.PRODUCTS, allProducts);
-storage.set(cartKey, cart);
-
-updateCartBadge();
-
-showToast("Product added to cart ✔","success");
-
-}
-
-
-
-function addProductToWishlist(productId){
-
-const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
-
-if(!currentUser){
-
-showToast("You must login first.","warning");
-
-setTimeout(()=>{
-window.location.href="../../features/auth/login.html";
-},1500);
-
-return;
-
-}
-
-const wishKey = `wishlist_${currentUser.id}`;
-
-let wishList = storage.get(wishKey) || [];
-
-const product = products.find(p => p.id === productId);
-
-if(!product) return;
-
-const existing = wishList.find(item => item.productId === productId);
-
-if(existing){
-
-showToast("Already in wishlist","info");
-return;
-
-}
-
-wishList.push({
-productId: product.id,
-name: product.name,
-price: product.price,
-image: product.image
-});
-
-storage.set(wishKey, wishList);
-
-updateWishListBadge();
-
-showToast("Product added to wishlist ✔","success");
-
-}
-
-
 
 /* =========================================================
    PRODUCT LIST PAGE
 ========================================================= */
 
-function renderProducts(){
+function renderProducts() {
+  if (!container) return;
 
-if(!container) return;
+  container.innerHTML = "";
 
-container.innerHTML = "";
+  products.forEach(product => {
+    const hasOldPrice = product.oldPrice && product.oldPrice > product.price;
 
-products.forEach(product => {
+    const discount = hasOldPrice
+      ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
+      : 0;
 
-const hasOldPrice = product.oldPrice && product.oldPrice > product.price;
+    container.innerHTML += `
+      <div class="col-md-4 col-lg-3 mb-4">
+        <div class="product-card h-100">
+          <div class="product-image-wrapper">
+            <img 
+              src="${product.image}" 
+              class="product-image view-product"
+              data-id="${product.id}"
+              alt="${product.name}"
+            >
 
-const discount = hasOldPrice ?
-Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100) : 0;
+            <div class="product-badges">
+              ${product.badge ? `<span class="badge-new">${product.badge}</span>` : ""}
+              ${discount > 0 ? `<span class="badge-discount">-${discount}%</span>` : ""}
+            </div>
 
-container.innerHTML += `
-<div class="col-md-4 col-lg-3 mb-4">
+            <div class="product-actions">
+              <button class="action-btn view-product" data-id="${product.id}">
+                <i class="fa-solid fa-eye"></i>
+              </button>
 
-<div class="product-card h-100">
+              <button class="action-btn add-to-cart" data-id="${product.id}">
+                <i class="fas fa-shopping-cart"></i>
+              </button>
 
-<div class="product-image-wrapper">
+              <button class="action-btn add-to-wishlist" data-id="${product.id}">
+                <i class="far fa-heart"></i>
+              </button>
+            </div>
+          </div>
 
-<img 
-src="${product.image}" 
-class="product-image view-product"
-data-id="${product.id}"
-alt="${product.name}"
->
+          <div class="product-info">
+            <h5 class="product-title">${product.name}</h5>
 
-<div class="product-badges">
+            <p class="product-description">
+              ${product.description ?? ""}
+            </p>
 
-${product.badge ? `<span class="badge-new">${product.badge}</span>` : ''}
-
-${discount > 0 ? `<span class="badge-discount">-${discount}%</span>` : ''}
-
-</div>
-
-<div class="product-actions">
-
-<button class="action-btn view-product" data-id="${product.id}">
-<i class="fa-solid fa-eye"></i>
-</button>
-
-<button class="action-btn add-to-cart" data-id="${product.id}">
-<i class="fas fa-shopping-cart"></i>
-</button>
-
-<button class="action-btn add-to-wishList" data-id="${product.id}">
-<i class="far fa-heart"></i>
-</button>
-
-</div>
-
-</div>
-
-<div class="product-info">
-
-<h5 class="product-title">${product.name}</h5>
-
-<p class="product-description">
-${product.description ?? ""}
-</p>
-
-<div class="product-price">
-
-${hasOldPrice ? `<span class="old-price">$${product.oldPrice.toFixed(2)}</span>` : ''}
-
-<span class="current-price">$${product.price.toFixed(2)}</span>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-`;
-
-});
-
+            <div class="product-price">
+              ${hasOldPrice ? `<span class="old-price">$${product.oldPrice.toFixed(2)}</span>` : ""}
+              <span class="current-price">$${product.price.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  });
 }
-
-
 
 /* =========================================================
    EVENTS (PRODUCT LIST)
 ========================================================= */
 
-if(container){
+if (container) {
+  container.addEventListener("click", function (e) {
+    const viewBtn = e.target.closest(".view-product");
 
-container.addEventListener("click",function(e){
+    if (viewBtn) {
+      const id = viewBtn.dataset.id;
+      window.location.href = `product-details.html?id=${id}`;
+      return;
+    }
 
-const viewBtn = e.target.closest(".view-product");
+    const cartBtn = e.target.closest(".add-to-cart");
 
-if(viewBtn){
+    if (cartBtn) {
+      const id = parseInt(cartBtn.dataset.id);
+      addProductToCart(id, 1);
+      return;
+    }
 
-const id = viewBtn.dataset.id;
+    const wishBtn = e.target.closest(".add-to-wishlist");
 
-window.location.href =
-`product-details.html?id=${id}`;
-
-return;
-
+    if (wishBtn) {
+      const id = parseInt(wishBtn.dataset.id);
+      addProductToWishlist(id);
+    }
+  });
 }
-
-/* add to cart */
-
-const cartBtn = e.target.closest(".add-to-cart");
-
-if(cartBtn){
-
-const id = parseInt(cartBtn.dataset.id);
-
-addProductToCart(id,1);
-
-}
-
-/* wishlist */
-
-const wishBtn = e.target.closest(".add-to-wishList");
-
-if(wishBtn){
-
-const id = parseInt(wishBtn.dataset.id);
-
-addProductToWishlist(id);
-
-}
-
-});
-
-}
-
-
 
 /* =========================================================
    PRODUCT DETAILS PAGE
@@ -290,11 +221,8 @@ function renderProductDetails() {
 
   if (!product) return;
 
-  /* render text */
   document.getElementById("productName").textContent = product.name;
-
-  document.getElementById("productPrice").textContent =
-    `$${product.price.toFixed(2)}`;
+  document.getElementById("productPrice").textContent = `$${product.price.toFixed(2)}`;
 
   const oldPriceEl = document.getElementById("oldPrice");
   if (product.oldPrice) {
@@ -303,19 +231,15 @@ function renderProductDetails() {
     oldPriceEl.textContent = "";
   }
 
-  document.getElementById("productDescription").textContent =
-    product.description || "";
+  document.getElementById("productDescription").textContent = product.description || "";
 
-  /* render category */
   const categoryEl = document.getElementById("productCategories");
   if (categoryEl) {
     categoryEl.textContent = product.category || "Uncategorized";
   }
 
-  /* render rating + reviews */
-  renderRating(product.rating || 0, product.reviewsCount || 0);
+  renderRating(product.rating || 0, product.reviews?.length || 0);
 
-  /* images */
   mainImages.innerHTML = "";
   thumbImages.innerHTML = "";
 
@@ -337,7 +261,6 @@ function renderProductDetails() {
     `;
   });
 
-  /* swiper */
   const thumbs = new Swiper(".thumbsSwiper", {
     spaceBetween: 10,
     slidesPerView: 4,
@@ -349,7 +272,6 @@ function renderProductDetails() {
     thumbs: { swiper: thumbs }
   });
 
-  /* add to cart */
   const cartBtn = document.getElementById("addToCartBtn");
   if (cartBtn) {
     cartBtn.addEventListener("click", () => {
@@ -358,7 +280,6 @@ function renderProductDetails() {
     });
   }
 
-  /* wishlist */
   const wishBtn = document.getElementById("addToWishlistBtn");
   if (wishBtn) {
     wishBtn.addEventListener("click", () => {
@@ -389,46 +310,40 @@ function renderRating(rating, reviewsCount) {
 
 renderProductDetails();
 
-
-
 /* =========================================================
    TOAST
 ========================================================= */
 
-function showToast(message,type="success"){
+function showToast(message, type = "success") {
+  const toastHTML = `
+    <div class="toast align-items-center text-bg-${type} border-0 position-fixed bottom-0 end-0 m-3">
+      <div class="d-flex">
+        <div class="toast-body">
+          ${message}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  `;
 
-const toastHTML = `
-<div class="toast align-items-center text-bg-${type} border-0 position-fixed bottom-0 end-0 m-3">
-<div class="d-flex">
-<div class="toast-body">
-${message}
-</div>
-<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-</div>
-</div>
-`;
+  const wrapper = document.createElement("div");
+  wrapper.innerHTML = toastHTML;
 
-const wrapper = document.createElement("div");
+  document.body.appendChild(wrapper);
 
-wrapper.innerHTML = toastHTML;
+  const toastEl = wrapper.querySelector(".toast");
+  const toast = new bootstrap.Toast(toastEl);
 
-document.body.appendChild(wrapper);
+  toast.show();
 
-const toastEl = wrapper.querySelector(".toast");
-
-const toast = new bootstrap.Toast(toastEl);
-
-toast.show();
-
-setTimeout(()=>{
-wrapper.remove();
-},3000);
-
+  setTimeout(() => {
+    wrapper.remove();
+  }, 3000);
 }
-
 
 /* ---------------- Initialize ---------------- */
 
 renderProducts();
+renderProductDetails();
 updateCartBadge();
 updateWishListBadge();
