@@ -35,6 +35,13 @@ This e-commerce system is designed to provide a complete online shopping experie
 - Role-based access control (Customer, Seller, Admin)
 - Session management using LocalStorage
 - Password validation and security measures
+- **Authentication Guards**: Auto-redirect logged-in users away from login/register pages
+- **Role-Based Navigation**: Dynamic navbar that adapts based on user role
+  - Sellers see: Dashboard, Add Product, Manage Products, Orders
+  - Admins see: Admin Dashboard, Users, Products, Customers
+  - Customers see: Shop, Cart, Wishlist, Account
+  - Guests see: Login, Register
+- **Smart Redirects**: Users redirected to appropriate dashboards based on their role
 
 ### 2. Home Page
 
@@ -78,24 +85,37 @@ This e-commerce system is designed to provide a complete online shopping experie
 
 ### 7. Seller Dashboard
 
+- **Modern Sidebar Navigation**
+  - Responsive sidebar with mobile-friendly toggle
+  - Quick access to all seller features (Dashboard, Products, Orders)
+  - Dark/Light theme toggle with persistent preference
+  - Smooth transitions and modern UI design
 - **Analytics Dashboard**
   - Real-time statistics (products, orders, sales, low stock alerts)
   - Sales trend visualization with Chart.js (7-day line chart)
   - Product status distribution (doughnut chart)
-  - Recent orders overview (last 5 orders)
-  - Quick action buttons for common tasks
+  - Recent orders overview table
+  - Dynamic data updates based on seller's products
 - **Product Management**
-  - Separate pages for listing, adding, and editing products
+  - Dedicated pages for listing, adding, and editing products
   - Two-column form layout to eliminate scrolling
   - Image upload with live preview
   - CRUD operations (Create, Read, Update, Delete)
   - Stock management with color-coded badges
-- **Order Processing**
-  - Order status updates
-  - Performance metrics
+  - Sidebar navigation integrated across all pages
+- **Order Management**
+  - Comprehensive orders page with filtering capabilities
+  - Order details modal with customer and product information
+  - Order status tracking and updates
+  - Performance metrics and statistics
+  - Recent orders display in dashboard
 - **Inventory Management**
-  - Low stock alerts
-  - Stock tracking
+  - Low stock alerts with real-time monitoring
+  - Stock tracking across all products
+- **Theme Support**
+  - Dark mode with coordinated colors
+  - Theme preference saved in localStorage
+  - Consistent theming across all seller pages
 
 ### 8. Admin Panel
 
@@ -171,7 +191,9 @@ E-Commerce-CST/
 │   │   ├── add-product.js     # Product creation logic
 │   │   ├── edit-product.html  # Edit product form
 │   │   ├── edit-product.js    # Product update logic
-│   │   └── seller.css         # Seller styles
+│   │   ├── orders.html        # Order management page
+│   │   ├── orders.js          # Order processing logic
+│   │   └── seller.css         # Seller styles (includes sidebar)
 │   │
 │   └── admin/                 # Admin panel module
 │       ├── panel.html         # Admin panel
@@ -255,29 +277,34 @@ Handles shopping cart and checkout process.
 
 #### 4. Seller Module (`features/seller/`)
 
-Provides seller dashboard and product management with analytics.
+Provides comprehensive seller dashboard with modern sidebar navigation and analytics.
 
 **Files:**
 
-- `dashboard.html`: Main analytics dashboard with charts and statistics
-- `dashboard.js`: Dashboard logic, Chart.js implementation
-- `manage-products.html`: Product listing with edit/delete actions
-- `manage-products.js`: Product management operations
-- `add-product.html`: Add new product form (two-column layout)
-- `add-product.js`: Product creation with image upload
-- `edit-product.html`: Edit product form (two-column layout)
-- `edit-product.js`: Product update logic
-- `seller.css`: Seller module styling
+- `dashboard.html`: Main analytics dashboard with modern sidebar navigation
+- `dashboard.js`: Dashboard logic, Chart.js implementation, seed initialization
+- `manage-products.html`: Product listing with edit/delete actions and sidebar
+- `manage-products.js`: Product management operations, seed initialization
+- `add-product.html`: Add new product form with sidebar (two-column layout)
+- `add-product.js`: Product creation with image upload, seed initialization
+- `edit-product.html`: Edit product form with sidebar (two-column layout)
+- `edit-product.js`: Product update logic, seed initialization
+- `orders.html`: Dedicated order management page with filtering
+- `orders.js`: Order processing, status updates, seed initialization
+- `seller.css`: Modern styling for sidebar, cards, and responsive design
 
 **Responsibilities:**
 
-- Analytics visualization (sales trends, product status distribution)
-- Real-time statistics (products, orders, sales, low stock alerts)
-- Product CRUD operations with separate pages for each action
-- Image upload with live preview
-- Order processing and status updates
-- Inventory management with stock tracking
-- Two-column form design to eliminate scrolling
+- **Analytics & Visualization**: Sales trends, product status distribution with Chart.js
+- **Real-time Statistics**: Products count, orders, sales revenue, low stock alerts
+- **Product CRUD Operations**: Separate pages for listing, adding, editing, and deleting
+- **Order Management**: Comprehensive order view with filtering and status updates
+- **Image Management**: Upload with live preview on add/edit forms
+- **Inventory Tracking**: Stock monitoring with color-coded badges and alerts
+- **Navigation**: Consistent sidebar navigation across all seller pages
+- **Theme Support**: Dark/Light mode toggle with persistent preference
+- **Data Initialization**: Automatic seed data loading on all seller pages
+- **Responsive Design**: Mobile-friendly sidebar with overlay toggle
 
 #### 5. Admin Module (`features/admin/`)
 
@@ -406,6 +433,39 @@ Common utilities, components, and data models used across modules.
 
 ## Recent Updates
 
+### March 7, 2026 - Seller Dashboard & Authentication Enhancements
+
+**Seller Dashboard Improvements:**
+
+- ✅ **Modern Sidebar Navigation**: Implemented responsive sidebar across all seller pages
+- ✅ **Orders Integration**: Added comprehensive order management functionality
+  - Orders section in main dashboard with table view
+  - Dedicated orders page with filtering and status updates
+  - Order details modal with customer and product information
+- ✅ **Fixed Script Bug**: Resolved broken footer.js script tag causing JavaScript errors
+- ✅ **Dark Theme Support**: Added theme toggle with persistent localStorage preference
+- ✅ **Responsive Design**: Enhanced mobile experience with sidebar overlay
+- ✅ **Data Initialization**: Added seed data calls to all seller pages for consistent data loading
+
+**Authentication & Navigation:**
+
+- ✅ **Auth Guards**: Prevent logged-in users from accessing login/register pages
+- ✅ **Role-Based Navbar**: Dynamic navigation menu adapts to user role
+- ✅ **Smart Redirects**: Auto-redirect to appropriate dashboard based on role
+
+**Bug Fixes:**
+
+- ✅ **Product Distribution**: Balanced test products equally between sellers (4 products each)
+- ✅ **Seed Initialization**: Fixed products not showing when accessing seller pages directly
+- ✅ **Import Fixes**: Corrected storage import in orders.js
+
+**Test Credentials:**
+
+- **Admin**: `admin@example.com` / `Admin@123`
+- **Seller 1**: `seller1@example.com` / `Seller@123` (4 products)
+- **Seller 2**: `seller2@example.com` / `Seller@123` (4 products)
+- **Customer**: `customer@example.com` / `Customer@123`
+
 ### March 6, 2026 - Seller Dashboard Restructuring
 
 Major improvements to the seller interface:
@@ -416,15 +476,111 @@ Major improvements to the seller interface:
 - **Data model cleanup** - removed category from Product class, removed sellerId from User class
 - **UI/UX enhancements** - optimized spacing, color-coded stock badges, live image preview
 
-For detailed changelog, see [ziad-hany-changelog-2026-03-01.md](ziad-hany-changelog-2026-03-06.md)
-
 ---
 
 ## Development Notes
 
+### Data Persistence
+
 - Project uses **LocalStorage** for data persistence (no backend required)
-- Default admin credentials: `username: admin, password: Admin@123`
-- Default seller accounts available in seed data
-- **Chart.js** CDN used for analytics visualization
-- **Bootstrap 5.3.2** for responsive design
+- Seed data automatically initialized on first load
+- All seller pages include seed initialization for consistent data availability
+
+### Test Credentials
+
+**Admin Account:**
+
+- Email: `admin@example.com`
+- Password: `Admin@123`
+- Access: Full system control
+
+**Seller Accounts:**
+
+- **Seller 1**
+  - Email: `seller1@example.com`
+  - Password: `Seller@123`
+  - Products: 4 items (White Ceramic Vase, Decor Round Pouf, Modern Table Lamp, Luxury Wall Lamp)
+- **Seller 2**
+  - Email: `seller2@example.com`
+  - Password: `Seller@123`
+  - Products: 4 items (Minimal White Chair, Modern Wooden Table, Luxury Sofa, Art Head Vase)
+
+**Customer Account:**
+
+- Email: `customer@example.com`
+- Password: `Customer@123`
+- Access: Shopping features only
+
+### Technologies & Libraries
+
+- **Chart.js** CDN for analytics visualization
+- **SweetAlert2** for modern alert dialogs
+- **Bootstrap 5.3.2** for responsive design framework
+- **FontAwesome** for icon library
+
+### Testing Tips
+
+- **Clear LocalStorage**: If experiencing data issues, clear browser LocalStorage and refresh
+- **Direct Page Access**: All seller pages work independently (seed data auto-loads)
+- **Product Distribution**: Each test seller has exactly 4 products for balanced testing
+- **Theme Preference**: Dark/Light mode preference persists across sessions
+
+### Validation & Security
+
 - All forms include client-side validation
+- Password requirements enforced during registration
+- Role-based access control on all protected pages
+- Session management with automatic redirects
+
+---
+
+## GitHub Workflow & Contributions
+
+### Recent Pull Requests
+
+**March 7, 2026:**
+
+- **PR #18**: Fix - Seller Products Not Showing (Seed Initialization) ✅ Merged
+- **PR #17**: Feature - Authentication Redirect Guards and Role-Based Navigation ✅ Merged
+- **PR #16**: Fix - Seller Dashboard Script Tags and Orders Integration ✅ Merged
+
+### Branch Strategy
+
+- `main`: Production-ready code
+- `feature/*`: New features (e.g., `feature/auth-redirect-fix`)
+- `fix/*`: Bug fixes (e.g., `fix/seller-seed-initialization`)
+
+### How to Contribute
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes with clear messages
+4. Push to your branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request with detailed description
+
+### Commit Message Convention
+
+- `feat:` New feature
+- `fix:` Bug fix
+- `docs:` Documentation updates
+- `style:` Code style changes (formatting, etc.)
+- `refactor:` Code refactoring
+- `test:` Adding or updating tests
+
+---
+
+## License
+
+This project is developed for educational purposes as part of the CST course.
+
+---
+
+## Contact & Support
+
+For questions or issues, please open an issue on GitHub.
+
+**Repository**: [Shady-Mo/E-Commerce-CST](https://github.com/Shady-Mo/E-Commerce-CST)
+
+---
+
+*Last Updated: March 7, 2026*
