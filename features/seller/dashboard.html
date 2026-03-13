@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -12,7 +12,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </head>
   <body>
-
     <aside class="seller-sidebar" id="sellerSidebar">
       <div class="sidebar-header">
         <a href="dashboard.html">
@@ -23,7 +22,7 @@
             class="sidebar-logo"
           />
         </a>
-        <button class="btn btn-link sidebar-close d-lg-none" id="sidebarClose">
+        <button class="btn btn-link sidebar-close d-lg-none" id="sidebarClose" type="button" title="Close sidebar" aria-label="Close sidebar">
           <i class="fas fa-times"></i>
         </button>
       </div>
@@ -59,11 +58,11 @@
       </nav>
 
       <div class="sidebar-footer">
-        <button class="sidebar-link w-100 text-start" id="themeToggleBtn">
+        <button class="sidebar-link w-100 text-start" id="themeToggleBtn" type="button" title="Toggle theme">
           <i class="fas fa-moon"></i>
           <span>Toggle Theme</span>
         </button>
-        <button class="sidebar-link w-100 text-start" id="logoutBtn">
+        <button class="sidebar-link w-100 text-start" id="logoutBtn" type="button" title="Logout">
           <i class="fas fa-right-from-bracket"></i>
           <span>Logout</span>
         </button>
@@ -74,7 +73,7 @@
 
     <div class="seller-main" id="sellerMain">
       <div class="seller-topbar d-lg-none">
-        <button class="btn btn-link" id="sidebarToggle">
+        <button class="btn btn-link" id="sidebarToggle" type="button" title="Open sidebar" aria-label="Open sidebar">
           <i class="fas fa-bars fs-5"></i>
         </button>
         <span class="fw-semibold">Seller Dashboard</span>
@@ -82,6 +81,7 @@
 
       <div id="sellerPanelContainer" class="main-section">
         <div class="seller-section active" id="section-dashboard">
+
           <div class="row mb-3">
             <div class="col-12">
               <h2 class="page-title mb-1">
@@ -96,13 +96,7 @@
           <div class="row mb-3 g-3">
             <div class="col-sm-6 col-xl-3">
               <div class="stat-card">
-                <div
-                  class="stat-icon"
-                  style="
-                    background: rgba(187, 151, 109, 0.15);
-                    color: var(--main-color);
-                  "
-                >
+                <div class="stat-icon stat-icon-products">
                   <i class="fas fa-box"></i>
                 </div>
                 <div class="stat-info">
@@ -111,13 +105,9 @@
                 </div>
               </div>
             </div>
-
             <div class="col-sm-6 col-xl-3">
               <div class="stat-card">
-                <div
-                  class="stat-icon"
-                  style="background: rgba(25, 135, 84, 0.15); color: #198754"
-                >
+                <div class="stat-icon stat-icon-orders">
                   <i class="fas fa-shopping-cart"></i>
                 </div>
                 <div class="stat-info">
@@ -126,13 +116,9 @@
                 </div>
               </div>
             </div>
-
             <div class="col-sm-6 col-xl-3">
               <div class="stat-card">
-                <div
-                  class="stat-icon"
-                  style="background: rgba(13, 110, 253, 0.15); color: #0d6efd"
-                >
+                <div class="stat-icon stat-icon-sales">
                   <i class="fas fa-dollar-sign"></i>
                 </div>
                 <div class="stat-info">
@@ -141,13 +127,9 @@
                 </div>
               </div>
             </div>
-
             <div class="col-sm-6 col-xl-3">
               <div class="stat-card">
-                <div
-                  class="stat-icon"
-                  style="background: rgba(220, 53, 69, 0.15); color: #dc3545"
-                >
+                <div class="stat-icon stat-icon-stock">
                   <i class="fas fa-exclamation-triangle"></i>
                 </div>
                 <div class="stat-info">
@@ -155,6 +137,32 @@
                   <span class="stat-label">Low Stock Items</span>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div class="row mb-4 g-3">
+            <div class="col-12">
+              <h5 class="fw-semibold text-muted mb-0">
+                <i class="fas fa-bolt me-2"></i>Quick Actions
+              </h5>
+            </div>
+            <div class="col-sm-6 col-md-4">
+              <a href="manage-products.html" class="btn btn-outline-primary w-100 py-3">
+                <i class="fas fa-boxes-stacked d-block fs-4 mb-1"></i>
+                Manage Products
+              </a>
+            </div>
+            <div class="col-sm-6 col-md-4">
+              <a href="add-product.html" class="btn btn-main w-100 py-3">
+                <i class="fas fa-plus-circle d-block fs-4 mb-1"></i>
+                Add Product
+              </a>
+            </div>
+            <div class="col-sm-6 col-md-4">
+              <a href="orders.html" class="btn btn-outline-success w-100 py-3">
+                <i class="fas fa-shopping-cart d-block fs-4 mb-1"></i>
+                View Orders
+              </a>
             </div>
           </div>
 
@@ -171,7 +179,6 @@
                 </div>
               </div>
             </div>
-
             <div class="col-lg-4">
               <div class="card shadow-sm">
                 <div class="card-header">
@@ -185,6 +192,7 @@
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>
