@@ -3,6 +3,8 @@ export function renderFooter() {
     const footer = document.querySelector("footer");
     if (!footer) return;
 
+    const prefix = computePrefix();
+
     footer.className = "footer-section text-white mt-5";
 
     footer.innerHTML = `
@@ -92,7 +94,7 @@ export function renderFooter() {
                         <li><a href="#">FAQs</a></li>
                         <li><a href="#">Terms & Condition</a></li>
                         <li><a href="#">Return Policy</a></li>
-                        <li><a href="#">Contact</a></li>
+                        <li><a href="${prefix}features/contact/contact.html">Contact</a></li>
                     </ul>
                 </div>
 
@@ -107,4 +109,26 @@ export function renderFooter() {
 
     </div>
     `;
+}
+
+function computePrefix() {
+
+    const moduleUrl = new URL(import.meta.url);
+    const modulePath = decodeURIComponent(moduleUrl.pathname);
+    const marker = "/shared/js/footer.js";
+    const markerIdx = modulePath.lastIndexOf(marker);
+
+    if (markerIdx === -1) return "";
+
+    const rootPath = modulePath.substring(0, markerIdx) + "/";
+    const pagePath = decodeURIComponent(window.location.pathname);
+    const pageDir = pagePath.substring(0, pagePath.lastIndexOf("/") + 1);
+
+    if (!pageDir.startsWith(rootPath)) return "";
+
+    const relative = pageDir.substring(rootPath.length);
+    const depth = relative.split("/").filter(Boolean).length;
+
+    return "../".repeat(depth);
+
 }
