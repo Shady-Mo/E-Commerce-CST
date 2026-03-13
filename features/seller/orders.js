@@ -50,7 +50,7 @@ function getSellerOrders() {
     );
 }
 
-function displayOrders(filter = 'all') {
+function displayOrders(filter = 'all', searchTerm = '') {
     const tbody = document.getElementById('ordersTableBody');
     const products = getSellerProducts();
     let orders = getSellerOrders();
@@ -58,6 +58,14 @@ function displayOrders(filter = 'all') {
     if (filter !== 'all') {
         orders = orders.filter(order =>
             order.status && order.status.toLowerCase() === filter.toLowerCase()
+        );
+    }
+
+    if (searchTerm) {
+        const lower = searchTerm.toLowerCase();
+        orders = orders.filter(order =>
+            String(order.id).includes(lower) ||
+            (order.customerName && order.customerName.toLowerCase().includes(lower))
         );
     }
 
@@ -135,6 +143,7 @@ function getStatusClass(status) {
 }
 
 window.viewOrderDetails = function (orderId) {
+    orderId = Number(orderId);
     const allOrders = storage.get(STORAGE_KEYS.ORDERS) || [];
     const order = allOrders.find(o => o.id === orderId);
     const products = getSellerProducts();
@@ -203,6 +212,7 @@ window.viewOrderDetails = function (orderId) {
 };
 
 window.updateOrderStatus = function (orderId) {
+    orderId = Number(orderId);
     const allOrders = storage.get(STORAGE_KEYS.ORDERS) || [];
     const orderIndex = allOrders.findIndex(o => o.id === orderId);
 
@@ -253,7 +263,8 @@ window.updateOrderStatus = function (orderId) {
             });
 
             const currentFilter = document.getElementById('statusFilter').value;
-            displayOrders(currentFilter);
+            const currentSearch = document.getElementById('orderSearchInput')?.value.trim() || '';
+            displayOrders(currentFilter, currentSearch);
         }
     });
 };
@@ -330,9 +341,23 @@ function initOrders() {
     displayOrders();
 
     const filterSelect = document.getElementById('statusFilter');
-    if (filterSelect) {
-        filterSelect.addEventListener('change', (e) => {
-            displayOrders(e.target.value);
+    const searchInput = document.getElementById('orderSearchInput');
+    const clearBtn = document.getElementById('clearOrderFiltersBtn');
+
+    function applyFilters() {
+        displayOrders(
+            filterSelect?.value || 'all',
+            searchInput?.value.trim() || ''
+        );
+    }
+
+    if (filterSelect) filterSelect.addEventListener('change', applyFilters);
+    if (searchInput) searchInput.addEventListener('input', applyFilters);
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            filterSelect.value = 'all';
+            searchInput.value = '';
+            displayOrders();
         });
     }
 }

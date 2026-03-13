@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -14,57 +14,24 @@
     <aside class="seller-sidebar" id="sellerSidebar">
       <div class="sidebar-header">
         <a href="dashboard.html">
-          <img
-            src="../../assets/images/logo-DXjmQiDB.svg"
-            height="36"
-            alt="Logo"
-            class="sidebar-logo"
-          />
+          <img src="../../assets/images/logo-DXjmQiDB.svg" height="36" alt="Logo" class="sidebar-logo" />
         </a>
-        <button class="btn btn-link sidebar-close d-lg-none" id="sidebarClose">
+        <button class="btn btn-link sidebar-close d-lg-none" id="sidebarClose" type="button" title="Close sidebar" aria-label="Close sidebar">
           <i class="fas fa-times"></i>
         </button>
       </div>
-
       <nav class="sidebar-nav">
         <ul class="sidebar-menu">
           <li class="sidebar-menu-label">Main</li>
-          <li>
-            <a href="dashboard.html" class="sidebar-link">
-              <i class="fas fa-chart-line"></i>
-              <span>Dashboard</span>
-            </a>
-          </li>
-          <li>
-            <a href="manage-products.html" class="sidebar-link active">
-              <i class="fas fa-boxes-stacked"></i>
-              <span>Manage Products</span>
-            </a>
-          </li>
-          <li>
-            <a href="add-product.html" class="sidebar-link">
-              <i class="fas fa-plus-circle"></i>
-              <span>Add Product</span>
-            </a>
-          </li>
-          <li>
-            <a href="orders.html" class="sidebar-link">
-              <i class="fas fa-shopping-cart"></i>
-              <span>Orders</span>
-            </a>
-          </li>
+          <li><a href="dashboard.html" class="sidebar-link"><i class="fas fa-chart-line"></i><span>Dashboard</span></a></li>
+          <li><a href="manage-products.html" class="sidebar-link active"><i class="fas fa-boxes-stacked"></i><span>Manage Products</span></a></li>
+          <li><a href="add-product.html" class="sidebar-link"><i class="fas fa-plus-circle"></i><span>Add Product</span></a></li>
+          <li><a href="orders.html" class="sidebar-link"><i class="fas fa-shopping-cart"></i><span>Orders</span></a></li>
         </ul>
       </nav>
-
       <div class="sidebar-footer">
-        <button class="sidebar-link w-100 text-start" id="themeToggleBtn">
-          <i class="fas fa-moon"></i>
-          <span>Toggle Theme</span>
-        </button>
-        <button class="sidebar-link w-100 text-start" id="logoutBtn">
-          <i class="fas fa-right-from-bracket"></i>
-          <span>Logout</span>
-        </button>
+        <button class="sidebar-link w-100 text-start" id="themeToggleBtn" type="button" title="Toggle theme"><i class="fas fa-moon"></i><span>Toggle Theme</span></button>
+        <button class="sidebar-link w-100 text-start" id="logoutBtn" type="button" title="Logout"><i class="fas fa-right-from-bracket"></i><span>Logout</span></button>
       </div>
     </aside>
 
@@ -72,19 +39,22 @@
 
     <div class="seller-main" id="sellerMain">
       <div class="seller-topbar d-lg-none">
-        <button class="btn btn-link" id="sidebarToggle">
-          <i class="fas fa-bars fs-5"></i>
-        </button>
+        <button class="btn btn-link" id="sidebarToggle" type="button" title="Open sidebar" aria-label="Open sidebar"><i class="fas fa-bars fs-5"></i></button>
         <span class="fw-semibold">Manage Products</span>
       </div>
 
       <div id="sellerPanelContainer" class="main-section">
         <div class="row mb-4">
-          <div class="col-12 d-flex justify-content-between align-items-center">
+          <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h2 class="page-title">Manage Products</h2>
-            <a href="add-product.html" class="btn btn-main">
-              <i class="fas fa-plus me-2"></i>Add New Product
-            </a>
+            <div class="d-flex gap-2">
+              <a href="orders.html" class="btn btn-outline-secondary">
+                <i class="fas fa-shopping-cart me-2"></i>View Orders
+              </a>
+              <a href="add-product.html" class="btn btn-main">
+                <i class="fas fa-plus me-2"></i>Add New Product
+              </a>
+            </div>
           </div>
         </div>
 
@@ -92,11 +62,31 @@
           <div class="col-12">
             <div class="card shadow-sm">
               <div class="card-header">
-                <h5 class="mb-0">
-                  <i class="fas fa-boxes me-2"></i>My Products
-                </h5>
+                <h5 class="mb-0"><i class="fas fa-boxes me-2"></i>My Products</h5>
               </div>
               <div class="card-body">
+                <div class="row mb-3 g-2">
+                  <div class="col-md-6">
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="fas fa-search"></i></span>
+                      <input type="text" class="form-control" id="productSearchInput" placeholder="Search by name..." />
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <select class="form-select" id="categoryFilter" title="Filter by category" aria-label="Filter by category">
+                      <option value="all">All Categories</option>
+                      <option value="Furniture">Furniture</option>
+                      <option value="Lighting">Lighting</option>
+                      <option value="Decor">Decor</option>
+                      <option value="Accessories">Accessories</option>
+                    </select>
+                  </div>
+                  <div class="col-md-2">
+                    <button class="btn btn-outline-secondary w-100" id="clearFiltersBtn">
+                      <i class="fas fa-times me-1"></i>Clear
+                    </button>
+                  </div>
+                </div>
                 <div class="table-responsive">
                   <table class="table table-hover align-middle">
                     <thead>
