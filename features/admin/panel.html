@@ -200,8 +200,16 @@
                         <input id="userSearch" type="text" class="form-control" placeholder="Search users..." />
                       </div>
                     </div>
-                    <div class="col-sm-5 col-md-4">
-                      <select id="userPageSize" class="form-select">
+                      <div class="col-sm-6 col-md-4 col-xl-2">
+                        <select id="userRoleFilter" class="form-select" aria-label="Filter users by role" title="Filter users by role">
+                          <option value="all" selected>All Roles</option>
+                          <option value="admin">Admin</option>
+                          <option value="seller">Seller</option>
+                          <option value="customer">Customer</option>
+                        </select>
+                      </div>
+                      <div class="col-sm-6 col-md-4 col-xl-2">
+                      <select id="userPageSize" class="form-select" aria-label="Users per page" title="Users per page">
                         <option value="5">5 per page</option>
                         <option value="10" selected>10 per page</option>
                         <option value="25">25 per page</option>
