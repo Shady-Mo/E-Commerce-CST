@@ -110,7 +110,7 @@ ${currentUser && currentUser.role === "admin"
 </li>
 
 <li class="nav-item">
-<a class="nav-link ${textClass}" href="#">Contact Us</a>
+<a class="nav-link ${textClass}" href="${prefix}features/contact/contact.html">Contact Us</a>
 </li>
 
 </ul>
@@ -175,7 +175,7 @@ data-bs-dismiss="offcanvas">
 </li>
 
 <li class="nav-item">
-<a class="nav-link" href="#">Contact Us</a>
+<a class="nav-link" href="${prefix}features/contact/contact.html">Contact Us</a>
 </li>
 
 </ul>
