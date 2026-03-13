@@ -2,197 +2,158 @@
 <html lang="en">
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Register</title>
+  <title>Register</title>
 
-<!-- Bootstrap -->
-<link rel="stylesheet" href="../../shared/bootstrap/bootstrap.min.css">
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="../../shared/bootstrap/bootstrap.min.css">
 
-<!-- Fontawesome -->
-<link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
+  <!-- Fontawesome -->
+  <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
 
-<!-- Global -->
-<link rel="stylesheet" href="../../global.css">
+  <!-- Global -->
+  <link rel="stylesheet" href="../../global.css">
 
-<!-- Auth CSS -->
-<link rel="stylesheet" href="auth.css">
+  <!-- Auth CSS -->
+  <link rel="stylesheet" href="auth.css">
 
-<!-- Sweet Alert -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- Sweet Alert -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
 
 <body>
 
-<nav></nav>
+  <nav></nav>
+
+  <main class="container-fluid main-section mt-4">
+    <div class="row align-items-center">
+
+      <!-- IMAGE SIDE -->
+      <section class="col-md-6 d-none d-md-block">
+        <div class="img-wrapper">
+          <img src="../../assets/images/login-image.jpg" class="img-fluid" alt="register">
+        </div>
+      </section>
+
+      <!-- FORM SIDE -->
+      <section class="col-md-6 col-12 d-flex justify-content-center">
+        <form id="registerForm" class="auth-form needs-validation" novalidate>
+
+          <h2 class="mb-2 text-center">Create A New Account !</h2>
+          <p class="text-center text-muted mb-4">
+            Please Enter Your Data to Create Your Account
+          </p>
+
+          <!-- USERNAME -->
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+
+            <div class="input-group custom-input">
+              <span class="input-group-text">
+                <i class="fa-regular fa-user"></i>
+              </span>
+
+              <input
+                type="text"
+                class="form-control"
+                id="regUsername"
+                placeholder="Your username"
+              />
+            </div>
+
+            <div class="invalid-feedback d-block" id="regUsernameError"></div>
+          </div>
+
+          <!-- EMAIL -->
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+
+            <div class="input-group custom-input">
+              <span class="input-group-text">
+                <i class="fa-regular fa-envelope"></i>
+              </span>
+
+              <input
+                type="email"
+                class="form-control"
+                id="regEmail"
+                placeholder="name@example.com"
+              />
+            </div>
+
+            <div class="invalid-feedback d-block" id="regEmailError"></div>
+          </div>
+
+          <!-- PASSWORD -->
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+
+            <div class="input-group custom-input">
+              <span class="input-group-text">
+                <i class="fa-solid fa-lock"></i>
+              </span>
+
+              <input
+                type="password"
+                class="form-control"
+                id="regPassword"
+                placeholder="Enter password"
+              />
+
+              <button
+                class="input-group-text password-toggle"
+                type="button"
+                id="togglePassword"
+              >
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+
+            <div class="invalid-feedback d-block" id="regPasswordError"></div>
+          </div>
+
+          <!-- CONFIRM PASSWORD -->
+          <div class="mb-3">
+            <label class="form-label">Confirm Password</label>
+
+            <div class="input-group custom-input">
+              <span class="input-group-text">
+                <i class="fa-solid fa-lock"></i>
+              </span>
+
+              <input
+                type="password"
+                class="form-control"
+                id="regConfirmPassword"
+                placeholder="Confirm password"
+              />
+            </div>
 
-<main class="container-fluid main-section mt-4">
+            <div class="invalid-feedback d-block" id="regConfirmPasswordError"></div>
+          </div>
 
-<div class="row align-items-center">
+          <button class="btn btn-main w-100 mt-3">
+            Register
+          </button>
 
-<!-- IMAGE SIDE -->
+          <p class="text-center mt-3 link">
+            Already have an account?
+            <a href="../auth/login.html">Login</a>
+          </p>
 
-<section class="col-md-6 d-none d-md-block">
+        </form>
+      </section>
 
-<div class="img-wrapper">
+    </div>
+  </main>
 
-<img src="../../assets/images/login-image.jpg" class="img-fluid" alt="register">
+  <footer></footer>
 
-</div>
-
-</section>
-
-
-<!-- FORM SIDE -->
-
-<section class="col-md-6 col-12 d-flex justify-content-center">
-
-<form id="registerForm" class="auth-form needs-validation" novalidate>
-
-<h2 class="mb-2 text-center">Create A New Account !</h2>
-<p class="text-center text-muted mb-4">
-Please Enter Your Data to Create Your Account
-</p>
-
-<!-- USERNAME -->
-<div class="mb-3">
-
-<label class="form-label">Username</label>
-
-<div class="input-group custom-input">
-
-<span class="input-group-text">
-<i class="fa-regular fa-user"></i>
-</span>
-
-<input
-type="text"
-class="form-control"
-id="regUsername"
-placeholder="Your username"
-/>
-
-</div>
-
-<div class="invalid-feedback" id="regUsernameError"></div>
-
-</div>
-
-
-<!-- EMAIL -->
-
-<div class="mb-3">
-
-<label class="form-label">Email</label>
-
-<div class="input-group custom-input">
-
-<span class="input-group-text">
-<i class="fa-regular fa-envelope"></i>
-</span>
-
-<input
-type="email"
-class="form-control"
-id="regEmail"
-placeholder="name@example.com"
-/>
-
-</div>
-
-<div class="invalid-feedback" id="regEmailError"></div>
-
-</div>
-
-
-<!-- PASSWORD -->
-
-<div class="mb-3">
-
-<label class="form-label">Password</label>
-
-<div class="input-group custom-input">
-
-<span class="input-group-text">
-<i class="fa-solid fa-lock"></i>
-</span>
-
-<input
-type="password"
-class="form-control"
-id="regPassword"
-placeholder="Enter password"
-/>
-
-<button
-class="input-group-text password-toggle"
-type="button"
-id="togglePassword"
->
-
-<i class="fa-regular fa-eye"></i>
-
-</button>
-
-</div>
-
-<div class="invalid-feedback" id="regPasswordError"></div>
-
-</div>
-
-
-<!-- CONFIRM PASSWORD -->
-
-<div class="mb-3">
-
-<label class="form-label">Confirm Password</label>
-
-<div class="input-group custom-input">
-
-<span class="input-group-text">
-<i class="fa-solid fa-lock"></i>
-</span>
-
-<input
-type="password"
-class="form-control"
-id="regConfirmPassword"
-placeholder="Confirm password"
-/>
-
-</div>
-
-<div class="invalid-feedback" id="regConfirmPasswordError"></div>
-
-</div>
-
-
-<button class="btn btn-main w-100 mt-3">
-Register
-</button>
-
-<p class="text-center mt-3 link">
-
-Already have an account?
-<a href="../auth/login.html">Login</a>
-
-</p>
-
-</form>
-
-</section>
-
-</div>
-
-</main>
-
-<footer></footer>
-
-
-<script src="../../shared/js/bootstrap/bootstrap.bundle.min.js"></script>
-<script type="module" src="./auth.js"></script>
+  <script src="../../shared/js/bootstrap/bootstrap.bundle.min.js"></script>
+  <script type="module" src="./auth.js"></script>
 
 </body>
 </html>
