@@ -3,7 +3,6 @@ import { storage } from "../../shared/js/storage.js";
 import { seedUsers } from "../../shared/js/user-seed.js";
 import { seedProducts } from "../../shared/js/products-seed.js";
 
-// Initialize seed data
 seedUsers();
 seedProducts();
 
@@ -145,15 +144,33 @@ function initSalesChart() {
     const ctx = document.getElementById('salesChart');
     if (!ctx) return;
 
+    const orders = getSellerOrders();
     const labels = [];
     const data = [];
     const today = new Date();
+    const salesByDay = new Map();
+
+    orders.forEach(order => {
+        const orderDate = new Date(order.createdAt || order.date || order.orderDate || Date.now());
+        const dayKey = orderDate.toISOString().split('T')[0];
+
+        const sellerItems = (order.items || []).filter(item =>
+            products.some(product => product.id === item.productId)
+        );
+
+        const dayTotal = sellerItems.reduce((sum, item) => {
+            return sum + ((Number(item.price) || 0) * (Number(item.quantity) || 0));
+        }, 0);
+
+        salesByDay.set(dayKey, (salesByDay.get(dayKey) || 0) + dayTotal);
+    });
 
     for (let i = 6; i >= 0; i--) {
         const date = new Date(today);
         date.setDate(date.getDate() - i);
+        const dayKey = date.toISOString().split('T')[0];
         labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-        data.push(Math.floor(Math.random() * 1000) + 100);
+        data.push(Number((salesByDay.get(dayKey) || 0).toFixed(2)));
     }
 
     new Chart(ctx, {

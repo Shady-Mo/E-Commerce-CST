@@ -423,6 +423,26 @@ body.theme-dark .seller-topbar {
     flex-shrink: 0;
 }
 
+.stat-icon-products {
+    background: rgba(187, 151, 109, 0.15);
+    color: var(--main-color);
+}
+
+.stat-icon-orders {
+    background: rgba(25, 135, 84, 0.15);
+    color: #198754;
+}
+
+.stat-icon-sales {
+    background: rgba(13, 110, 253, 0.15);
+    color: #0d6efd;
+}
+
+.stat-icon-stock {
+    background: rgba(220, 53, 69, 0.15);
+    color: #dc3545;
+}
+
 .stat-info {
     display: flex;
     flex-direction: column;

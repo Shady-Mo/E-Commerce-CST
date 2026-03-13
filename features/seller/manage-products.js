@@ -35,18 +35,27 @@ function deleteProduct(productId) {
     return { success: true };
 }
 
-function renderProductsTable() {
+function renderProductsTable(searchTerm = '', categoryFilter = 'all') {
     const tbody = document.getElementById("productsTableBody");
     if (!tbody) return;
 
-    const products = getSellerProducts();
+    let products = getSellerProducts();
+
+    if (searchTerm) {
+        const lower = searchTerm.toLowerCase();
+        products = products.filter(p => p.name.toLowerCase().includes(lower));
+    }
+
+    if (categoryFilter !== 'all') {
+        products = products.filter(p => p.category === categoryFilter);
+    }
 
     if (products.length === 0) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="6" class="text-center py-5">
                     <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
-                    <p class="text-muted">No products yet. Click "Add New Product" to get started.</p>
+                    <p class="text-muted">No products found.</p>
                 </td>
             </tr>
         `;
@@ -111,7 +120,10 @@ function handleDeleteProduct(productId) {
 
     const result = deleteProduct(productId);
     if (result.success) {
-        renderProductsTable();
+        renderProductsTable(
+            document.getElementById('productSearchInput')?.value.trim() || '',
+            document.getElementById('categoryFilter')?.value || 'all'
+        );
         showToast('Product deleted successfully', 'success');
     } else {
         showToast('Failed to delete product', 'error');
@@ -202,5 +214,26 @@ function updateThemeIcon(theme) {
 document.addEventListener('DOMContentLoaded', () => {
     initSidebar();
     renderProductsTable();
+
+    const searchInput = document.getElementById('productSearchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const clearBtn = document.getElementById('clearFiltersBtn');
+
+    function applyFilters() {
+        renderProductsTable(
+            searchInput?.value.trim() || '',
+            categoryFilter?.value || 'all'
+        );
+    }
+
+    if (searchInput) searchInput.addEventListener('input', applyFilters);
+    if (categoryFilter) categoryFilter.addEventListener('change', applyFilters);
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            categoryFilter.value = 'all';
+            renderProductsTable();
+        });
+    }
 });
 
