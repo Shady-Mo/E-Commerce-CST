@@ -64,6 +64,7 @@ function validateConfirmPassword(password, confirmPassword) {
 
 
 let userFilter = '';
+let userRoleFilter = 'all';
 let userPage = 1;
 let userPageSize = 10;
 
@@ -174,10 +175,19 @@ export function renderUsers() {
         return;
     }
 
-    const filtered = users.filter(u =>
-        u.username.toLowerCase().includes(userFilter) ||
-        u.email.toLowerCase().includes(userFilter)
-    );
+    const filtered = users.filter((u) => {
+        const matchesSearch =
+            u.username.toLowerCase().includes(userFilter) ||
+            u.email.toLowerCase().includes(userFilter);
+        const matchesRole = userRoleFilter === 'all' || u.role === userRoleFilter;
+
+        return matchesSearch && matchesRole;
+    });
+
+    if (filtered.length === 0) {
+        container.innerHTML = '<p class="text-muted mb-0">No users match the selected filters.</p>';
+        return;
+    }
 
     const totalPages = Math.max(1, Math.ceil(filtered.length / userPageSize));
     if (userPage > totalPages) userPage = totalPages;
@@ -418,11 +428,19 @@ export function initEditUserForm() {
 
 export function initUserSearch() {
     const searchEl = document.getElementById('userSearch');
+    const roleEl = document.getElementById('userRoleFilter');
     const sizeEl = document.getElementById('userPageSize');
 
     if (searchEl) {
         searchEl.addEventListener('input', e => {
             userFilter = e.target.value.toLowerCase();
+            userPage = 1;
+            renderUsers();
+        });
+    }
+    if (roleEl) {
+        roleEl.addEventListener('change', (e) => {
+            userRoleFilter = e.target.value;
             userPage = 1;
             renderUsers();
         });
