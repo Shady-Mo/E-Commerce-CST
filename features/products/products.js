@@ -17,6 +17,19 @@ const container = document.getElementById("productsContainer");
 const allProducts = storage.get(STORAGE_KEYS.PRODUCTS) || [];
 const products = allProducts.filter(p => p.approved !== false);
 
+/* ---------------- Filters / Pagination عناصر ---------------- */
+
+const searchByNameInput = document.getElementById("searchByName");
+const filterCategorySelect = document.getElementById("filterCategory");
+const sortPriceSelect = document.getElementById("sortPrice");
+const resetFiltersBtn = document.getElementById("resetFiltersBtn");
+const paginationEl = document.getElementById("pagination");
+const productsCountEl = document.getElementById("productsCount");
+
+const PRODUCTS_PER_PAGE = 8;
+let currentPage = 1;
+let filteredProducts = [...products].reverse();
+
 /* =========================================================
    AUTH CHECK
 ========================================================= */
@@ -51,6 +64,11 @@ function addProductToCart(productId, qty = 1) {
   const product = products.find(p => p.id === productId);
   if (!product) return;
 
+  if (!product.stock || product.stock <= 0) {
+    showToast("This product is out of stock ❌", "warning");
+    return;
+  }
+
   if (product.stock < qty) {
     showToast("Not enough stock ❌", "warning");
     return;
@@ -76,6 +94,10 @@ function addProductToCart(productId, qty = 1) {
   storage.set(cartKey, cart);
 
   updateCartBadge();
+  renderProducts();
+  renderPagination();
+  updateProductsCount();
+
   showToast("Product added to cart ✔", "success");
 }
 
@@ -110,6 +132,149 @@ function addProductToWishlist(productId) {
 }
 
 /* =========================================================
+   FILTERS / SORT / PAGINATION
+========================================================= */
+
+function populateCategories() {
+  if (!filterCategorySelect) return;
+
+  const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
+
+  filterCategorySelect.innerHTML = `<option value="">All Categories</option>`;
+
+  categories.forEach(category => {
+    filterCategorySelect.innerHTML += `
+      <option value="${category}">${category}</option>
+    `;
+  });
+}
+
+function applyFilters() {
+  const searchName = searchByNameInput?.value.trim().toLowerCase() || "";
+  const selectedCategory = filterCategorySelect?.value || "";
+  const sortPrice = sortPriceSelect?.value || "";
+
+  filteredProducts = [...products].reverse().filter(product => {
+    const matchesName = (product.name || "").toLowerCase().includes(searchName);
+
+    const matchesCategory = selectedCategory
+      ? (product.category || "").toLowerCase() === selectedCategory.toLowerCase()
+      : true;
+
+    return matchesName && matchesCategory;
+  });
+
+  if (sortPrice === "low-high") {
+    filteredProducts.sort((a, b) => a.price - b.price);
+  } else if (sortPrice === "high-low") {
+    filteredProducts.sort((a, b) => b.price - a.price);
+  }
+
+  currentPage = 1;
+  renderProducts();
+  renderPagination();
+  updateProductsCount();
+}
+
+function updateProductsCount() {
+  if (!productsCountEl) return;
+  productsCountEl.textContent = `${filteredProducts.length} product(s) found`;
+}
+
+function getPaginatedProducts() {
+  const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
+  const end = start + PRODUCTS_PER_PAGE;
+  return filteredProducts.slice(start, end);
+}
+
+function renderPagination() {
+  if (!paginationEl) return;
+
+  paginationEl.innerHTML = "";
+
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+
+  if (totalPages <= 1) return;
+
+  paginationEl.innerHTML += `
+    <li class="${currentPage === 1 ? "disabled" : ""}">
+      <button type="button" data-page="prev">Prev</button>
+    </li>
+  `;
+
+  for (let i = 1; i <= totalPages; i++) {
+    paginationEl.innerHTML += `
+      <li class="${currentPage === i ? "active" : ""}">
+        <button type="button" data-page="${i}">
+          ${String(i).padStart(2, "0")}
+        </button>
+      </li>
+    `;
+  }
+
+  paginationEl.innerHTML += `
+    <li class="${currentPage === totalPages ? "disabled" : ""}">
+      <button type="button" data-page="next">Next</button>
+    </li>
+  `;
+}
+
+function initProductFilters() {
+  if (searchByNameInput) {
+    searchByNameInput.addEventListener("input", applyFilters);
+  }
+
+  if (filterCategorySelect) {
+    filterCategorySelect.addEventListener("change", applyFilters);
+  }
+
+  if (sortPriceSelect) {
+    sortPriceSelect.addEventListener("change", applyFilters);
+  }
+
+  if (resetFiltersBtn) {
+    resetFiltersBtn.addEventListener("click", () => {
+      if (searchByNameInput) searchByNameInput.value = "";
+      if (filterCategorySelect) filterCategorySelect.value = "";
+      if (sortPriceSelect) sortPriceSelect.value = "";
+
+      filteredProducts = [...products].reverse();
+      currentPage = 1;
+
+      renderProducts();
+      renderPagination();
+      updateProductsCount();
+    });
+  }
+
+  if (paginationEl) {
+    paginationEl.addEventListener("click", (e) => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+
+      const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+      const page = btn.dataset.page;
+
+      if (page === "prev" && currentPage > 1) {
+        currentPage--;
+      } else if (page === "next" && currentPage < totalPages) {
+        currentPage++;
+      } else if (!isNaN(parseInt(page))) {
+        currentPage = parseInt(page);
+      }
+
+      renderProducts();
+      renderPagination();
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+  }
+}
+
+/* =========================================================
    PRODUCT LIST PAGE
 ========================================================= */
 
@@ -118,15 +283,32 @@ function renderProducts() {
 
   container.innerHTML = "";
 
-  products.forEach(product => {
+  const pageProducts = getPaginatedProducts();
+
+  if (!pageProducts.length) {
+    container.innerHTML = `
+      <div class="col-12">
+        <div class="empty-products text-center py-5">
+          <i class="fa-solid fa-box-open fs-1 mb-3"></i>
+          <h4>No products found</h4>
+          <p>Try changing search or filter values.</p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  pageProducts.forEach(product => {
     const hasOldPrice = product.oldPrice && product.oldPrice > product.price;
 
     const discount = hasOldPrice
       ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
       : 0;
 
+    const isOutOfStock = !product.stock || product.stock <= 0;
+
     container.innerHTML += `
-      <div class="col-md-4 col-lg-3 mb-4">
+      <div class="col-md-6 col-lg-3">
         <div class="product-card h-100">
           <div class="product-image-wrapper">
             <img 
@@ -139,6 +321,7 @@ function renderProducts() {
             <div class="product-badges">
               ${product.badge ? `<span class="badge-new">${product.badge}</span>` : ""}
               ${discount > 0 ? `<span class="badge-discount">-${discount}%</span>` : ""}
+              ${isOutOfStock ? `<span class="badge-stock out-of-stock">Out of Stock</span>` : ""}
             </div>
 
             <div class="product-actions">
@@ -146,7 +329,7 @@ function renderProducts() {
                 <i class="fa-solid fa-eye"></i>
               </button>
 
-              <button class="action-btn add-to-cart" data-id="${product.id}">
+              <button class="action-btn add-to-cart" data-id="${product.id}" ${isOutOfStock ? "disabled" : ""}>
                 <i class="fas fa-shopping-cart"></i>
               </button>
 
@@ -308,8 +491,6 @@ function renderRating(rating, reviewsCount) {
     `(${reviewsCount} customer review${reviewsCount !== 1 ? "s" : ""})`;
 }
 
-renderProductDetails();
-
 /* =========================================================
    TOAST
 ========================================================= */
@@ -343,7 +524,15 @@ function showToast(message, type = "success") {
 
 /* ---------------- Initialize ---------------- */
 
+populateCategories();
+
+filteredProducts = [...products].reverse();
+
 renderProducts();
+renderPagination();
+updateProductsCount();
+initProductFilters();
+
 renderProductDetails();
 updateCartBadge();
 updateWishListBadge();
