@@ -29,9 +29,59 @@
   </div>
 </section>
 <div class="container py-5">
- 
+  <div class="row g-4">
 
-  <div id="productsContainer" class="row g-4"></div>
+    <!-- FILTERS SIDE -->
+    <aside class="col-lg-3">
+      <div class="products-filters-box">
+        <h5 class="filters-title">Filters</h5>
+
+        <div class="mb-3">
+          <label for="searchByName" class="form-label">Search by name</label>
+          <input
+            type="text"
+            id="searchByName"
+            class="form-control"
+            placeholder="Search product name..."
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="filterCategory" class="form-label">Category</label>
+          <select id="filterCategory" class="form-select">
+            <option value="">All Categories</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="sortPrice" class="form-label">Sort by price</label>
+          <select id="sortPrice" class="form-select">
+            <option value="">Default</option>
+            <option value="low-high">Low to High</option>
+            <option value="high-low">High to Low</option>
+          </select>
+        </div>
+
+        <button id="resetFiltersBtn" class="btn btn-outline-main w-100">
+          Reset
+        </button>
+      </div>
+    </aside>
+
+    <!-- PRODUCTS SIDE -->
+    <section class="col-lg-9">
+      <div class="products-header mb-3">
+        <p id="productsCount" class="mb-0 text-muted"></p>
+      </div>
+
+      <div id="productsContainer" class="row g-4"></div>
+
+      <div class="pagination-wrapper mt-5">
+        <ul id="pagination" class="custom-pagination"></ul>
+      </div>
+    </section>
+
+  </div>
 </div>
 <footer></footer>
 <!-- Bootstrap JS -->
