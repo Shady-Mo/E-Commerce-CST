@@ -1,118 +1,198 @@
 import { storage } from "../../../shared/js/storage.js";
 import { STORAGE_KEYS } from "../../../shared/js/storage-keys.js";
-import { renderNavbar, updateCartBadge } from "../../../shared/js/navbar.js";
+import {
+  showError,
+  showValid,
+  validateUsername,
+  validateEmail,
+  validatePassword,
+  validateConfirm
+} from "../../../shared/js/auth-validation.js";
 import { renderFooter } from "../../../shared/js/footer.js";
-
-/* ---------------- Layout ---------------- */
-
+import { renderNavbar } from "../../../shared/js/navbar.js";
 renderNavbar();
 renderFooter();
+function initProfileForm() {
+  const form = document.getElementById("profileForm");
+  if (!form) return;
 
+  const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
+  const users = storage.get(STORAGE_KEYS.USERS) || [];
 
-const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
+  if (!currentUser) return;
 
-if(!currentUser){
-window.location.href="../auth/login.html";
+  const usernameInput = document.getElementById("profileUsername");
+  const emailInput = document.getElementById("profileEmail");
+  const passwordInput = document.getElementById("profilePassword");
+  const confirmInput = document.getElementById("profileConfirmPassword");
+
+  const usernameError = document.getElementById("profileUsernameError");
+  const emailError = document.getElementById("profileEmailError");
+  const passwordError = document.getElementById("profilePasswordError");
+  const confirmError = document.getElementById("profileConfirmPasswordError");
+
+  const user = users.find(u => u.id === currentUser.id);
+  if (!user) return;
+
+  usernameInput.value = user.username || "";
+  emailInput.value = user.email || "";
+
+  usernameInput.addEventListener("input", () => {
+    const err = validateUsername(usernameInput.value.trim());
+    err ? showError(usernameInput, usernameError, err) : showValid(usernameInput, usernameError);
+  });
+
+  emailInput.addEventListener("input", () => {
+    const err = validateEmail(emailInput.value.trim());
+    err ? showError(emailInput, emailError, err) : showValid(emailInput, emailError);
+  });
+
+  if (passwordInput) {
+    passwordInput.addEventListener("input", () => {
+      if (!passwordInput.value) {
+        passwordInput.classList.remove("is-invalid", "is-valid");
+        passwordError.textContent = "";
+        passwordError.classList.add("d-none");
+        return;
+      }
+
+      const err = validatePassword(passwordInput.value);
+      err ? showError(passwordInput, passwordError, err) : showValid(passwordInput, passwordError);
+    });
+  }
+
+  if (confirmInput) {
+    confirmInput.addEventListener("input", () => {
+      if (!passwordInput.value && !confirmInput.value) {
+        confirmInput.classList.remove("is-invalid", "is-valid");
+        confirmError.textContent = "";
+        confirmError.classList.add("d-none");
+        return;
+      }
+
+      const err = validateConfirm(passwordInput.value, confirmInput.value);
+      err ? showError(confirmInput, confirmError, err) : showValid(confirmInput, confirmError);
+    });
+  }
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+
+    const username = usernameInput.value.trim();
+    const email = emailInput.value.trim();
+    const password = passwordInput ? passwordInput.value : "";
+    const confirm = confirmInput ? confirmInput.value : "";
+
+    let isValid = true;
+
+    const usernameErr = validateUsername(username);
+    if (usernameErr) {
+      showError(usernameInput, usernameError, usernameErr);
+      isValid = false;
+    } else {
+      showValid(usernameInput, usernameError);
+    }
+
+    const emailErr = validateEmail(email);
+    if (emailErr) {
+      showError(emailInput, emailError, emailErr);
+      isValid = false;
+    } else {
+      showValid(emailInput, emailError);
+    }
+
+    if (password || confirm) {
+  const passwordErr = validatePassword(password);
+  if (passwordErr) {
+    showError(passwordInput, passwordError, passwordErr);
+    isValid = false;
+  } else {
+    showValid(passwordInput, passwordError);
+  }
+
+  const confirmErr = validateConfirm(password, confirm);
+  if (confirmErr) {
+    showError(confirmInput, confirmError, confirmErr);
+    isValid = false;
+  } else {
+    showValid(confirmInput, confirmError);
+  }
 }
 
-/* ---------------- Load user data ---------------- */
+    const usernameExists = users.find(
+      u => u.id !== currentUser.id && u.username.toLowerCase() === username.toLowerCase()
+    );
 
-const users = storage.get(STORAGE_KEYS.USERS) || [];
+    if (usernameExists) {
+      showError(usernameInput, usernameError, "This username is already taken.");
+      isValid = false;
+    }
 
-const user = users.find(u => u.id === currentUser.id);
+    const emailExists = users.find(
+      u => u.id !== currentUser.id && u.email.toLowerCase() === email.toLowerCase()
+    );
 
-document.getElementById("profileUsername").value = user.username;
-document.getElementById("profileEmail").value = user.email;
+    if (emailExists) {
+      showError(emailInput, emailError, "An account with this email already exists.");
+      isValid = false;
+    }
 
-/* ---------------- Update profile ---------------- */
+    if (!isValid) return;
 
-document.getElementById("profileForm").addEventListener("submit",(e)=>{
+    user.username = username.toLowerCase();
+    user.email = email.toLowerCase();
 
-e.preventDefault();
+    if (password) {
+      user.password = password;
+    }
 
-const username = document.getElementById("profileUsername").value.trim();
-const email = document.getElementById("profileEmail").value.trim();
-const password = document.getElementById("profilePassword").value;
-const confirm = document.getElementById("profileConfirmPassword").value;
+    storage.set(STORAGE_KEYS.USERS, users);
 
-/* validation */
+    storage.set(STORAGE_KEYS.CURRENT_USER, {
+      ...currentUser,
+      username: user.username,
+      email: user.email
+    });
 
-if(!username || !email){
-
-Swal.fire({
-icon:"warning",
-title:"Missing information",
-text:"Username and email are required"
-});
-
-return;
-
+    Swal.fire({
+      icon: "success",
+      title: "Profile Updated",
+      text: "Your profile has been updated successfully."
+    });
+  });
 }
 
-/* password change */
+const toggleProfilePassword = document.getElementById("toggleProfilePassword");
 
-if(password){
+if (toggleProfilePassword) {
+  toggleProfilePassword.addEventListener("click", () => {
+    const input = document.getElementById("profilePassword");
+    const icon = toggleProfilePassword.querySelector("i");
 
-if(password !== confirm){
-
-Swal.fire({
-icon:"error",
-title:"Password mismatch",
-text:"Passwords do not match"
-});
-
-return;
-
+    if (input.type === "password") {
+      input.type = "text";
+      icon.classList.replace("fa-eye", "fa-eye-slash");
+    } else {
+      input.type = "password";
+      icon.classList.replace("fa-eye-slash", "fa-eye");
+    }
+  });
 }
 
-user.password = password;
+const toggleProfileConfirmPassword = document.getElementById("toggleProfileConfirmPassword");
 
+if (toggleProfileConfirmPassword) {
+  toggleProfileConfirmPassword.addEventListener("click", () => {
+    const input = document.getElementById("profileConfirmPassword");
+    const icon = toggleProfileConfirmPassword.querySelector("i");
+
+    if (input.type === "password") {
+      input.type = "text";
+      icon.classList.replace("fa-eye", "fa-eye-slash");
+    } else {
+      input.type = "password";
+      icon.classList.replace("fa-eye-slash", "fa-eye");
+    }
+  });
 }
-
-/* update user */
-
-user.username = username;
-user.email = email;
-
-storage.set(STORAGE_KEYS.USERS, users);
-
-/* update session */
-
-currentUser.username = username;
-currentUser.email = email;
-
-storage.set(STORAGE_KEYS.CURRENT_USER,currentUser);
-
-Swal.fire({
-icon:"success",
-title:"Profile updated successfully"
-});
-
-});
-
-
-
-const toggle = document.getElementById("toggleProfilePassword");
-
-if(toggle){
-
-toggle.addEventListener("click",()=>{
-
-const input = document.getElementById("profilePassword");
-const icon = toggle.querySelector("i");
-
-if(input.type === "password"){
-
-input.type = "text";
-icon.classList.replace("fa-eye","fa-eye-slash");
-
-}else{
-
-input.type = "password";
-icon.classList.replace("fa-eye-slash","fa-eye");
-
-}
-
-});
-
-}
+initProfileForm();

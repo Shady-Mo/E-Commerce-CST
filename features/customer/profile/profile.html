@@ -11,7 +11,6 @@
   <link href="../../../global.css" rel="stylesheet">
   <link rel="stylesheet" href="../../products/products.css">
   <link rel="stylesheet" href="../../auth/auth.css">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -36,119 +35,118 @@
 
 <div class="col-lg-5 col-md-7 col-12 ">
 
-<form id="profileForm" class="auth-form d-flex flex-column gap-3">
+  
 
+     
+        <form id="profileForm" class="auth-form needs-validation" novalidate>
 
+          <h2 class="mb-2 text-center">My Profile</h2>
+          <p class="text-center text-muted mb-4">
+            Update your account information
+          </p>
 
-<!-- USERNAME -->
+          <!-- USERNAME -->
+          <div class="mb-3">
+            <label class="form-label">Username</label>
 
-<div class="w-100 mt-3">
+            <div class="input-group custom-input">
+              <span class="input-group-text">
+                <i class="fa-regular fa-user"></i>
+              </span>
 
-<label class="form-label">Username</label>
+              <input
+                type="text"
+                class="form-control"
+                id="profileUsername"
+                placeholder="Your username"
+              />
+            </div>
 
-<div class="input-group custom-input">
+            <div class="invalid-feedback d-block" id="profileUsernameError"></div>
+          </div>
 
-<span class="input-group-text">
-<i class="fa-regular fa-user"></i>
-</span>
+          <!-- EMAIL -->
+          <div class="mb-3">
+            <label class="form-label">Email</label>
 
-<input
-type="text"
-class="form-control"
-id="profileUsername"
-placeholder="Enter username"
-/>
+            <div class="input-group custom-input">
+              <span class="input-group-text">
+                <i class="fa-regular fa-envelope"></i>
+              </span>
 
-</div>
+              <input
+                type="email"
+                class="form-control"
+                id="profileEmail"
+                placeholder="name@example.com"
+              />
+            </div>
 
-</div>
+            <div class="invalid-feedback d-block" id="profileEmailError"></div>
+          </div>
 
+          <!-- NEW PASSWORD -->
+          <div class="mb-3">
+            <label class="form-label">New Password</label>
 
-<!-- EMAIL -->
+            <div class="input-group custom-input">
+              <span class="input-group-text">
+                <i class="fa-solid fa-lock"></i>
+              </span>
 
-<div class="w-100">
+              <input
+                type="password"
+                class="form-control"
+                id="profilePassword"
+                placeholder="Leave empty if you don't want to change it"
+              />
 
-<label class="form-label">Email</label>
+              <button
+                class="input-group-text password-toggle"
+                type="button"
+                id="toggleProfilePassword"
+              >
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
 
-<div class="input-group custom-input">
+            <div class="invalid-feedback d-block" id="profilePasswordError"></div>
+          </div>
 
-<span class="input-group-text">
-<i class="fa-regular fa-envelope"></i>
-</span>
+          <!-- CONFIRM PASSWORD -->
+          <div class="mb-3">
+            <label class="form-label">Confirm Password</label>
 
-<input
-type="email"
-class="form-control"
-id="profileEmail"
-placeholder="Enter email"
-/>
+            <div class="input-group custom-input">
+              <span class="input-group-text">
+                <i class="fa-solid fa-lock"></i>
+              </span>
 
-</div>
+              <input
+                type="password"
+                class="form-control"
+                id="profileConfirmPassword"
+                placeholder="Confirm new password"
+              />
 
-</div>
+              <button
+                class="input-group-text password-toggle"
+                type="button"
+                id="toggleProfileConfirmPassword"
+              >
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
 
+            <div class="invalid-feedback d-block" id="profileConfirmPasswordError"></div>
+          </div>
 
-<!-- PASSWORD -->
+          <button class="btn btn-main w-100 mt-3" type="submit">
+            Save Changes
+          </button>
 
-<div class="w-100">
-
-<label class="form-label">New Password</label>
-
-<div class="input-group custom-input">
-
-<span class="input-group-text">
-<i class="fa-solid fa-lock"></i>
-</span>
-
-<input
-type="password"
-class="form-control"
-id="profilePassword"
-placeholder="Leave empty if you don't want to change"
-/>
-
-<button
-class="input-group-text password-toggle"
-type="button"
-id="toggleProfilePassword"
->
-<i class="fa-regular fa-eye"></i>
-</button>
-
-</div>
-
-</div>
-
-
-<!-- CONFIRM PASSWORD -->
-
-<div class="w-100">
-
-<label class="form-label">Confirm Password</label>
-
-<div class="input-group custom-input">
-
-<span class="input-group-text">
-<i class="fa-solid fa-lock"></i>
-</span>
-
-<input
-type="password"
-class="form-control"
-id="profileConfirmPassword"
-placeholder="Confirm password"
-/>
-
-</div>
-
-</div>
-
-
-<button class="btn btn-main w-100 mt-2">
-Update Profile
-</button>
-
-</form>
+        </form>
+    
 
 </div>
 
