@@ -196,7 +196,7 @@ ${renderRightSide(currentUser, prefix, textClass)}
 
 `;
 
-    attachLogout();
+    attachLogout(prefix);
     updateCartBadge();
     updateWishListBadge();
     setActiveLink();
@@ -405,22 +405,15 @@ function attachThemeToggle() {
 
 /* ---------------- logout ---------------- */
 
-function attachLogout() {
-
+function attachLogout(prefix) {
     const logoutBtn = document.getElementById("logoutBtn");
 
     if (logoutBtn) {
-
         logoutBtn.addEventListener("click", function () {
-
             storage.remove(STORAGE_KEYS.CURRENT_USER);
-
-            window.location.href = "../../index.html";
-
+            window.location.href = `${prefix}index.html`;
         });
-
     }
-
 }
 
 /* ---------------- cart badge ---------------- */

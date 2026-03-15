@@ -7,96 +7,114 @@ import { renderFooter } from "../../../shared/js/footer.js";
 
 renderNavbar();
 renderFooter();
+updateCartBadge();
 
 const currentUser = storage.get(STORAGE_KEYS.CURRENT_USER);
 
-if(!currentUser){
-window.location.href="../auth/login.html";
+if (!currentUser) {
+  window.location.href = "../../auth/login.html";
 }
 
 const orders = storage.get(STORAGE_KEYS.ORDERS) || [];
-
 const myOrders = orders.filter(o => o.userId === currentUser.id);
-
 const container = document.getElementById("ordersContainer");
 
-if(myOrders.length === 0){
+/* ---------------- Helpers ---------------- */
 
-container.innerHTML = `
-<div class="col-12 text-center py-5">
+function getStatusClass(status) {
+  const normalized = (status || "").toLowerCase().trim();
 
-<i class="fa-solid fa-box-open fa-3x mb-3 text-muted"></i>
+  switch (normalized) {
+    case "pending":
+      return "status-pending";
 
-<h4>No orders yet</h4>
+    case "received":
+      return "status-received";
 
-<p class="text-muted">Start shopping and place your first order</p>
+    case "cancelled":
+    case "canceled":
+      return "status-cancelled";
 
-<a href="../../products/products-list.html" class="btn order-btn">
-Shop Now
-</a>
+    case "processing":
+      return "status-processing";
 
-</div>
-`;
+    case "shipped":
+      return "status-shipped";
 
+    case "delivered":
+      return "status-delivered";
+
+    default:
+      return "status-default";
+  }
 }
 
-myOrders.forEach(order=>{
+function formatStatus(status) {
+  if (!status) return "Pending";
+  return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+}
 
-let itemsHTML="";
+/* ---------------- Empty State ---------------- */
 
-order.items.forEach(item=>{
+if (myOrders.length === 0) {
+  container.innerHTML = `
+    <div class="col-12 text-center py-5 empty-orders">
+      <img 
+        src="../../../assets/images/Empty.gif" 
+        alt="No orders" 
+        class="img-fluid mb-3 no-orders-img "
+      >
 
-itemsHTML+=`
-<div class="order-product">
+      <h4>No orders yet</h4>
 
-<span>${item.name} x ${item.quantity}</span>
+      <p class="text-muted">Start shopping and place your first order</p>
 
-<span>$${(item.price * item.quantity).toFixed(2)}</span>
+      <a href="../../products/products-list.html" class="btn order-btn">
+        Shop Now
+      </a>
+    </div>
+  `;
+}
 
-</div>
-`;
+/* ---------------- Render Orders ---------------- */
 
+myOrders.forEach(order => {
+  let itemsHTML = "";
+
+  order.items.forEach(item => {
+    itemsHTML += `
+      <div class="order-product">
+        <span>${item.name} x ${item.quantity}</span>
+        <span>$${(item.price * item.quantity).toFixed(2)}</span>
+      </div>
+    `;
+  });
+
+  const statusClass = getStatusClass(order.status);
+
+  container.innerHTML += `
+    <div class="col-md-6">
+      <div class="order-card">
+        <div class="order-header">
+          <div>
+            <strong>Order #${order.id}</strong>
+            <br>
+            <small class="text-muted">
+              ${order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "N/A"}
+            </small>
+          </div>
+
+          <span class="order-status ${statusClass}">
+            ${formatStatus(order.status)}
+          </span>
+        </div>
+
+        ${itemsHTML}
+
+        <div class="order-total">
+          Total: $${Number(order.total).toFixed(2)}
+        </div>
+      </div>
+    </div>
+  `;
 });
-
-container.innerHTML += `
-
-<div class="col-md-6">
-
-<div class="order-card">
-
-<div class="order-header">
-
-<div>
-
-<strong>Order #${order.id}</strong>
-
-<br>
-
-<small class="text-muted">
-${new Date(order.createdAt).toLocaleDateString()}
-</small>
-
-</div>
-
-<span class="order-status status-pending">
-${order.status}
-</span>
-
-</div>
-
-${itemsHTML}
-
-<div class="order-total">
-
-Total: $${order.total}
-
-</div>
-
-</div>
-
-</div>
-
-`;
-
-});
-
