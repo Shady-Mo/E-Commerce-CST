@@ -1,31 +1,60 @@
 import { storage } from "../../shared/js/storage.js";
 import { STORAGE_KEYS } from "../../shared/js/storage-keys.js";
 
+const SUCCESS_STATUSES = ['received', 'delivered', 'completed'];
+
+function normalizeStatus(status) {
+    return (status || 'Pending').toLowerCase().trim();
+}
+
+function formatStatusLabel(status) {
+    const normalizedStatus = normalizeStatus(status);
+    return normalizedStatus.charAt(0).toUpperCase() + normalizedStatus.slice(1);
+}
+
+function getStatusColor(status) {
+    const normalizedStatus = normalizeStatus(status);
+
+    if (SUCCESS_STATUSES.includes(normalizedStatus)) return '#198754';
+    if (normalizedStatus === 'processing' || normalizedStatus === 'shipped') return '#0dcaf0';
+    if (normalizedStatus === 'pending') return '#BB976D';
+    if (normalizedStatus === 'cancelled') return '#dc3545';
+    return '#6c757d';
+}
+
+function getStatusBadgeClass(status) {
+    const normalizedStatus = normalizeStatus(status);
+
+    if (SUCCESS_STATUSES.includes(normalizedStatus)) return 'bg-success';
+    if (normalizedStatus === 'processing' || normalizedStatus === 'shipped') return 'bg-info';
+    if (normalizedStatus === 'cancelled') return 'bg-danger';
+    return 'bg-warning text-dark';
+}
 
 export function renderDashboardHome() {
-    const orders   = storage.get(STORAGE_KEYS.ORDERS)   || [];
-    const users    = storage.get(STORAGE_KEYS.USERS)     || [];
-    const products = storage.get(STORAGE_KEYS.PRODUCTS)  || [];
+    const orders = storage.get(STORAGE_KEYS.ORDERS) || [];
+    const users = storage.get(STORAGE_KEYS.USERS) || [];
+    const products = storage.get(STORAGE_KEYS.PRODUCTS) || [];
 
     const totalRevenue = orders
-        .filter(o => (o.status || '').toLowerCase() === 'received')
+        .filter(o => SUCCESS_STATUSES.includes(normalizeStatus(o.status)))
         .reduce((sum, o) => {
             return sum + (o.items || []).reduce((s, i) => s + (i.price * i.quantity), 0);
         }, 0);
 
-    setText('statTotalOrders',   orders.length);
-    setText('statTotalRevenue',  totalRevenue.toLocaleString('en-EG'));
-    setText('statTotalUsers',    users.length);
+    setText('statTotalOrders', orders.length);
+    setText('statTotalRevenue', totalRevenue.toLocaleString('en-EG'));
+    setText('statTotalUsers', users.length);
     setText('statTotalProducts', products.length);
 
-    const receivedOrders = orders.filter(o => (o.status || '').toLowerCase() === 'received');
+    const receivedOrders = orders.filter(o => SUCCESS_STATUSES.includes(normalizeStatus(o.status)));
     const salesByDate = buildSalesByDate(receivedOrders);
     const sortedDates = Object.keys(salesByDate).sort((a, b) => salesByDate[a].timestamp - salesByDate[b].timestamp);
     const salesValues = sortedDates.map(d => salesByDate[d].total);
 
     const isDark = (localStorage.getItem('theme') || 'light') === 'dark';
-    const gridColor   = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
-    const textColor   = isDark ? '#aaa' : '#666';
+    const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+    const textColor = isDark ? '#aaa' : '#666';
 
     const salesCtx = document.getElementById('salesChart');
     if (salesCtx && typeof Chart !== 'undefined') {
@@ -82,18 +111,12 @@ export function renderDashboardHome() {
 
     const statusCounts = {};
     orders.forEach(o => {
-        const s = (o.status || 'Pending').toLowerCase();
+        const s = normalizeStatus(o.status);
         statusCounts[s] = (statusCounts[s] || 0) + 1;
     });
-    const statusLabels = Object.keys(statusCounts).map(s => s.charAt(0).toUpperCase() + s.slice(1));
-    const statusData   = Object.values(statusCounts);
-    const statusColors = statusLabels.map(s => {
-        const l = s.toLowerCase();
-        if (l === 'received')  return '#198754';
-        if (l === 'pending')   return '#BB976D';
-        if (l === 'cancelled') return '#dc3545';
-        return '#6c757d';
-    });
+    const statusLabels = Object.keys(statusCounts).map(formatStatusLabel);
+    const statusData = Object.values(statusCounts);
+    const statusColors = Object.keys(statusCounts).map(getStatusColor);
 
     const statusCtx = document.getElementById('statusChart');
     if (statusCtx && typeof Chart !== 'undefined') {
@@ -123,14 +146,14 @@ export function renderDashboardHome() {
     }
 
     const productSales = {};
-    orders.filter(o => (o.status || '').toLowerCase() === 'received').forEach(o => {
+    orders.filter(o => SUCCESS_STATUSES.includes(normalizeStatus(o.status))).forEach(o => {
         (o.items || []).forEach(i => {
             const name = i.name || `Product #${i.productId}`;
             productSales[name] = (productSales[name] || 0) + (i.price * i.quantity);
         });
     });
     const sorted = Object.entries(productSales).sort((a, b) => b[1] - a[1]).slice(0, 6);
-    const topNames  = sorted.map(e => e[0]);
+    const topNames = sorted.map(e => e[0]);
     const topValues = sorted.map(e => e[1]);
 
     const topCtx = document.getElementById('topProductsChart');
@@ -185,9 +208,9 @@ export function renderDashboardHome() {
         } else {
             container.innerHTML = recent.map(o => {
                 const total = (o.items || []).reduce((s, i) => s + i.price * i.quantity, 0);
-                const status = (o.status || 'Pending').toLowerCase();
-                const statusClass = status === 'received' ? 'bg-success' : status === 'cancelled' ? 'bg-danger' : 'bg-warning text-dark';
-                const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
+                const status = normalizeStatus(o.status);
+                const statusClass = getStatusBadgeClass(status);
+                const statusLabel = formatStatusLabel(status);
                 return `
                     <div class="recent-order-item">
                         <div class="order-info">

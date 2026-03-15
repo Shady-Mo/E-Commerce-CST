@@ -32,7 +32,7 @@ export function seedUsers() {
 
     const customer = new User({
         id: 2004,
-        username: "customer",
+        username: "ziad",
         email: "customer@example.com",
         password: "Customer@123",
         role: "customer"

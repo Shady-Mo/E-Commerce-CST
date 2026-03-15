@@ -1,12 +1,32 @@
 import { storage } from "../../shared/js/storage.js";
 import { STORAGE_KEYS } from "../../shared/js/storage-keys.js";
 
+function normalizeStatus(status) {
+    return (status || 'Pending').toLowerCase().trim();
+}
+
+function formatStatusLabel(status) {
+    const normalizedStatus = normalizeStatus(status);
+    return normalizedStatus.charAt(0).toUpperCase() + normalizedStatus.slice(1);
+}
 
 function getStatusBadge(status) {
-    const s = (status || 'Pending').toLowerCase();
-    if (s === 'received')  return '<span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Received</span>';
-    if (s === 'cancelled') return '<span class="badge bg-danger"><i class="fas fa-times-circle me-1"></i>Cancelled</span>';
-    return '<span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>Pending</span>';
+    const normalizedStatus = normalizeStatus(status);
+    const statusLabel = formatStatusLabel(status);
+
+    if (['received', 'delivered', 'completed'].includes(normalizedStatus)) {
+        return `<span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>${statusLabel}</span>`;
+    }
+
+    if (['processing', 'shipped'].includes(normalizedStatus)) {
+        return `<span class="badge bg-info"><i class="fas fa-truck-fast me-1"></i>${statusLabel}</span>`;
+    }
+
+    if (normalizedStatus === 'cancelled') {
+        return `<span class="badge bg-danger"><i class="fas fa-times-circle me-1"></i>${statusLabel}</span>`;
+    }
+
+    return `<span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>${statusLabel}</span>`;
 }
 
 function getUserById(userId) {
@@ -30,7 +50,7 @@ export function renderCustomerService() {
         const user = getUserById(o.userId);
         const customerName = user ? user.username : (o.customerEmail || o.customer || 'N/A');
         const customerEmail = user ? user.email : '';
-        const status = (o.status || 'Pending').toLowerCase();
+        const status = normalizeStatus(o.status);
         const itemCount = o.items ? o.items.length : 0;
         const total = (o.items || []).reduce((s, i) => s + (i.price * i.quantity), 0);
 
@@ -38,7 +58,7 @@ export function renderCustomerService() {
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <div>
                     <h6 class="mb-1 fw-bold">Order #${o.id}</h6>
-                    <small class="text-muted"><i class="fas fa-calendar-alt me-1"></i>${o.date || 'N/A'}</small>
+                    <small class="text-muted"><i class="fas fa-calendar-alt me-1"></i>${o.date || new Date(o.createdAt || Date.now()).toLocaleDateString()}</small>
                 </div>
                 <div>${getStatusBadge(o.status)}</div>
             </div>
@@ -68,7 +88,7 @@ export function renderCustomerService() {
             const newStatus = target.getAttribute('data-new-status');
 
             const colorMap = { Received: '#198754', Cancelled: '#dc3545' };
-            const iconMap  = { Received: 'question', Cancelled: 'warning' };
+            const iconMap = { Received: 'question', Cancelled: 'warning' };
 
             Swal.fire({
                 title: `Mark as ${newStatus}?`,
