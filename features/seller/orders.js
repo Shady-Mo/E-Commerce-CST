@@ -50,6 +50,17 @@ function getSellerOrders() {
     );
 }
 
+function getCustomerDisplayName(order) {
+    const users = storage.get(STORAGE_KEYS.USERS) || [];
+    const customer = users.find(user => user.id === order.userId);
+
+    if (customer?.username) {
+        return customer.username;
+    }
+
+    return order.customerName || order.customer || order.customerEmail || 'Customer';
+}
+
 function displayOrders(filter = 'all', searchTerm = '') {
     const tbody = document.getElementById('ordersTableBody');
     const products = getSellerProducts();
@@ -65,7 +76,7 @@ function displayOrders(filter = 'all', searchTerm = '') {
         const lower = searchTerm.toLowerCase();
         orders = orders.filter(order =>
             String(order.id).includes(lower) ||
-            (order.customerName && order.customerName.toLowerCase().includes(lower))
+            getCustomerDisplayName(order).toLowerCase().includes(lower)
         );
     }
 
@@ -97,6 +108,7 @@ function displayOrders(filter = 'all', searchTerm = '') {
             sum + (item.price * item.quantity), 0
         );
 
+        const customerName = getCustomerDisplayName(order);
         const orderDate = new Date(order.createdAt).toLocaleDateString();
         const statusClass = getStatusClass(order.status);
         const currentStatus = order.status || 'pending';
@@ -104,7 +116,7 @@ function displayOrders(filter = 'all', searchTerm = '') {
         return `
             <tr>
                 <td><strong>#${order.id}</strong></td>
-                <td>${order.customerName || 'Customer'}</td>
+                <td>${customerName}</td>
                 <td>
                     <div>${product?.name || 'Product'}</div>
                     ${sellerItems.length > 1 ? `<small class="text-muted">+${sellerItems.length - 1} more items</small>` : ''}
@@ -128,6 +140,7 @@ function displayOrders(filter = 'all', searchTerm = '') {
 
 function getStatusClass(status) {
     switch (status?.toLowerCase()) {
+        case 'received':
         case 'delivered':
         case 'completed':
             return 'bg-success';
@@ -162,6 +175,8 @@ window.viewOrderDetails = function (orderId) {
         products.some(p => p.id === item.productId)
     );
 
+    const customerName = getCustomerDisplayName(order);
+
     const itemsHTML = sellerItems.map(item => {
         const product = products.find(p => p.id === item.productId);
         return `
@@ -180,7 +195,7 @@ window.viewOrderDetails = function (orderId) {
         title: `Order #${order.id}`,
         html: `
             <div class="text-start">
-                <p><strong>Customer:</strong> ${order.customerName || 'Customer'}</p>
+                <p><strong>Customer:</strong> ${customerName}</p>
                 <p><strong>Date:</strong> ${new Date(order.createdAt).toLocaleString()}</p>
                 <p><strong>Status:</strong> <span class="badge ${getStatusClass(order.status)}">${order.status || 'Pending'}</span></p>
                 
@@ -233,6 +248,7 @@ window.updateOrderStatus = function (orderId) {
         html: `
             <select id="newStatus" class="form-select">
                 <option value="pending" ${currentStatus === 'pending' ? 'selected' : ''}>Pending</option>
+                <option value="received" ${currentStatus === 'received' ? 'selected' : ''}>Received</option>
                 <option value="processing" ${currentStatus === 'processing' ? 'selected' : ''}>Processing</option>
                 <option value="shipped" ${currentStatus === 'shipped' ? 'selected' : ''}>Shipped</option>
                 <option value="delivered" ${currentStatus === 'delivered' ? 'selected' : ''}>Delivered</option>
