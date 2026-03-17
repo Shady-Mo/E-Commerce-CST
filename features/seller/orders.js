@@ -129,9 +129,6 @@ function displayOrders(filter = 'all', searchTerm = '') {
                     <button class="btn btn-sm btn-outline-primary" onclick="viewOrderDetails('${order.id}')">
                         <i class="fas fa-eye"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-success" onclick="updateOrderStatus('${order.id}')">
-                        <i class="fas fa-edit"></i>
-                    </button>
                 </td>
             </tr>
         `;
@@ -249,10 +246,6 @@ window.updateOrderStatus = function (orderId) {
             <select id="newStatus" class="form-select">
                 <option value="pending" ${currentStatus === 'pending' ? 'selected' : ''}>Pending</option>
                 <option value="received" ${currentStatus === 'received' ? 'selected' : ''}>Received</option>
-                <option value="processing" ${currentStatus === 'processing' ? 'selected' : ''}>Processing</option>
-                <option value="shipped" ${currentStatus === 'shipped' ? 'selected' : ''}>Shipped</option>
-                <option value="delivered" ${currentStatus === 'delivered' ? 'selected' : ''}>Delivered</option>
-                <option value="completed" ${currentStatus === 'completed' ? 'selected' : ''}>Completed</option>
                 <option value="cancelled" ${currentStatus === 'cancelled' ? 'selected' : ''}>Cancelled</option>
             </select>
         `,
