@@ -115,18 +115,18 @@ function displayOrders(filter = 'all', searchTerm = '') {
 
         return `
             <tr>
-                <td><strong>#${order.id}</strong></td>
-                <td>${customerName}</td>
-                <td>
+                <td data-label="Order ID"><strong>#${order.id}</strong></td>
+                <td data-label="Customer">${customerName}</td>
+                <td data-label="Products">
                     <div>${product?.name || 'Product'}</div>
                     ${sellerItems.length > 1 ? `<small class="text-muted">+${sellerItems.length - 1} more items</small>` : ''}
                 </td>
-                <td>${totalQty}</td>
-                <td><strong>$${totalPrice.toFixed(2)}</strong></td>
-                <td>${orderDate}</td>
-                <td><span class="badge ${statusClass}">${currentStatus}</span></td>
-                <td>
-                    <button class="btn btn-sm btn-outline-primary" onclick="viewOrderDetails('${order.id}')">
+                <td data-label="Quantity">${totalQty}</td>
+                <td data-label="Total"><strong>$${totalPrice.toFixed(2)}</strong></td>
+                <td data-label="Date">${orderDate}</td>
+                <td data-label="Status"><span class="badge ${statusClass}">${currentStatus}</span></td>
+                <td data-label="Actions">
+                    <button class="btn btn-sm btn-outline-primary" onclick="viewOrderDetails('${order.id}')" title="View Details">
                         <i class="fas fa-eye"></i>
                     </button>
                 </td>
@@ -204,12 +204,6 @@ window.viewOrderDetails = function (orderId) {
                     <tbody>
                         ${itemsHTML}
                     </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="3" class="text-end"><strong>Total:</strong></td>
-                            <td><strong>$${total.toFixed(2)}</strong></td>
-                        </tr>
-                    </tfoot>
                 </table>
             </div>
         `,

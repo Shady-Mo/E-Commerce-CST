@@ -301,6 +301,57 @@ body.theme-dark .seller-topbar {
     font-weight: 500;
 }
 
+/* Responsive Table */
+@media (max-width: 768px) {
+    .table-responsive .table thead {
+        display: none;
+    }
+    .table-responsive .table tbody tr {
+        display: block;
+        margin-bottom: 1rem;
+        background-color: var(--card-bg, #fff);
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        border: 1px solid var(--border-color, #dee2e6);
+    }
+    .table-responsive .table tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: right;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border-color, #dee2e6);
+    }
+    .table-responsive .table tbody td:last-child {
+        border-bottom: none;
+    }
+    .table-responsive .table tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        text-align: left;
+        color: var(--text-color, #495057);
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+    .table-responsive .table tbody td > div {
+        text-align: right;
+    }
+}
+
+/* Dark mode overwrites for responsive table */
+body.theme-dark .table-responsive .table tbody tr {
+    background-color: #1e1e1e !important;
+    border-color: #333 !important;
+}
+
+body.theme-dark .table-responsive .table tbody td {
+    border-bottom-color: #333 !important;
+}
+
+body.theme-dark .table-responsive .table tbody td::before {
+    color: #ccc !important;
+}
+
 .btn-sm {
     padding: 0.4rem 0.8rem;
     font-size: 0.875rem;
