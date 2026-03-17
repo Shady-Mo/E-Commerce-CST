@@ -439,9 +439,10 @@ function renderProductDetails() {
   mainImages.innerHTML = "";
   thumbImages.innerHTML = "";
 
-  const images = product.images && product.images.length
-    ? product.images
-    : [product.image];
+  let images = [product.image];
+  if (product.images && product.images.length > 0) {
+    images = images.concat(product.images.filter(img => img !== product.image));
+  }
 
   images.forEach(img => {
     mainImages.innerHTML += `
