@@ -140,9 +140,16 @@ if (imageInput) {
 const additionalImagesInput = document.getElementById('productImages');
 if (additionalImagesInput) {
     additionalImagesInput.addEventListener('change', function (e) {
+        if (e.target.files.length > 4) {
+            showToast('You can only select up to 4 additional images. Only the first 4 will be used.', 'danger');
+            const dataTransfer = new DataTransfer();
+            Array.from(e.target.files).slice(0, 4).forEach(file => dataTransfer.items.add(file));
+            e.target.files = dataTransfer.files;
+        }
+        
         const preview = document.getElementById('additionalImagesPreview');
         preview.innerHTML = '';
-        Array.from(e.target.files).slice(0, 4).forEach(file => {
+        Array.from(e.target.files).forEach(file => {
             const reader = new FileReader();
             reader.onload = function (event) {
                 const img = document.createElement('img');
