@@ -5,7 +5,7 @@ import { applyTheme } from "../../shared/js/navbar.js";
 import { renderDashboardHome } from "./admin-home.js";
 import { renderUsers, initUserCreation, initEditUserForm, initUserSearch } from "./admin-users.js";
 import { renderProducts, initProductSearch } from "./admin-products.js";
-import { renderCustomerService } from "./admin-customers.js";
+import { renderCustomerService, initCustomerServiceSearch } from "./admin-customers.js";
 
 (function enforceAdminAccess() {
     const current = storage.get(STORAGE_KEYS.CURRENT_USER);
@@ -135,4 +135,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initEditUserForm();
     initUserSearch();
     initProductSearch();
+    initCustomerServiceSearch();
 });

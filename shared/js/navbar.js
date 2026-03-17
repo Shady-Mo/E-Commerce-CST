@@ -274,7 +274,7 @@ My Profile
 <li><hr class="dropdown-divider"></li>
 
 <li>
-<button class="dropdown-item text-danger" id="logoutBtn">
+<button class="dropdown-item text-danger logoutBtn">
 <i class="fa-solid fa-right-from-bracket me-2"></i>
 Logout
 </button>
@@ -306,7 +306,7 @@ href="${prefix}features/seller/dashboard.html">
 
 <li class="nav-item">
 
-<button class="btn border-0 nav-link ${textClass}" id="logoutBtn">
+<button class="btn border-0 nav-link logoutBtn ${textClass}">
 
 <i class="fa-solid fa-right-from-bracket fs-5"></i>
 
@@ -324,7 +324,7 @@ href="${prefix}features/seller/dashboard.html">
 
 <li class="nav-item">
 
-<button class="btn border-0 nav-link ${textClass}" id="logoutBtn">
+<button class="btn border-0 nav-link logoutBtn ${textClass}">
 
 <i class="fa-solid fa-right-from-bracket fs-5"></i>
 
@@ -406,14 +406,14 @@ function attachThemeToggle() {
 /* ---------------- logout ---------------- */
 
 function attachLogout(prefix) {
-    const logoutBtn = document.getElementById("logoutBtn");
+    const logoutBtns = document.querySelectorAll(".logoutBtn");
 
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", function () {
+    logoutBtns.forEach(btn => {
+        btn.addEventListener("click", function () {
             storage.remove(STORAGE_KEYS.CURRENT_USER);
             window.location.href = `${prefix}index.html`;
         });
-    }
+    });
 }
 
 /* ---------------- cart badge ---------------- */

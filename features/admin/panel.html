@@ -411,6 +411,30 @@
               </h5>
             </div>
             <div class="card-body">
+              <!-- Filtration UI -->
+              <div class="row mb-4 g-3 align-items-end">
+                <div class="col-md-4">
+                  <label for="csStatusFilter" class="form-label">Status:</label>
+                  <select id="csStatusFilter" class="form-select" title="Filter by order status" aria-label="Filter by order status">
+                    <option value="all">All Orders</option>
+                    <option value="pending">Pending</option>
+                    <option value="received">Received</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="csSearchInput" class="form-label">Search:</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" class="form-control" id="csSearchInput" placeholder="Search by Order ID or customer name..." />
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <button id="csClearFiltersBtn" class="btn btn-secondary w-100" title="Clear all filters" aria-label="Clear all filters">
+                    <i class="fas fa-redo me-1"></i>Clear
+                  </button>
+                </div>
+              </div>
               <div id="csListContainer"></div>
             </div>
           </div>
