@@ -1,7 +1,7 @@
 import { storage } from "../../shared/js/storage.js";
 import { STORAGE_KEYS } from "../../shared/js/storage-keys.js";
 
-const SUCCESS_STATUSES = ['received', 'delivered', 'completed'];
+const SUCCESS_STATUSES = ['received'];
 
 function normalizeStatus(status) {
     return (status || 'Pending').toLowerCase().trim();
@@ -16,7 +16,6 @@ function getStatusColor(status) {
     const normalizedStatus = normalizeStatus(status);
 
     if (SUCCESS_STATUSES.includes(normalizedStatus)) return '#198754';
-    if (normalizedStatus === 'processing' || normalizedStatus === 'shipped') return '#0dcaf0';
     if (normalizedStatus === 'pending') return '#BB976D';
     if (normalizedStatus === 'cancelled') return '#dc3545';
     return '#6c757d';
@@ -26,7 +25,6 @@ function getStatusBadgeClass(status) {
     const normalizedStatus = normalizeStatus(status);
 
     if (SUCCESS_STATUSES.includes(normalizedStatus)) return 'bg-success';
-    if (normalizedStatus === 'processing' || normalizedStatus === 'shipped') return 'bg-info';
     if (normalizedStatus === 'cancelled') return 'bg-danger';
     return 'bg-warning text-dark';
 }

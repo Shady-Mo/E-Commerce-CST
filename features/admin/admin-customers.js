@@ -14,12 +14,8 @@ function getStatusBadge(status) {
     const normalizedStatus = normalizeStatus(status);
     const statusLabel = formatStatusLabel(status);
 
-    if (['received', 'delivered', 'completed'].includes(normalizedStatus)) {
+    if (normalizedStatus === 'received') {
         return `<span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>${statusLabel}</span>`;
-    }
-
-    if (['processing', 'shipped'].includes(normalizedStatus)) {
-        return `<span class="badge bg-info"><i class="fas fa-truck-fast me-1"></i>${statusLabel}</span>`;
     }
 
     if (normalizedStatus === 'cancelled') {
@@ -106,6 +102,20 @@ export function renderCustomerService() {
                     const all = storage.get(STORAGE_KEYS.ORDERS);
                     const idx = all.findIndex(x => x.id === id);
                     if (idx === -1) return;
+
+                    if (newStatus === 'Cancelled' && all[idx].status !== 'Cancelled') {
+                        const products = storage.get(STORAGE_KEYS.PRODUCTS) || [];
+                        if (all[idx].items && Array.isArray(all[idx].items)) {
+                            all[idx].items.forEach(item => {
+                                const pIdx = products.findIndex(p => p.id === item.productId);
+                                if (pIdx !== -1) {
+                                    products[pIdx].stock = (products[pIdx].stock || 0) + item.quantity;
+                                }
+                            });
+                            storage.set(STORAGE_KEYS.PRODUCTS, products);
+                        }
+                    }
+
                     all[idx].status = newStatus;
                     storage.set(STORAGE_KEYS.ORDERS, all);
                     renderCustomerService();
