@@ -31,13 +31,32 @@ function getUserById(userId) {
 }
 
 
-export function renderCustomerService() {
+export function renderCustomerService(statusFilter = 'all', searchTerm = '') {
     const container = document.getElementById('csListContainer');
     if (!container) return;
 
-    const orders = storage.get(STORAGE_KEYS.ORDERS) || [];
+    let orders = storage.get(STORAGE_KEYS.ORDERS) || [];
+
+    // Apply status filter
+    if (statusFilter && statusFilter !== 'all') {
+        orders = orders.filter(o => 
+            normalizeStatus(o.status) === normalizeStatus(statusFilter)
+        );
+    }
+
+    // Apply search filter
+    if (searchTerm) {
+        const lower = searchTerm.toLowerCase();
+        orders = orders.filter(o => {
+            const user = getUserById(o.userId);
+            const customerName = user ? user.username : (o.customerEmail || o.customer || 'N/A');
+            const orderId = String(o.id).toLowerCase();
+            return orderId.includes(lower) || customerName.toLowerCase().includes(lower);
+        });
+    }
+
     if (orders.length === 0) {
-        container.innerHTML = '<div class="text-center py-5"><i class="fas fa-inbox fa-3x text-muted mb-3"></i><p class="text-muted">No orders at this time.</p></div>';
+        container.innerHTML = '<div class="text-center py-5"><i class="fas fa-inbox fa-3x text-muted mb-3"></i><p class="text-muted">No orders found.</p></div>';
         return;
     }
 
@@ -133,5 +152,27 @@ export function renderCustomerService() {
                 }
             });
         });
+    });
+}
+
+export function initCustomerServiceSearch() {
+    const statusFilter = document.getElementById('csStatusFilter');
+    const searchInput = document.getElementById('csSearchInput');
+    const clearBtn = document.getElementById('csClearFiltersBtn');
+
+    if (!statusFilter || !searchInput || !clearBtn) return;
+
+    const updateFilters = () => {
+        const status = statusFilter.value;
+        const search = searchInput.value;
+        renderCustomerService(status, search);
+    };
+
+    statusFilter.addEventListener('change', updateFilters);
+    searchInput.addEventListener('input', updateFilters);
+    clearBtn.addEventListener('click', () => {
+        statusFilter.value = 'all';
+        searchInput.value = '';
+        renderCustomerService('all', '');
     });
 }
