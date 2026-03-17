@@ -35,15 +35,6 @@ function getStatusClass(status) {
     case "canceled":
       return "status-cancelled";
 
-    case "processing":
-      return "status-processing";
-
-    case "shipped":
-      return "status-shipped";
-
-    case "delivered":
-      return "status-delivered";
-
     default:
       return "status-default";
   }

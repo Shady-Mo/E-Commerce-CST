@@ -88,24 +88,6 @@ margin-top:10px;
   border-color: #f1aeb5;
 }
 
-.status-processing {
-  background: #cfe2ff;
-  color: #084298;
-  border-color: #9ec5fe;
-}
-
-.status-shipped {
-  background: #e2d9f3;
-  color: #5a3d99;
-  border-color: #cbbbe9;
-}
-
-.status-delivered {
-  background: #d1f7e5;
-  color: #146c43;
-  border-color: #9fe3c2;
-}
-
 .status-default {
   background: #f1f3f5;
   color: #495057;

@@ -138,12 +138,7 @@ function displayOrders(filter = 'all', searchTerm = '') {
 function getStatusClass(status) {
     switch (status?.toLowerCase()) {
         case 'received':
-        case 'delivered':
-        case 'completed':
             return 'bg-success';
-        case 'processing':
-        case 'shipped':
-            return 'bg-info';
         case 'cancelled':
             return 'bg-danger';
         case 'pending':
@@ -220,61 +215,6 @@ window.viewOrderDetails = function (orderId) {
         `,
         width: '600px',
         confirmButtonColor: '#BB976D'
-    });
-};
-
-window.updateOrderStatus = function (orderId) {
-    orderId = Number(orderId);
-    const allOrders = storage.get(STORAGE_KEYS.ORDERS) || [];
-    const orderIndex = allOrders.findIndex(o => o.id === orderId);
-
-    if (orderIndex === -1) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Order not found',
-            confirmButtonColor: '#BB976D'
-        });
-        return;
-    }
-
-    const currentStatus = allOrders[orderIndex].status || 'pending';
-
-    Swal.fire({
-        title: 'Update Order Status',
-        html: `
-            <select id="newStatus" class="form-select">
-                <option value="pending" ${currentStatus === 'pending' ? 'selected' : ''}>Pending</option>
-                <option value="received" ${currentStatus === 'received' ? 'selected' : ''}>Received</option>
-                <option value="cancelled" ${currentStatus === 'cancelled' ? 'selected' : ''}>Cancelled</option>
-            </select>
-        `,
-        showCancelButton: true,
-        confirmButtonText: 'Update',
-        confirmButtonColor: '#BB976D',
-        cancelButtonText: 'Cancel',
-        preConfirm: () => {
-            const newStatus = document.getElementById('newStatus').value;
-            return newStatus;
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            allOrders[orderIndex].status = result.value;
-            allOrders[orderIndex].updatedAt = new Date().toISOString();
-            storage.set(STORAGE_KEYS.ORDERS, allOrders);
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: 'Order status updated successfully',
-                confirmButtonColor: '#BB976D',
-                timer: 2000
-            });
-
-            const currentFilter = document.getElementById('statusFilter').value;
-            const currentSearch = document.getElementById('orderSearchInput')?.value.trim() || '';
-            displayOrders(currentFilter, currentSearch);
-        }
     });
 };
 
