@@ -66,24 +66,24 @@ function renderProductsTable(searchTerm = '', categoryFilter = 'all') {
         const createdDate = new Date(product.createdAt).toLocaleDateString();
         return `
         <tr>
-            <td>
+            <td data-label="Image">
                 <img src="${product.image}" alt="${product.name}" class="product-thumbnail">
             </td>
-            <td>
+            <td data-label="Name">
                 <div class="fw-semibold">${product.name}</div>
                 ${product.badge ? `<span class="badge bg-secondary">${product.badge}</span>` : ''}
             </td>
-            <td>
+            <td data-label="Price">
                 <div class="fw-bold">$${product.price.toFixed(2)}</div>
                 ${product.oldPrice ? `<small class="text-muted text-decoration-line-through">$${product.oldPrice.toFixed(2)}</small>` : ''}
             </td>
-            <td>
+            <td data-label="Stock">
                 <span class="badge ${getStockClass(product.stock)}">
                     ${product.stock}
                 </span>
             </td>
-            <td>${createdDate}</td>
-            <td>
+            <td data-label="Created">${createdDate}</td>
+            <td data-label="Actions">
                 <a href="edit-product.html?id=${product.id}" class="btn btn-sm btn-outline-primary">
                     <i class="fas fa-edit"></i>
                 </a>
